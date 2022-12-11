@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i&display=swap" rel="stylesheet">
+
+    <title>Stand Blog - Post Details</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+
+    <!-- Additional CSS Files -->
+    <link rel="stylesheet" href="../../assets/css/fontawesome.css">
+    <link rel="stylesheet" href="../../assets/css/templatemo-stand-blog.css">
+    <link rel="stylesheet" href="../../assets/css/owl.css">
+<!--
+
+TemplateMo 551 Stand Blog
+
+https://templatemo.com/tm-551-stand-blog
+
+-->
+  </head>
+
+  <body>
+
+
+
+    <!-- Header -->
+    <header class="">
+      <nav class="navbar navbar-expand-lg">
+        <div class="container">
+          <a class="navbar-brand" href="../../index.html"><h2>The Tech Corner<em>.</em></h2></a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+              <li class="nav-item">
+                <a class="nav-link" href="../../index.html">Home</a>
+              </li> 
+              <li class="nav-item active">
+                <a class="nav-link" href="../../blog-categories.html">Articles</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="../../about.html">About Me</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="../../contact.html">Contact Me</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Page Content -->
+    <!-- Banner Starts Here -->
+    <div class="heading-page header-text">
+      <section class="page-heading">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="text-content">
+                <h4>Post Details</h4>
+                <h2>Single blog post</h2>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+    
+    <!-- Banner Ends Here -->
+
+
+
+    <section class="blog-posts grid-system">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="all-blog-posts">
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="blog-post">
+
+                    <div class="down-content">
+                      <span>SPF, DKIM and DMARC explained</span>
+                      <h3>What even is SPF, DKIM and DMARC?</h3>
+
+
+
+                      <p>SPF, DKIM and DMARC are simply a set of email authentication protocols, that prove to ISPs and mail services that senders are truly authorized to send email from a particular domain. These tools provide proof that an email message is genuine and that it’s coming from who it claims to be from.</p>
+                      
+                      
+                      
+                      
+                      
+                      
+                      <h3>SPF</h3>
+                      
+                      
+                      
+                      <p><strong>SPF (Sender Policy Framework)&nbsp;</strong>is a DNS record containing information about&nbsp;<strong>servers allowed to send emails</strong>&nbsp;from a specific domain (for example,&nbsp;thetechcorner.org). To do that, the domain owner can add a file or record on the server which tells the receiving server what domains are actually allowed to send emails.</p>
+                      
+                      
+                      
+                      <p>SPF is both useful for protecting against MailFrom spoofing of your domain towards your users, but also to external destinations where it could harm your brand. Ie, Microsoft&#8217;s SPF record stops MailFrom spoofing from @microsoft.com not just to @microsoft.com but also to you which helps stop some fake Microsoft phishing emails.</p>
+                      
+                      
+                      
+                      <p><strong>How does it look like</strong></p>
+                      
+                      
+                      
+                      <div class="is-layout-constrained wp-block-group"><div class="wp-block-group__inner-container">
+                      <pre class="wp-block-code"><code>v=spf1 include:5123454.thetechcorner.org ~all</code></pre>
+                      </div></div>
+                      
+                      
+                      <div class="wp-block-image">
+                      <figure class="aligncenter size-large is-resized"><img decoding="async" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-1.png?resize=640%2C360&#038;ssl=1" alt="" class="wp-image-1496" width="640" height="360" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-1.png?resize=1024%2C576&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-1.png?resize=300%2C169&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-1.png?resize=768%2C432&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-1.png?resize=1536%2C864&amp;ssl=1 1536w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-1.png?resize=2048%2C1152&amp;ssl=1 2048w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-1.png?resize=24%2C14&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-1.png?resize=36%2C20&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-1.png?resize=48%2C27&amp;ssl=1 48w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-1.png?w=1280&amp;ssl=1 1280w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-1.png?w=1920&amp;ssl=1 1920w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+                      
+                      
+                      <p></p>
+                      
+                      
+                      
+                      <h3>DKIM</h3>
+                      
+                      
+                      
+                      <p>DKIM or (<strong>DomainKeys Identified Mail</strong>) is an authentication similar to SPF. DKIM is a key-pair signing mechanism for the header of mail messages. . When you send mail you attach a signature to the message using a private key which is compared to a public key published in DNS for your domain. DKIM adds authenticity to a message and guards against tampering with the header by down-stream mail servers. One of the benefits to working on the header is it survives SMTP relaying and auto-forwarding.</p>
+                      
+                      
+                      
+                      <p>DKIM is added as a TXT record by adding it into your domain panel. </p>
+                      
+                      
+                      
+                      <p><strong>DKIM does not directly prevent abusive / malicious behavior.</strong>&nbsp;DKIM is just a signature&#8230; If I hand you a letter with my signature on it there&#8217;s added authenticity; However, if I hand you a letter without my signature if there&#8217;s no requirement for the letter to be signed there&#8217;s no reason to be suspicious. It&#8217;s like SSL, just because a website doesn&#8217;t have SSL doesn&#8217;t mean it&#8217;s fake, but it&#8217;s preferred when SSL is used.</p>
+                      
+                      
+                      
+                      <p><strong>How does it look like</strong></p>
+                      
+                      
+                      
+                      <div class="is-layout-constrained wp-block-group"><div class="wp-block-group__inner-container">
+                      <pre class="wp-block-code"><code>k=rsa; p=MIGfMA0GCksjlkdixcieJDDSFIELDSKfdsfsdfsdfsfksflsfldfsfjhsdfsdfhuisdhfuiehfhNyyHs77EoDFDDEEFFEKJKLJHLKifLN51IIvwIDAQABQp6nIyi5oioyZh+1jDXoCDDFDSFEEDSFSEFE85N7b76aTtHmy2wTgR2LFS</code></pre>
+                      </div></div>
+                      
+                      
+                      <div class="wp-block-image">
+                      <figure class="aligncenter size-large is-resized"><img decoding="async" loading="lazy" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-2.png?resize=640%2C359&#038;ssl=1" alt="" class="wp-image-1497" width="640" height="359" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-2.png?resize=1024%2C576&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-2.png?resize=300%2C169&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-2.png?resize=768%2C432&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-2.png?resize=1536%2C864&amp;ssl=1 1536w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-2.png?resize=2048%2C1152&amp;ssl=1 2048w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-2.png?resize=24%2C14&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-2.png?resize=36%2C20&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-2.png?resize=48%2C27&amp;ssl=1 48w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-2.png?w=1280&amp;ssl=1 1280w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-2.png?w=1920&amp;ssl=1 1920w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+                      
+                      
+                      <p></p>
+                      
+                      
+                      
+                      <h3>DMARC</h3>
+                      
+                      
+                      
+                      <p><strong>DMARC (Domain-based Message Authentication, Reporting &amp; Conformance)&nbsp;</strong>defines how the recipient’s mail server should process incoming emails if they don’t pass the authentication check (either SPF, DKIM, or both).</p>
+                      
+                      
+                      
+                      <p>If the message fails authentication, it’s processed according to the selected DMARC policy:&nbsp;<strong>none, reject,&nbsp;</strong>or&nbsp;<strong>quarantine.</strong></p>
+                      
+                      
+                      
+                      <ul>
+                      <li>Under the&nbsp;<strong>“none”</strong>&nbsp;policy, the receiving server doesn’t take any action if your emails fail authentication. It doesn’t impact your deliverability. But it also doesn’t protect you from scammers, so we don’t recommend setting it. Only by introducing stricter policies can you block them in the very beginning and let the world know you care about your customers and brand.&nbsp;</li>
+                      
+                      
+                      
+                      <li>Here, messages that come from your domain but don’t pass the DMARC check go to&nbsp;<strong>“quarantine.”</strong>&nbsp;In such a case, the provider is advised to send your email to the spam folder.&nbsp;</li>
+                      
+                      
+                      
+                      <li>Under the&nbsp;<strong>“reject”&nbsp;</strong>policy, the receiving server rejects all messages that don’t pass email authentication. This means such emails won’t reach an addressee and will result in a bounce.</li>
+                      </ul>
+                      
+                      
+                      
+                      <p></p>
+                      
+                      
+                      
+                      <p>The R in DMARC is for the Reporting component of the protocol. These reports allow the domain owner to see where all email using their domain in the From address is being sent from.</p>
+                      
+                      
+                      
+                      <p></p>
+                      
+                      
+                      
+                      <p><strong>The DMARC record of the domain in the header from address is used if it exists.</strong>&nbsp;Like the above records, it exists as a TXT record in DNS.</p>
+                      
+                      
+                      
+                      <p>DMARC&#8217;s conformance check is called &#8220;alignment&#8221; and it checks that the header from is &#8220;aligned&#8221; with other authenticated domains on the message, either via DKIM or SPF. If&nbsp;<strong>either</strong>&nbsp;DKIM or SPF alignment passes, DMARC evaluates as a &#8220;PASS.&#8221;</p>
+                      
+                      
+                      
+                      <p><strong>SPF Alignment:</strong>&nbsp;The domain in the header from and envelope from must be the same (or sub-domains of the same parent domain if &#8220;relaxed&#8221;) and must pass SPF.</p>
+                      
+                      
+                      
+                      <p><strong>DKIM Alignment:</strong>&nbsp;DMARC requires a valid signature where the domain specified in the&nbsp;<code>d=</code>&nbsp;tag aligns with the sender&#8217;s domain from the header from field.</p>
+                      
+                      
+                      
+                      <p><strong>How does it look like</strong></p>
+                      
+                      
+                      
+                      <div class="is-layout-constrained wp-block-group"><div class="wp-block-group__inner-container">
+                      <pre class="wp-block-code"><code>&nbsp;_dmarc.thetechcorner.org. IN TXT "v=DMARC1\; p=none\; rua=mailto:<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="dcb8b1bdaebff1bdbbbbaeb9bbbda8b99ca8b4b9a8b9bfb4bfb3aeb2b9aef2b3aebb">[email&#160;protected]</a>\; ruf=mailto:<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="1e7a737f6c7d337f786c785e6a767b6a7b7d767d716c707b6c30716c79">[email&#160;protected]</a>\; pct=100"</code></pre>
+                      </div></div>
+                      
+                      
+                      <div class="wp-block-image">
+                      <figure class="aligncenter size-large is-resized"><img decoding="async" loading="lazy" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-3.png?resize=640%2C358&#038;ssl=1" alt="" class="wp-image-1498" width="640" height="358" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-3.png?resize=1024%2C574&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-3.png?resize=300%2C168&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-3.png?resize=2048%2C1149&amp;ssl=1 2048w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-3.png?resize=24%2C13&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-3.png?resize=36%2C20&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-3.png?resize=48%2C27&amp;ssl=1 48w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-3.png?w=1280&amp;ssl=1 1280w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-3.png?w=1920&amp;ssl=1 1920w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+                      
+                      
+                      <p></p>
+                      
+                      
+                      
+                      <h3>TLDR:</h3>
+                      
+                      
+                      
+                      <ul>
+                      <li>Envelope from spoofing: SPF</li>
+                      
+                      
+                      
+                      <li>Header from spoofing: SPF + DMARC, DKIM + DMARC, or SPF + DKIM + DMARC. No one mechanism alone will be sufficient.</li>
+                      
+                      
+                      
+                      <li>Display name spoofing: Advanced threat filters, transport rules, and user training. None of the mechanisms care about the display name.</li>
+                      
+                      
+                      
+                      <li>Compromised mailboxes or &#8220;legitimate&#8221; senders: Advanced threat filters, transport rules, and user training.</li>
+                      </ul>
+                      
+                      
+                      
+                      <p></p>
+                      
+                      
+                      
+                      <h3>Useful tools:</h3>
+                      
+                      
+                      
+                      <p><a href="https://mxtoolbox.com/">https://mxtoolbox.com/</a>                                             &#8230;. Multiple mail tools like SPF lookup, blacklist DMARC&#8230;.</p>
+                      
+                      
+                      
+                      <p><a href="https://www.learndmarc.com/#">https://www.learndmarc.com/#</a>                            &#8230; SPF, DKIM DMARC training tool</p>
+                      
+                      
+                      
+                      <p><a href="https://kitterman.com/spf/validate.html">https://kitterman.com/spf/validate.html</a>             &#8230; Validate your SPF record</p>
+                      
+                      
+                      
+                      <p><a href="https://www.mailgenius.com/">https://www.mailgenius.com/</a>                                 &#8230;.Check your mail server/domain score</p>
+                            </div><!-- .entry-content -->
+                                        <div class="tags-links">
+                      
+                                          <span><a href="https://thetechcorner.org/?tag=dmarc">dmarc</a></span>                </div><!-- .tags-links -->
+
+
+
+
+                      
+                    </div>
+                  </div>
+                </div>
+                </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    
+    <footer>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12">
+            <ul class="social-icons">
+              <li><a href="https://www.instagram.com/filip_zverec/">Instagram</a></li>
+              <li><a href="https://github.com/Ard3ny">Github</a></li>
+              <li><a href="https://www.linkedin.com/in/filip-zverec-6487221b9/">Linkedin</a></li>
+            </ul>
+          </div>
+          <div class="col-lg-12">
+            <div class="copyright-text">
+              <p>Copyright 2022 The Tech Corner</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="../../vendor/jquery/jquery.min.js"></script>
+    <script src="../../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+
+    <!-- Additional Scripts -->
+    <script src="../../assets/js/custom.js"></script>
+    <script src="../../assets/js/owl.js"></script>
+    <script src="../../assets/js/slick.js"></script>
+    <script src="../../assets/js/isotope.js"></script>
+    <script src="../../assets/js/accordions.js"></script>
+
+
+    <script language = "text/Javascript"> 
+      cleared[0] = cleared[1] = cleared[2] = 0; //set a cleared flag for each field
+      function clearField(t){                   //declaring the array outside of the
+      if(! cleared[t.id]){                      // function makes it static and global
+          cleared[t.id] = 1;  // you could use true and false, but that's more typing
+          t.value='';         // with more chance of typos
+          t.style.color='#fff';
+          }
+      }
+    </script>
+
+
+  </body>
+
+</html>
