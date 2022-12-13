@@ -1,0 +1,3211 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	
+	xmlns:georss="http://www.georss.org/georss"
+	xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+	>
+
+<channel>
+	<title>Raspberry &#8211; TheTechCorner</title>
+	<atom:link href="https://thetechcorner.org/?feed=rss2&#038;tag=raspberry-en" rel="self" type="application/rss+xml" />
+	<link>https://thetechcorner.org</link>
+	<description>A corner on the internet where I share my ideas, guides and projects</description>
+	<lastBuildDate>Tue, 22 Mar 2022 08:25:36 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.1.1</generator>
+<site xmlns="com-wordpress:feed-additions:1">187618359</site>	<item>
+		<title>Running Unify Controller on the Raspberry Pi</title>
+		<link>https://thetechcorner.org/?p=1459&#038;utm_source=rss&#038;utm_medium=rss&#038;utm_campaign=running-unify-controller-on-the-raspberry-pi</link>
+		
+		<dc:creator><![CDATA[Filip Zverec]]></dc:creator>
+		<pubDate>Mon, 21 Mar 2022 21:20:43 +0000</pubDate>
+				<category><![CDATA[HomeLab]]></category>
+		<category><![CDATA[controller]]></category>
+		<category><![CDATA[pi]]></category>
+		<category><![CDATA[Raspberry]]></category>
+		<category><![CDATA[unify]]></category>
+		<guid isPermaLink="false">https://thetechcorner.org/?p=1459</guid>
+
+					<description><![CDATA[If you are like me, and you own some Ubiquiti AP, you&#8217;ve probably come across [&#8230;]]]></description>
+										<content:encoded><![CDATA[
+<p>If you are like me, and you own some Ubiquiti AP, you&#8217;ve probably come across Unify controller while installing/setting up your wireless router.</p>
+
+
+
+<p>Unify controller is &nbsp;<strong>a wireless network management software solution from Ubiquiti Networks<img src="https://s.w.org/images/core/emoji/14.0.0/72x72/2122.png" alt="™" class="wp-smiley" style="height: 1em; max-height: 1em;" /></strong>. It allows you to manage multiple wireless networks using a web browser. The Sample Network Diagram above illustrates an example of a single UniFi network.</p>
+
+
+
+<p></p>
+
+
+
+<p>It&#8217;s a very useful piece of software, but it needs an external device to be working. You could use your main PC as the host, but I don&#8217;t know about you, but I for sure am not running my main PC 24/7. To fix this we can use Raspberry Pi, which is maybe already running PI-hole or NFS and so it won&#8217;t make difference on your electric bill.</p>
+
+
+
+<p></p>
+
+
+
+<h2><strong>1.</strong>&nbsp;<strong>Set-up Raspberry PI</strong></h2>
+
+
+
+<p>I have already created a tutorial for this step, which you can check out&nbsp;<a href="https://thetechcorner.org/?p=136">here</a>. You can configure PI&nbsp;<strong>with or without a monitor</strong>.</p>
+
+
+
+<p>Next, you can check out some other guides on how to&nbsp;<a href="https://thetechcorner.org/?p=177">change your hostname and password</a>&nbsp;or&nbsp;<a href="https://thetechcorner.org/?p=177">how you can overclock your Raspberry PI</a>&nbsp;for better performance.</p>
+
+
+
+<p><strong>If you have already set-up your Raspberry, you only need to update your Raspbian</strong>&nbsp;<strong>packages and version using</strong>&nbsp;<strong>these commands</strong></p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">sudo apt update
+sudo apt upgrade</pre>
+</div></div>
+
+
+
+<p></p>
+
+
+
+<h2><strong>2. Install necessary packages</strong></h2>
+
+
+
+<p>As our next step, we need to install a few things to be to run Unify controller.</p>
+
+
+
+<p>The first one is Java runtime environment 8, we cannot go with any newer version yet, because the UniFi controller doesn&#8217;t support it.</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">sudo apt install openjdk-8-jre-headless</pre>
+</div></div>
+
+
+
+<p></p>
+
+
+
+<p>To improve UniFi controller startup speed, we can install rng-tools which is a set of utilities related to random number generation in kernel. The main program is rngd,&nbsp;<strong>a daemon developed to check and feed random data from hardware device to kernel entropy pool</strong>. This is mainly useful to increase the quantity of entropy in kernel to make /dev/random faster</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">sudo apt install rng-tools</pre>
+</div></div>
+
+
+
+<p>But it won&#8217;t work just yet, first we need to uncomment the <em>HRNGDEVICE=/dev/hwrng</em> line to define input source for random data.</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">sudo vi /etc/default/rng-tools-debian</pre>
+</div></div>
+
+
+
+<p><strong>And find #<em>HRNGDEVICE=/dev/hwrng</em> and remove the hastag.</strong></p>
+
+
+
+<p>Save the file and restart the rng-tools service</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">sudo systemctl restart rng-tools</pre>
+</div></div>
+
+
+
+<h2><strong>3. Fixing the mangodb dependency issue</strong></h2>
+
+
+
+<p>As the last thing of our preparation to install the UniFi Controller, we need to fix <em>mangodb </em>dependency issue, which you would get when trying to install it.</p>
+
+
+
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-full"><img decoding="async" width="640" height="288" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-62.png?resize=640%2C288&#038;ssl=1" alt="" class="wp-image-1462" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-62.png?w=677&amp;ssl=1 677w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-62.png?resize=300%2C135&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-62.png?resize=24%2C11&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-62.png?resize=36%2C16&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-62.png?resize=48%2C22&amp;ssl=1 48w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p>To fix this, we will create a workaround where we will change the package manager preference. We can do that in <em>/etc/apt/preferences.d</em> directory by adding a few lines into the <em>mangodb</em> file</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">sudo vi /etc/apt/preferences.d/99stretch-mongodb.pref</pre>
+</div></div>
+
+
+
+<p>Now add these lines to the file</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<blockquote class="wp-block-quote"><p>#Never Prefer packages from Stretch</p><p>Package: * </p><p>Pin: release n=stretch </p><p>Pin-Priority: 1</p></blockquote>
+</div></div>
+
+
+
+<p>Save the file, and now it&#8217;s time to add our repository to <em>/etc/apt/sources.list</em></p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">echo "deb http://archive.raspbian.org/raspbian stretch main" | sudo tee /etc/apt/sources.list.d/stretch_mongodb.list</pre>
+</div></div>
+
+
+
+<p>When this is done, let&#8217;s move the the last step of installation.</p>
+
+
+
+<p></p>
+
+
+
+<h2><strong>4. Install the UniFi Controller</strong></h2>
+
+
+
+<p>We have a few options now, we can just manually download the UniFi controller and install it or we could automate the whole process with package manager and in that way, every time you run apt update, the UniFi controller updates as well.</p>
+
+
+
+<p><strong>To do that type</strong></p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">echo 'deb [signed-by=/usr/share/keyrings/ubiquiti-archive-keyring.gpg] https://www.ui.com/downloads/unifi/debian stable ubiquiti' | sudo tee /etc/apt/sources.list.d/100-ubnt-unifi.list</pre>
+</div></div>
+
+
+
+<p><strong>And add the GPG key </strong></p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">curl https://dl.ui.com/unifi/unifi-repo.gpg | sudo tee /usr/share/keyrings/ubiquiti-archive-keyring.gpg &gt;/dev/null</pre>
+</div></div>
+
+
+
+<p><strong>Finally, update the repositories and install UniFi controller</strong></p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">sudo apt update</pre>
+
+
+
+<pre class="wp-block-preformatted">sudo apt install unifi</pre>
+</div></div>
+
+
+
+<p></p>
+
+
+
+<p>This will automatically start and enable the unifi service. We can check that out by typing</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">systemctl status unifi</pre>
+</div></div>
+
+
+
+<figure class="wp-block-image size-large is-style-default"><img decoding="async" loading="lazy" width="640" height="159" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-63.png?resize=640%2C159&#038;ssl=1" alt="" class="wp-image-1464" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-63.png?resize=1024%2C254&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-63.png?resize=300%2C74&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-63.png?resize=768%2C190&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-63.png?resize=24%2C6&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-63.png?resize=36%2C9&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-63.png?resize=48%2C12&amp;ssl=1 48w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-63.png?w=1266&amp;ssl=1 1266w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p></p>
+
+
+
+<h2><strong>5. Setup the UniFi controller</strong></h2>
+
+
+
+<p><strong> </strong>We could now access the initial setup and the whole interface by typing the following line to our browser on the PI </p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">https://local.host:8443</pre>
+</div></div>
+
+
+
+<p></p>
+
+
+
+<p>But I would like to be able to access this interface from my own PC/phone. To do that, we need to check and set static IP address on the PI.</p>
+
+
+
+<p>To check your IP type</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">ip a</pre>
+</div></div>
+
+
+
+<figure class="wp-block-image size-full is-style-default"><img decoding="async" loading="lazy" width="640" height="191" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-64.png?resize=640%2C191&#038;ssl=1" alt="" class="wp-image-1466" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-64.png?w=803&amp;ssl=1 803w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-64.png?resize=300%2C90&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-64.png?resize=768%2C230&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-64.png?resize=24%2C7&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-64.png?resize=36%2C11&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-64.png?resize=48%2C14&amp;ssl=1 48w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>As you can see mine is 192.168.100.30. To do this properly, you should link this IP with your device in your main router, but if you can&#8217;t access it, the best you can do is to set the static IP into your PI.</p>
+
+
+
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-full"><img decoding="async" loading="lazy" width="330" height="371" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-65.png?resize=330%2C371&#038;ssl=1" alt="" class="wp-image-1467" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-65.png?w=330&amp;ssl=1 330w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-65.png?resize=267%2C300&amp;ssl=1 267w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-65.png?resize=21%2C24&amp;ssl=1 21w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-65.png?resize=32%2C36&amp;ssl=1 32w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-65.png?resize=43%2C48&amp;ssl=1 43w" sizes="(max-width: 330px) 100vw, 330px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p></p>
+
+
+
+<p>Everything should be now up and ready. All you have to do is type the following line into your browser on main PC.</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">https://YOUR_PI_IP:8443/</pre>
+</div></div>
+
+
+
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-large"><img decoding="async" loading="lazy" width="640" height="255" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-66.png?resize=640%2C255&#038;ssl=1" alt="" class="wp-image-1468" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-66.png?resize=1024%2C408&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-66.png?resize=300%2C119&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-66.png?resize=768%2C306&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-66.png?resize=24%2C10&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-66.png?resize=36%2C14&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-66.png?resize=48%2C19&amp;ssl=1 48w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-66.png?w=1356&amp;ssl=1 1356w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-66.png?w=1280&amp;ssl=1 1280w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">1459</post-id>	</item>
+		<item>
+		<title>Raspberry PI &#8211; Automatically Controlled Fan</title>
+		<link>https://thetechcorner.org/?p=556&#038;utm_source=rss&#038;utm_medium=rss&#038;utm_campaign=raspberry-pi-automatically-controlled-fan</link>
+		
+		<dc:creator><![CDATA[Filip Zverec]]></dc:creator>
+		<pubDate>Fri, 17 Dec 2021 17:49:10 +0000</pubDate>
+				<category><![CDATA[HomeLab]]></category>
+		<category><![CDATA[automatic]]></category>
+		<category><![CDATA[fan]]></category>
+		<category><![CDATA[pi]]></category>
+		<category><![CDATA[Raspberry]]></category>
+		<guid isPermaLink="false">https://thetechcorner.org/?p=556</guid>
+
+					<description><![CDATA[With the new Raspberry Pi 4 and it&#8217;s CPU, Raspberry tends to get really hot. [&#8230;]]]></description>
+										<content:encoded><![CDATA[
+<p>With the new Raspberry Pi 4 and it&#8217;s CPU, Raspberry tends to get really hot. Adding a fan can significantly help this problem, but there is going to be an issue with the annoying buzzing sound of the small fan.</p>
+
+
+
+<p>In this guide, I&#8217;ll show you how to set up this fan, so it&#8217;s only starting working when the PI will get hot.</p>
+
+
+
+<p></p>
+
+
+
+<h3><strong>1</strong>.&nbsp;<strong>First, you will need a few things:</strong></h3>
+
+
+
+<ol><li>Raspberry Pi (any model will do for this)</li><li>SD card / USB</li><li>Power supply</li><li>Ethernet Cable (you could also you a wifi, but Ethernet is just way better in performance and reliability</li><li>Small fan &#8211; 5V</li><li>Few cables and soldering iron</li><li>NPN transistor (2N2222) &#8211; 680Ω</li></ol>
+
+
+
+<p></p>
+
+
+
+<h3><strong>2. Seting up your your PI.</strong></h3>
+
+
+
+<p>You can find guide for that&nbsp;<a href="https://thetechcorner.org/?p=136">here</a>!</p>
+
+
+
+<p></p>
+
+
+
+<h3><strong>3. Connecting the circuit</strong></h3>
+
+
+
+<p>In this step, I&#8217;ll explain the circuit and a step-by-step guide to connecting it right. </p>
+
+
+
+<p>Because the fan requirement of the 5V and the Pi capability of providing 3.3V at max, we added a NPN transistor. We could just use dedicated 5V pins that are  on the PI, but they don&#8217;t have regulation capability build into them. That&#8217;s why we are going to use GPIO pins.</p>
+
+
+
+<p>The transistor is an electrical component used in circuits to switch or amplify power. In our case, it&#8217;s going to be switch. </p>
+
+
+
+<p>We are going to connect the positive lead aka Emitor (E )to 5v+ on the PI and the collector (C ) to the ground on the PI. Last but not least, we are going to connect the base (B ) of the transistor to the PIN 17 and place a 680 Ohm resistor between them. You can see which leg of the NPN transistor is what on the picture below as well as the GPIO name scheme of the PI</p>
+
+
+
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-full"><img decoding="async" loading="lazy" width="346" height="346" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-21.png?resize=346%2C346&#038;ssl=1" alt="" class="wp-image-571" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-21.png?w=346&amp;ssl=1 346w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-21.png?resize=300%2C300&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-21.png?resize=150%2C150&amp;ssl=1 150w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-21.png?resize=24%2C24&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-21.png?resize=36%2C36&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-21.png?resize=48%2C48&amp;ssl=1 48w" sizes="(max-width: 346px) 100vw, 346px" data-recalc-dims="1" /></figure></div>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<figure class="wp-block-image size-full is-resized is-style-default"><img decoding="async" loading="lazy" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-17.png?resize=640%2C338&#038;ssl=1" alt="" class="wp-image-567" width="640" height="338" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-17.png?w=664&amp;ssl=1 664w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-17.png?resize=300%2C159&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-17.png?resize=24%2C13&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-17.png?resize=36%2C19&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-17.png?resize=48%2C25&amp;ssl=1 48w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+</div></div>
+
+
+
+<p></p>
+
+
+
+<p>Finally, the final wired up product should look like this.</p>
+
+
+
+<figure class="wp-block-image size-full is-style-default"><img decoding="async" loading="lazy" width="640" height="484" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-18.png?resize=640%2C484&#038;ssl=1" alt="" class="wp-image-568" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-18.png?w=683&amp;ssl=1 683w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-18.png?resize=300%2C227&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-18.png?resize=24%2C18&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-18.png?resize=36%2C27&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-18.png?resize=48%2C36&amp;ssl=1 48w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>Here is my PI with the hot glue used to keep everything together and protected. It doesn&#8217;t look the nicest, but it gets the job done, and it&#8217;s pretty reliable. </p>
+
+
+
+<figure class="wp-block-image size-large is-style-default"><img decoding="async" loading="lazy" width="640" height="389" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-16.png?resize=640%2C389&#038;ssl=1" alt="" class="wp-image-566" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-16.png?resize=1024%2C623&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-16.png?resize=300%2C182&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-16.png?resize=768%2C467&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-16.png?resize=24%2C15&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-16.png?resize=36%2C22&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-16.png?resize=48%2C29&amp;ssl=1 48w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-16.png?w=1514&amp;ssl=1 1514w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-16.png?w=1280&amp;ssl=1 1280w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<h3><strong>4. Script for a fan</strong></h3>
+
+
+
+<p>First, we will need to install a python 3 for our script to work.</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted"><strong>sudo apt install python3-pip</strong></pre>
+</div></div>
+
+
+
+<p>Next, we will be using a script that some gentleman already wrote for us. Just copy and paste this command into your PI</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-code"><code><strong>git clone https://github.com/Howchoo/pi-fan-controller.git</strong></code></pre>
+</div></div>
+
+
+
+<p></p>
+
+
+
+<p>We will need to install a few more packages, this process is already automated, so you just have to type</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-code"><code><strong>sudo pip3 install -r pi-fan-controller/requirements.txt</strong></code></pre>
+</div></div>
+
+
+
+<p>And finally start the script, that will automatically configure everything</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-code"><code><strong>./pi-fan-controller/script/install</strong></code></pre>
+
+
+
+<p></p>
+</div></div>
+
+
+
+<p>Everything should be working now. To test this, we will use a stress test and measure the temperature along with it. In one terminal type:</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted"><strong>sudo apt-get install stress</strong>
+<strong>sudo stress --cpu 8 --timeout 60</strong></pre>
+
+
+
+<p></p>
+
+
+
+<p>And in the other window terminal we will measure the temperature and watch fans if they spin on in time:</p>
+</div></div>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted"><strong>watch -n 1 vcgencmd measure_temp</strong></pre>
+</div></div>
+
+
+
+<p>If everything goes correctly, a fan should turn on when temperature hits the 65° C</p>
+
+
+
+<figure class="wp-block-image size-large is-style-default"><img decoding="async" loading="lazy" width="640" height="186" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-13.png?resize=640%2C186&#038;ssl=1" alt="" class="wp-image-557" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-13.png?resize=1024%2C298&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-13.png?resize=300%2C87&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-13.png?resize=768%2C223&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-13.png?resize=24%2C7&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-13.png?resize=36%2C10&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-13.png?resize=48%2C14&amp;ssl=1 48w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-13.png?w=1413&amp;ssl=1 1413w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-13.png?w=1280&amp;ssl=1 1280w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p></p>
+
+
+
+<p>You can change the threshold of the fan settings by opening fancontrol.py config file and rewriting the temperatures: </p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted"><strong>sudo vi /usr/local/bin/fancontrol.py</strong></pre>
+
+
+
+<figure class="wp-block-image size-full is-style-default"><img decoding="async" loading="lazy" width="601" height="111" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-14.png?resize=601%2C111&#038;ssl=1" alt="" class="wp-image-558" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-14.png?w=601&amp;ssl=1 601w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-14.png?resize=300%2C55&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-14.png?resize=24%2C4&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-14.png?resize=36%2C7&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-14.png?resize=48%2C9&amp;ssl=1 48w" sizes="(max-width: 601px) 100vw, 601px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>Your Pi should now be able to automatically control the fan, so both of you can be cool now. </p>
+</div></div>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">556</post-id>	</item>
+		<item>
+		<title>How to recover a root password in a Linux</title>
+		<link>https://thetechcorner.org/?p=503&#038;utm_source=rss&#038;utm_medium=rss&#038;utm_campaign=how-to-recover-a-root-password-in-a-linux</link>
+		
+		<dc:creator><![CDATA[Filip Zverec]]></dc:creator>
+		<pubDate>Thu, 25 Nov 2021 12:10:51 +0000</pubDate>
+				<category><![CDATA[Linux essentials]]></category>
+		<category><![CDATA[password]]></category>
+		<category><![CDATA[pi]]></category>
+		<category><![CDATA[Raspberry]]></category>
+		<category><![CDATA[recover]]></category>
+		<category><![CDATA[root]]></category>
+		<guid isPermaLink="false">https://thetechcorner.org/?p=503</guid>
+
+					<description><![CDATA[In case of losing a password of your Linux operating system, you can still recover [&#8230;]]]></description>
+										<content:encoded><![CDATA[
+<p>In case of losing a password of your Linux operating system, you can still recover it quite easily, as long as you have physical access to the system.</p>
+
+
+
+<p>There are multiple options how to do this, but I will show two most often and the special one used in the Raspbian systems.</p>
+
+
+
+<p></p>
+
+
+
+<h3>1. Reset root password from the GRUB</h3>
+
+
+
+<p>First, we need to get into the GRUB (bootloader that loads the Linux kernel or any other OS). To do that, we need to reboot our OS (this works with VM&#8217;s as well) and when you see Oracle&#8217;s logo, click the screen and hold down SHIFT until the Grub menu appears.</p>
+
+
+
+<p></p>
+
+
+
+<p>There is also the option to have this show with every boot. To do this you need to edit a grub file which you may not have access to so I&#8217;m just giving you this as a useful option in the future.</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted"><strong>gksudo gedit /etc/default/grub</strong></pre>
+</div></div>
+
+
+
+<p><strong>and add a # in front of GRUB_HIDDEN_TIMEOUT=0</strong></p>
+
+
+
+<p>And apply the settings with </p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted"><strong>sudo update-grub</strong></pre>
+</div></div>
+
+
+
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-full"><img decoding="async" loading="lazy" width="637" height="546" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/11/image.png?resize=637%2C546&#038;ssl=1" alt="" class="wp-image-504" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/11/image.png?w=637&amp;ssl=1 637w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/11/image.png?resize=300%2C257&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/11/image.png?resize=24%2C21&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/11/image.png?resize=36%2C31&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/11/image.png?resize=48%2C41&amp;ssl=1 48w" sizes="(max-width: 637px) 100vw, 637px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p></p>
+
+
+
+<p><strong>Choose an Advanced options for your OS and then press letter &#8216;e&#8217; on your keyboard for edit option.</strong></p>
+
+
+
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-full"><img decoding="async" loading="lazy" width="637" height="552" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/11/image-1.png?resize=637%2C552&#038;ssl=1" alt="" class="wp-image-505" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/11/image-1.png?w=637&amp;ssl=1 637w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/11/image-1.png?resize=300%2C260&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/11/image-1.png?resize=24%2C21&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/11/image-1.png?resize=36%2C31&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/11/image-1.png?resize=48%2C42&amp;ssl=1 48w" sizes="(max-width: 637px) 100vw, 637px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p>Now we need to rewrite some of the lines to tell the system to start with bash when system boots and to do that change system from read-only to read and write option.</p>
+
+
+
+<p>So we just change <strong>rd -&gt; rw</strong> and add <strong>init=/bin/bash</strong></p>
+
+
+
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-full is-resized"><img decoding="async" loading="lazy" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/11/image-3.png?resize=636%2C961&#038;ssl=1" alt="" class="wp-image-507" width="636" height="961" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/11/image-3.png?w=636&amp;ssl=1 636w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/11/image-3.png?resize=199%2C300&amp;ssl=1 199w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/11/image-3.png?resize=16%2C24&amp;ssl=1 16w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/11/image-3.png?resize=24%2C36&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/11/image-3.png?resize=32%2C48&amp;ssl=1 32w" sizes="(max-width: 636px) 100vw, 636px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p></p>
+
+
+
+<p><strong>Press F10 to boot and display a screen with a command line.</strong></p>
+
+
+
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-full"><img decoding="async" loading="lazy" width="640" height="125" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/11/image-4.png?resize=640%2C125&#038;ssl=1" alt="" class="wp-image-508" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/11/image-4.png?w=722&amp;ssl=1 722w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/11/image-4.png?resize=300%2C59&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/11/image-4.png?resize=24%2C5&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/11/image-4.png?resize=36%2C7&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/11/image-4.png?resize=48%2C9&amp;ssl=1 48w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p></p>
+
+
+
+<p><strong>Now we need to mount our root file system in read-write mode. To do that type:</strong></p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted"><strong>mount -n -o remount, rw /</strong></pre>
+</div></div>
+
+
+
+<p></p>
+
+
+
+<p><strong>And we are free to change a password:</strong></p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted"><strong>passwd root</strong></pre>
+
+
+
+<p><em>Take a note, you can do this for any user account on this OS, not only root</em></p>
+</div></div>
+
+
+
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-full"><img decoding="async" loading="lazy" width="640" height="129" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/11/image-5.png?resize=640%2C129&#038;ssl=1" alt="" class="wp-image-509" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/11/image-5.png?w=719&amp;ssl=1 719w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/11/image-5.png?resize=300%2C61&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/11/image-5.png?resize=24%2C5&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/11/image-5.png?resize=36%2C7&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/11/image-5.png?resize=48%2C10&amp;ssl=1 48w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p></p>
+
+
+
+<p><strong>To finish and reboot a system type:</strong></p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted"><strong>exec /sbin/init</strong></pre>
+</div></div>
+
+
+
+<p></p>
+
+
+
+<p></p>
+
+
+
+<p></p>
+
+
+
+<h3>Reset root password with live CD</h3>
+
+
+
+<p>Another very popular option is to use live CD or USB, if you don&#8217;t have one simply download for example <strong><a href="https://ubuntu.com/download/desktop">Ubuntu</a></strong> and burn in onto USB using Rufus or any other 3rd party app.</p>
+
+
+
+<ol><li>In the first step simply put USB into a PC.</li><li>Start PC and wait for a screen with two options, <strong>Try Ubuntu</strong> and<strong> Install Ubuntu</strong>. (<em>note that you&#8217;ll maybe need to change a settings in BIOS to boot into live CD successfully)</em> and pick the <strong>Try Ubuntu</strong> option.</li></ol>
+
+
+
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-full"><img decoding="async" loading="lazy" width="640" height="463" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/11/image-6.png?resize=640%2C463&#038;ssl=1" alt="" class="wp-image-511" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/11/image-6.png?w=790&amp;ssl=1 790w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/11/image-6.png?resize=300%2C217&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/11/image-6.png?resize=768%2C555&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/11/image-6.png?resize=24%2C17&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/11/image-6.png?resize=36%2C26&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/11/image-6.png?resize=48%2C35&amp;ssl=1 48w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p><strong>3. </strong>Open a terminal and <strong>type following commands.</strong> This makes us a <strong>root</strong> user and will <strong>list disk </strong>partions:</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted"><strong>sudo su </strong>
+<strong>fdisk -l</strong></pre>
+
+
+
+<figure class="wp-block-image size-full is-style-default"><img decoding="async" loading="lazy" width="558" height="100" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/11/image-7.png?resize=558%2C100&#038;ssl=1" alt="" class="wp-image-512" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/11/image-7.png?w=558&amp;ssl=1 558w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/11/image-7.png?resize=300%2C54&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/11/image-7.png?resize=24%2C4&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/11/image-7.png?resize=36%2C6&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/11/image-7.png?resize=48%2C9&amp;ssl=1 48w" sizes="(max-width: 558px) 100vw, 558px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+</div></div>
+
+
+
+<p>We are looking for a system partition, which in <strong>MY CASE</strong> is /dev/sd5 and is type Linux. <strong>This may differ in your case.</strong></p>
+
+
+
+<p></p>
+
+
+
+<p><strong>4. Now we need to mount this system to a folder which we will create:</strong></p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted"><strong>mkdir /mnt/recover</strong>y</pre>
+</div></div>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted"><strong>mount /dev/sda1 /mnt/recover</strong>y</pre>
+</div></div>
+
+
+
+<p></p>
+
+
+
+<p><strong>5. </strong>In this step <strong>we need to trick the system</strong> into thinking we are using regular Linux file system. To do this we will &#8220;<strong>jail ourself</strong>&#8221; or technically speaking &#8220;<strong>chroot ourself</strong>&#8221; into this directory.</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted"><strong>chroot /mnt/recover</strong>y</pre>
+</div></div>
+
+
+
+<p></p>
+
+
+
+<p><strong>5. System now thinks we are root in regular Linux session and we can easily change the password of root or any user like in previous case with the GRUB method</strong></p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted"><strong>passwd root</strong></pre>
+
+
+
+<pre class="wp-block-preformatted"><strong>exit</strong></pre>
+
+
+
+<pre class="wp-block-preformatted"><strong>umount /mnt/recovery</strong></pre>
+
+
+
+<p><strong>6. </strong>Remove live CD or USB and reboot the system</p>
+
+
+
+<p></p>
+
+
+
+<p></p>
+</div></div>
+
+
+
+<h3>Reset root password in a Raspbian </h3>
+
+
+
+<p>This method is rather different from all the others so I decided to put this here as well.</p>
+
+
+
+<ol><li>First you need to <strong>extract the SD card from your Raspberry PI</strong> and put it into your other PC with card reader.</li><li><strong>Open </strong>the SD card and <strong>edit </strong>the <strong>cmdline.txt </strong>file. </li><li>You will see line like this</li></ol>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted"><strong>dwc_otg.lpm_enable=0 console=ttyAMA0,115200 console=tty1 root=/dev/mmcblk0p2 rootfstype=ext4 elevator=deadline fsck.repair=yes rootwait</strong></pre>
+</div></div>
+
+
+
+<p>And you simply <strong>add the line bellow to the end of the line above.</strong> Note this line <strong>MUST BE</strong> on the same line.</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted"><strong>init=/bin/sh</strong></pre>
+</div></div>
+
+
+
+<p>4. Now put the SD card again to the Raspberry PI and boot it. The rest of this tutorial is the same as the first example with the GRUB so I&#8217;ll just speed run this</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted"><strong>mount -o remount, rw /</strong></pre>
+
+
+
+<pre class="wp-block-preformatted"><strong>password pi</strong></pre>
+
+
+
+<pre class="wp-block-preformatted"><strong>sync</strong></pre>
+
+
+
+<pre class="wp-block-preformatted"><strong>exec /sbin/init</strong></pre>
+
+
+
+<p></p>
+
+
+
+<p></p>
+</div></div>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">503</post-id>	</item>
+		<item>
+		<title>Set Up New Minecraft 1.17 Server on Rasppbery PI [Java16]</title>
+		<link>https://thetechcorner.org/?p=499&#038;utm_source=rss&#038;utm_medium=rss&#038;utm_campaign=set-up-new-minecraft-1-17-server-on-rasppbery-pi-java16</link>
+		
+		<dc:creator><![CDATA[Filip Zverec]]></dc:creator>
+		<pubDate>Mon, 22 Nov 2021 13:16:14 +0000</pubDate>
+				<category><![CDATA[HomeLab]]></category>
+		<category><![CDATA[pi]]></category>
+		<category><![CDATA[Raspberry]]></category>
+		<category><![CDATA[Raspbian]]></category>
+		<category><![CDATA[setup]]></category>
+		<guid isPermaLink="false">https://thetechcorner.org/?p=499</guid>
+
+					<description><![CDATA[With the new Minecraft version 1.17 you have to now use Java 16, which is [&#8230;]]]></description>
+										<content:encoded><![CDATA[
+<p>With the new Minecraft version 1.17 you have to now use Java 16, which is not a problem on most Linux kernels, but so far Raspbian doesn&#8217;t natively support this. So in this quick guide, I&#8217;ll show you how to upgrade or setup this server on a new Java version.</p>
+
+
+
+<p></p>
+
+
+
+<p>I had previously posted a guide about setting up a Minecraft server, you can check it out here. But now few things have changed, so the process is a little different.</p>
+
+
+
+<p></p>
+
+
+
+<h3><strong>What will you need?</strong></h3>
+
+
+
+<ol><li>Raspberry PI 3 or 4 (I’ll be using Raspberry PI 4B 2GB) with a fan</li><li>Power adapter</li><li>LAN cable</li><li>HDMI cable (optional)</li></ol>
+
+
+
+<p>You can use HDMI cable as an output for your monitor, but I made a guide how to set up Raspberry PI and only use a LAN cable and your PC and I think that’s way more convenient, so I’ll not by using HDMI. You can find guide for that <a href="https://thetechcorner.org/?p=136">here</a>.</p>
+
+
+
+<h3><strong>1.</strong>&nbsp;<strong>Setting up a Raspberry PI</strong></h3>
+
+
+
+<p>I made an entire guide for that, so you can check it out&nbsp;<a href="https://thetechcorner.org/?p=136">here</a>.</p>
+
+
+
+<h3><strong>2. Overclocking a Rasppberry PI</strong></h3>
+
+
+
+<p>Minecraft server requires a lot of CPU power, so for that we will overclock it a little. If you don’t know how, you can check out my other guide for that <a href="https://thetechcorner.org/?p=209">here</a>, where I explained everything and guide you through the whole process.</p>
+
+
+
+<p></p>
+
+
+
+<h3><strong>3. Downloading and installing Java 16</strong></h3>
+
+
+
+<ol><li>sudo apt install openjdk-8-jdk</li><li>wget https://github.com/AdoptOpenJDK/openjdk16-binaries/releases/download/jdk-16.0.1%2B9/OpenJDK16U-jdk_arm_linux_hotspot_16.0.1_9.tar.gz</li><li>sudo mv OpenJDK16U-jdk_arm_linux_hotspot_16.0.1_9.tar.gz /lib/jvm &amp;&amp; cd /lib/jvm</li><li>sudo tar xvf OpenJDK16U-jdk_arm_linux_hotspot_16.0.1_9.tar.gz &amp;&amp; cd OpenJDK16U-jdk_arm_linux_hotspot_16.0.1_9</li><li>sudo update-alternatives &#8211;install /usr/bin/java /usr/lib/jvm/jdk-16.0.1+9/bin/java 1131</li></ol>
+
+
+
+<p></p>
+
+
+
+<p>And now we can check if the new version is installed with this command</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">sudo update-alternatives --config java </pre>
+
+
+
+<p></p>
+
+
+
+<p></p>
+
+
+
+<p>The rest of the guide stays the same, you can just follow it <a href="https://thetechcorner.org/?p=306">here</a>.</p>
+
+
+
+<p></p>
+</div></div>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">499</post-id>	</item>
+		<item>
+		<title>How to create a NAS server on a Raspberry PI</title>
+		<link>https://thetechcorner.org/?p=491&#038;utm_source=rss&#038;utm_medium=rss&#038;utm_campaign=how-create-nas-server-using-raspberry-pi</link>
+		
+		<dc:creator><![CDATA[Filip Zverec]]></dc:creator>
+		<pubDate>Fri, 26 Feb 2021 16:50:45 +0000</pubDate>
+				<category><![CDATA[HomeLab]]></category>
+		<category><![CDATA[nas]]></category>
+		<category><![CDATA[pi]]></category>
+		<category><![CDATA[Raspberry]]></category>
+		<category><![CDATA[SAMBA]]></category>
+		<guid isPermaLink="false">https://thetechcorner.org/?p=467</guid>
+
+					<description><![CDATA[NAS stands for Network Attached Storage. The NAS serves as a storage container for a [&#8230;]]]></description>
+										<content:encoded><![CDATA[
+<p><strong>NAS</strong> stands for <strong>N</strong>etwork <strong>A</strong>ttached <strong>S</strong>torage.</p>
+
+
+
+<p>The NAS serves as a storage container for a files of all kinds, photos, videos, music, or movies. Its biggest advantage is that anyone on your local network (to whom you give access) can connect to it, so these files can be access from more than one computer.</p>
+
+
+
+<p>For example, you can automatically back up photos from your phone when you come home.It&#8217;s very easy to build someting like that in a few minutes and all you need is some old PC or in our case Raspberry PI with external HDD on which we will store this data.</p>
+
+
+
+<p></p>
+
+
+
+<h4><strong>Select software</strong></h4>
+
+
+
+<p>Technology is constantly evolving and the demand for external repositories is increasing. Theref<strong>ore, the</strong>re a<strong>re also several different software so</strong>lutions for creating NAS server.</p>
+
+
+
+<p><strong>FTP</strong> &#8211; File Transfer Protocol, one of the first protocols developed back in the 1970s</p>
+
+
+
+<p><strong>SAMBA</strong> &#8211; one of the most popular software for creating NAS servers mainly for Windows systems</p>
+
+
+
+<p><strong>NFS</strong> &#8211; Network Attached Storage originally created by Sun Microsystem in 1984</p>
+
+
+
+<p><strong>AFP</strong> &#8211; The Apple File protocol is similar to SAMBA but already as the name suggests it is mainly aimed at Apple systems and its products</p>
+
+
+
+<p></p>
+
+
+
+<p>In the future, I will make a tutorial on how to install each one of these on Raspberry PI, but SAMBA and its benefits outweigh all other software so I will use it for the time being.</p>
+
+
+
+<p></p>
+
+
+
+<h2><strong>What we&#8217;re going to need </strong></h2>
+
+
+
+<ul><li>Raspberry PI</li><li>SD card</li><li>Power cord</li><li>Ethernet cable (wifi can also be used, but cable is always faster and more reliable)</li><li>External HDD/SSD/USB</li></ul>
+
+
+
+<p></p>
+
+
+
+<h2><strong>1.</strong> <strong>Set-up Raspberry PI </strong></h2>
+
+
+
+<p>I have already created a tutorial for this step, which you can check out <a href="https://thetechcorner.org/?p=136">here</a>. You can configure PI <strong>with or without a monitor</strong>.</p>
+
+
+
+<p>Next, you can check out some other guides on how to <a href="https://thetechcorner.org/?p=177">change your hostname and password</a> or <a href="https://thetechcorner.org/?p=177">how you can overclock your Raspberry PI</a> for better performance. </p>
+
+
+
+<p></p>
+
+
+
+<p><strong>If you have already set-up your Raspberry, you only need to update your Raspbian</strong> <strong>packages and version using</strong> <strong>these commands</strong></p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted"><strong>sudo apt update
+sudo apt upgrade</strong></pre>
+</div></div>
+
+
+
+<p></p>
+
+
+
+<h2><strong>2. Configure NAS SAMBA</strong></h2>
+
+
+
+<p><strong>a</strong>)<strong> First we have to download SAMBA to our PI</strong></p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted"><strong>sudo apt-get install samba samba-common-bin</strong></pre>
+</div></div>
+
+
+
+<p>After a few seconds/minutes, you should see the welcome screen </p>
+
+
+
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-full"><img decoding="async" loading="lazy" width="640" height="407" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-4.png?resize=640%2C407&#038;ssl=1" alt="" class="wp-image-468" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-4.png?w=654&amp;ssl=1 654w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-4.png?resize=300%2C191&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-4.png?resize=24%2C15&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-4.png?resize=36%2C23&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-4.png?resize=48%2C31&amp;ssl=1 48w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p></p>
+
+
+
+<p></p>
+
+
+
+<p>SAMBA will ask you for additional approval so that it can modify its settings based on dhcp server. </p>
+
+
+
+<p>If you do not understand what th<strong>is is press YES</strong> if you curius about how it works, you can click h<a href="https://sourcedaddy.com/networking/configuring-wins-resolution.html">er</a>e.</p>
+
+
+
+<p></p>
+
+
+
+<p><strong>b)</strong> If the installation was successful, then<strong> our next step will be to create a folder that we will share over the network.</strong> Because we want to use our server to store photos, movies, etc., this folder will have to be on an external HDD.</p>
+
+
+
+<p><strong>Tutorial on how to mount an external HDD on a Raspberry PI can be found </strong><a href="https://thetechcorner.org/?p=461">here.</a></p>
+
+
+
+<p>In my case, the HDD will be mounted to /mnt/HDD1</p>
+
+
+
+<p></p>
+
+
+
+<p><strong>c)</strong> When we have a folder that we are going to share, we can start with the SAMBA software configuration.</p>
+
+
+
+<p><strong>Using the editor of your choice, we will open a SAMBA config in which we will write down the necessary data.</strong> I&#8217;ll use nano for this.</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted"><strong>sudo nano /etc/samba/smb.conf</strong></pre>
+</div></div>
+
+
+
+<p></p>
+
+
+
+<p>Scroll completely to the bottom of this text file and write/copy the following</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted"><strong>[thetechcornershare]
+path = /mnt/HDD1
+writeable=Yes
+create mask=0777
+directory mask=0777
+public=no</strong></pre>
+</div></div>
+
+
+
+<p></p>
+
+
+
+<p><strong>thetechcornershare </strong>is just a name that you can change to your likening</p>
+
+
+
+<p><strong>path</strong> defines the folder we want to share (in your case, this path may vary)</p>
+
+
+
+<p><strong>writeable=</strong>yes means that we want to be able to write this folder and not only to read files</p>
+
+
+
+<p><strong>create mask </strong>and<strong> directory mas</strong>k determine what rights will user have. 0777 allows them to read, write, and execute files</p>
+
+
+
+<p><strong>public=</strong>no means that we want the user to enter a password to access the folder</p>
+
+
+
+<p></p>
+
+
+
+<p>Save the text file using <strong>shortcut ctrl + x and confirm the save using y and press ENTER.</strong></p>
+
+
+
+<p></p>
+
+
+
+<p><strong>d</strong>) As a next<strong> step, we need to create a ne</strong>w <strong>user to connect from different devices to our SAMBA NAS</strong>. This user must have the same name as one of the users on your PI. As most of us use the user &#8220;pi&#8221; so we will use this.</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted"><strong>sudo smbpasswd -a pi</strong></pre>
+</div></div>
+
+
+
+<p>SAMBA will automatically ask us for a new password for this user.</p>
+
+
+
+<p>I&#8217;ll leave the password option to you, I&#8217;ll use the &#8220;test&#8221; but you should choose something much more complex.</p>
+
+
+
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-full"><img decoding="async" loading="lazy" width="322" height="69" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-6.png?resize=322%2C69&#038;ssl=1" alt="" class="wp-image-471" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-6.png?w=322&amp;ssl=1 322w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-6.png?resize=300%2C64&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-6.png?resize=24%2C5&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-6.png?resize=36%2C8&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-6.png?resize=48%2C10&amp;ssl=1 48w" sizes="(max-width: 322px) 100vw, 322px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p></p>
+
+
+
+<p></p>
+
+
+
+<p><strong>e) We will then restart the SAMBA service</strong> to add the new account to our system. We will do so by using the command</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted"><strong>sudo systemctl reload smbd</strong></pre>
+</div></div>
+
+
+
+<p></p>
+
+
+
+<p><strong>f)</strong> As a last step, you will need to find out the<strong> hostname</strong> or the <strong>IP address</strong> of your Raspberry PI. The easiest way is to use the command </p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted"><strong>hostname -I</strong></pre>
+</div></div>
+
+
+
+<p></p>
+
+
+
+<p>This completes the first part of creating our new NAT server. Next, I&#8217;ll explain how to connect to NAS from your WIndows PC.</p>
+
+
+
+<p></p>
+
+
+
+<h2><strong>3. How to connect to a NAS from Windows</strong></h2>
+
+
+
+<p>This part is quite simple. All you have to do <strong>is click on the &#8220;This P</strong>C&#8221; icon and click <strong>on the Computer box in the upper-</strong>left corne<strong>r and choose the option to map</strong> the network drive</p>
+
+
+
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-full"><img decoding="async" loading="lazy" width="640" height="221" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-7.png?resize=640%2C221&#038;ssl=1" alt="" class="wp-image-473" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-7.png?w=686&amp;ssl=1 686w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-7.png?resize=300%2C104&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-7.png?resize=24%2C8&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-7.png?resize=36%2C12&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-7.png?resize=48%2C17&amp;ssl=1 48w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p></p>
+
+
+
+<p>As the next step, <strong>we choose the name of the disk and define the path to our NAS shared folder</strong>. </p>
+
+
+
+<p>As a disc name, you can select any letter except one that your PC already uses and we will write the following path in the Folder box</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">\<strong>\raspberrypi<strong>\</strong>thetechcornershare</strong></pre>
+</div></div>
+
+
+
+<p><strong>Also, check both boxes for Reconnecting at singning in and connecting to your NAS with different credentials.</strong></p>
+
+
+
+<p>Keep in mind that if you chose a different name when configuring SAMBA, you must modify this value here.</p>
+
+
+
+<p></p>
+
+
+
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-full"><img decoding="async" loading="lazy" width="618" height="453" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-8.png?resize=618%2C453&#038;ssl=1" alt="" class="wp-image-474" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-8.png?w=618&amp;ssl=1 618w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-8.png?resize=300%2C220&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-8.png?resize=24%2C18&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-8.png?resize=36%2C26&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-8.png?resize=48%2C35&amp;ssl=1 48w" sizes="(max-width: 618px) 100vw, 618px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p></p>
+
+
+
+<p><strong>Confirm by clicking the</strong> <strong>Finish button</strong> and Windows will then automatically ask you for login information for this NAS folder. </p>
+
+
+
+<p><strong>We will enter the data that we have predefined in the previous paragraph.</strong> The <strong>login name is &#8220;pi&#8221;</strong> and the <strong>password &#8220;test&#8221;.</strong></p>
+
+
+
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-full"><img decoding="async" loading="lazy" width="456" height="322" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-9.png?resize=456%2C322&#038;ssl=1" alt="" class="wp-image-475" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-9.png?w=456&amp;ssl=1 456w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-9.png?resize=300%2C212&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-9.png?resize=24%2C17&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-9.png?resize=36%2C25&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-9.png?resize=48%2C34&amp;ssl=1 48w" sizes="(max-width: 456px) 100vw, 456px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p></p>
+
+
+
+<p><strong>Select Remember my credentials </strong>so you don&#8217;t have to enter this data every time you start your PC or Raspberry PI and press OK to confirm.</p>
+
+
+
+<p></p>
+
+
+
+<p><strong>You should now see your NAS folder on your computer.</strong></p>
+
+
+
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-full"><img decoding="async" loading="lazy" width="640" height="234" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-10.png?resize=640%2C234&#038;ssl=1" alt="" class="wp-image-476" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-10.png?w=700&amp;ssl=1 700w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-10.png?resize=300%2C110&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-10.png?resize=24%2C9&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-10.png?resize=36%2C13&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-10.png?resize=48%2C18&amp;ssl=1 48w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p></p>
+
+
+
+<p></p>
+
+
+
+<blockquote class="wp-block-quote"><p><span class="has-inline-color has-orange-color">If you found this article interesting or helpful you can support me and TheTechCorner by leaving a comment or “Buying me a coffee”. These articles takes some time to write and maintaining a site also take some money. You can do so by clicking a coffee button on the lower right corner or on the bottom of the page.</span></p></blockquote>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">491</post-id>	</item>
+		<item>
+		<title>How to mount a USB drive/HDD on Raspberry PI</title>
+		<link>https://thetechcorner.org/?p=461&#038;utm_source=rss&#038;utm_medium=rss&#038;utm_campaign=as-mountnut-usb-disk-hdd-na-raspberry-pi</link>
+					<comments>https://thetechcorner.org/?p=461#comments</comments>
+		
+		<dc:creator><![CDATA[Filip Zverec]]></dc:creator>
+		<pubDate>Sat, 20 Feb 2021 09:30:39 +0000</pubDate>
+				<category><![CDATA[HomeLab]]></category>
+		<category><![CDATA[2.5]]></category>
+		<category><![CDATA[3.5]]></category>
+		<category><![CDATA[external]]></category>
+		<category><![CDATA[HDD]]></category>
+		<category><![CDATA[how]]></category>
+		<category><![CDATA[inch]]></category>
+		<category><![CDATA[mount]]></category>
+		<category><![CDATA[pi]]></category>
+		<category><![CDATA[Raspberry]]></category>
+		<category><![CDATA[to]]></category>
+		<guid isPermaLink="false">https://thetechcorner.org/?p=448</guid>
+
+					<description><![CDATA[If you plan to use your Raspberry PI as a medium to store photos, data, [&#8230;]]]></description>
+										<content:encoded><![CDATA[
+<p>If you plan to use your Raspberry PI as a<strong> medium to store photos, data, videos</strong>, or you planning on <strong>building a home PLEX server</strong>, then you&#8217;ll need your Raspberry PI to have as much storage as possible.</p>
+
+
+
+<p>For example, an old USB, SSD, or HDD can help you with this. You can coonect them to your PI over the USB port.</p>
+
+
+
+<p>If you&#8217;re using a 3.5 inch HDD that doesn&#8217;t have a USB plug and requires external power, you can use a reduction from SATA to USB, but make sure it includes this external power supply. There are several variations, but such a reduction should look something like this.</p>
+
+
+
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-large"><img decoding="async" loading="lazy" width="494" height="449" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image.png?resize=494%2C449&#038;ssl=1" alt="" class="wp-image-449" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image.png?w=494&amp;ssl=1 494w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image.png?resize=300%2C273&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image.png?resize=24%2C22&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image.png?resize=36%2C33&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image.png?resize=48%2C44&amp;ssl=1 48w" sizes="(max-width: 494px) 100vw, 494px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p></p>
+
+
+
+<h3><strong>You will need</strong></h3>
+
+
+
+<ul><li>Raspberry PI </li><li>SD card</li><li>Ethernet cable (or you can just use WIFI)</li><li>External USB/HDD/SSD</li></ul>
+
+
+
+<p></p>
+
+
+
+<h3><strong>1.</strong> <strong>Set-up Raspberry PI </strong></h3>
+
+
+
+<p>I have already created a tutorial for this step, which you can check out <a href="https://thetechcorner.org/?p=136">here</a>. You can configure PI <strong>with or without a monitor</strong>.</p>
+
+
+
+<p>Next, you can check out some other guides on how to <a href="https://thetechcorner.org/?p=177">change your hostname and password</a> or <a href="https://thetechcorner.org/?p=177">how you can overclock your Raspberry PI</a> for better performance. </p>
+
+
+
+<p></p>
+
+
+
+<p><strong>If you have already set-up your Raspberry, you only need to update your Raspbian</strong> <strong>packages and version using</strong> <strong>these commands</strong></p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted"><strong>sudo apt update
+sudo apt upgrade</strong></pre>
+</div></div>
+
+
+
+<p></p>
+
+
+
+<h3><strong>2. Connect external HDDs to Raspberry PI </strong></h3>
+
+
+
+<p>Once connected, the <strong>HDD should automatically be attached to Raspberry PI</strong>. We can check it with a command</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted"><strong>df -h </strong></pre>
+</div></div>
+
+
+
+<p>You can you see my<strong> HDD is completely at the bottom of the list</strong> <strong>named /dev</strong>/<strong>sda1</strong> (standard filesystem name for external disks) and it&#8217;s mouned on<strong> /media/pi/New Volume</strong></p>
+
+
+
+<figure class="wp-block-image size-full is-style-default"><img decoding="async" loading="lazy" width="488" height="214" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-1.png?resize=488%2C214&#038;ssl=1" alt="" class="wp-image-450" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-1.png?w=488&amp;ssl=1 488w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-1.png?resize=300%2C132&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-1.png?resize=24%2C11&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-1.png?resize=36%2C16&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-1.png?resize=48%2C21&amp;ssl=1 48w" sizes="(max-width: 488px) 100vw, 488px" data-recalc-dims="1" /></figure>
+
+
+
+<p>If you don&#8217;t see your HDD in this list, try connecting it to a different USB port or rebooting your Raspberry Pi.</p>
+
+
+
+<p></p>
+
+
+
+<p>Raspberry<strong> PI automatically configured all the necessary parameters for us to mount the disk</strong>. We can find these parameters by typing<strong> &#8220;cating&#8221; the mounts</strong> where at the very bottom of the list we can see our /dev/sda1 disk</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted"><strong>sudo cat /proc/mounts</strong></pre>
+</div></div>
+
+
+
+<figure class="wp-block-image size-full is-style-default"><img decoding="async" loading="lazy" width="640" height="39" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-2.png?resize=640%2C39&#038;ssl=1" alt="" class="wp-image-452" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-2.png?w=928&amp;ssl=1 928w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-2.png?resize=300%2C18&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-2.png?resize=768%2C46&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-2.png?resize=24%2C1&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-2.png?resize=36%2C2&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-2.png?resize=48%2C3&amp;ssl=1 48w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<h3><strong>3. Find your UUID and disk formatting type</strong></h3>
+
+
+
+<p>To change some of these parameters, we will first need to detect the <strong>UUID</strong> and<strong> the</strong> t<strong>ype of formatting</strong> of our HDD. UUID stands for Universal Unique Identifier.</p>
+
+
+
+<p>To find out this information, we will use the </p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted"><strong>sudo blkid /dev/sda1</strong></pre>
+</div></div>
+
+
+
+<p><strong>If your HDD has a different name assigned or you have multiple HDDs you will need to overwrite sda1 to sda2 etc&#8230;</strong></p>
+
+
+
+<figure class="wp-block-image size-large is-style-default"><img decoding="async" loading="lazy" width="640" height="36" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-3.png?resize=640%2C36&#038;ssl=1" alt="" class="wp-image-453" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-3.png?w=709&amp;ssl=1 709w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-3.png?resize=300%2C17&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-3.png?resize=24%2C1&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-3.png?resize=36%2C2&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/02/image-3.png?resize=48%2C3&amp;ssl=1 48w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>Now we know that our HDD /dev/sda1 is an NTFS type with UUID &#8220;AAE87646E8761135&#8221;</p>
+
+
+
+<p><strong>Depending on the type of hdd you have, the following procedure will change.</strong></p>
+
+
+
+<p></p>
+
+
+
+<h3><strong>4a.  NTFS HDD packages</strong></h3>
+
+
+
+<p>To use the<strong> NTFS format</strong> on your HDD, you will need to install an NTFS driver. To do this, use the</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted"><strong>sudo apt install ntfs-3g</strong></pre>
+</div></div>
+
+
+
+<p></p>
+
+
+
+<h3><strong>4b. ExFAT HDD Packages</strong></h3>
+
+
+
+<p>You&#8217;ll need these two packages to use the <strong>exFAT format</strong> on your HDD.</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">sudo apt install exfat-fuse 
+sudo apt install exfat-utils</pre>
+</div></div>
+
+
+
+<p></p>
+
+
+
+<p></p>
+
+
+
+<h3><strong>5. Manual mounting</strong></h3>
+
+
+
+<p>After detecting UUID, and type of HDD formating and installing the necessary packages, we can finally start the mounting process itself.</p>
+
+
+
+<p><strong>First of all, we need to create a folder to which we will mount this HDD</strong></p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted"><strong>sudo mkdir -p /mnt/HDD1</strong></pre>
+</div></div>
+
+
+
+<p></p>
+
+
+
+<p><strong>As a next step, we must grant this folder the necessary rights of access for user</strong>s. If you are using a different user than pi, then of course you must change this value in the command to your user&#8217;s name, e.g. test:test</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted"><strong>sudo chown -R pi:pi /mnt/HDD1</strong></pre>
+</div></div>
+
+
+
+<p><strong>Now we need to modify the fstab file that controls mounting devices </strong>to Raspberry PI. With this command, we open a text editor to insert the necessary data into the file.</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted"><strong>sudo nano /etc/fstab</strong></pre>
+</div></div>
+
+
+
+<p><strong>We&#8217;ll add a line to the file that looks like this</strong>. Keep in mind that instead and [UUID] and [TYPE] you have to insert your parameters.</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted"><strong>UUID[UUID]= /mnt/HDD1[TYPE] defaults,auto,users,rw,nofail,noatime 0 0</strong></pre>
+</div></div>
+
+
+
+<p>For me, this line will look like this.</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted"><strong>UUID=AAE87646E8761135 /mnt/HDD1 ntfs defaults,auto,users,rw,nofail,noatime 0 0</strong></pre>
+</div></div>
+
+
+
+<p></p>
+
+
+
+<p><strong>When you have  written this line to a file, save it using ctrl+x and confirm the save using y and ENTER.</strong></p>
+
+
+
+<p></p>
+
+
+
+<p><strong>Becaouse Raspberry PI automatically mounted our HDD before, we must first unmount it.</strong> </p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">sudo umount /dev/sda1</pre>
+</div></div>
+
+
+
+<p></p>
+
+
+
+<p><strong>Then reconnected it with the new parameters entered into the fstab file using the</strong></p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted"><strong>sudo mount -a</strong></pre>
+</div></div>
+
+
+
+<p><strong>Congratulations</strong> your external HDD should be mounted to a Raspberry PI! It should stay mounted even after the reboot of the system.</p>
+
+
+
+<p></p>
+
+
+
+<p></p>
+
+
+
+<blockquote class="wp-block-quote"><p><span class="has-inline-color has-orange-color">If you found this article interesting or helpful you can support me and TheTechCorner by leaving a comment or “Buying me a coffee”. These articles takes some time to write and maintaining a site also take some money. You can do so by clicking a coffee button on the lower right corner or on the bottom of the page.</span></p></blockquote>
+
+
+
+<p><a href="https://www.facebook.com/Filip.Zverec/"></a></p>
+
+
+
+<p><a href="https://www.facebook.com/Filip.Zverec/"></a></p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://thetechcorner.org/?feed=rss2&#038;p=461</wfw:commentRss>
+			<slash:comments>1</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">461</post-id>	</item>
+		<item>
+		<title>Set Up a Public Minecraft Server on Your Raspberry Pi</title>
+		<link>https://thetechcorner.org/?p=306&#038;utm_source=rss&#038;utm_medium=rss&#038;utm_campaign=set-up-a-public-minecraft-server-on-your-raspberry-pi</link>
+		
+		<dc:creator><![CDATA[Filip Zverec]]></dc:creator>
+		<pubDate>Mon, 18 Jan 2021 19:08:09 +0000</pubDate>
+				<category><![CDATA[HomeLab]]></category>
+		<category><![CDATA[minecraft]]></category>
+		<category><![CDATA[ngrok]]></category>
+		<category><![CDATA[pi]]></category>
+		<category><![CDATA[Raspberry]]></category>
+		<category><![CDATA[server]]></category>
+		<category><![CDATA[with port forwarding]]></category>
+		<category><![CDATA[without port forwardning]]></category>
+		<guid isPermaLink="false">https://thetechcorner.org/?p=306</guid>
+
+					<description><![CDATA[Work isn&#8217;t everything and sometimes you need to let your mind rest. I found that [&#8230;]]]></description>
+										<content:encoded><![CDATA[
+<p><strong>Work isn&#8217;t everything</strong> and sometimes you need to let your mind rest. I found that for me the best type of relax is playing a game with a friends. I may sound childish, but I think <strong>minecraft</strong> is one of the best ones for relaxing.</p>
+
+
+
+<p>You don&#8217;t need to try hard or think hard, you don&#8217;t have to have amazing reflexes or best strategic mind. <strong>It&#8217;s a game for everybody</strong>, but It&#8217;s still a lot of fun, especially when there are more of you. </p>
+
+
+
+<p>But for that you need a server to let others join your game. Sure, you can do that from your desktop computer or notebook, but what happen when you will leave? They all have to leave and it&#8217;s get pretty frustrating when you can only play when a certain someone is online. </p>
+
+
+
+<p>So another option is to <strong>rent a server from hosting platforms</strong>. But this can get pretty expensive (depending on hosting platform and a viable cpu/ram). </p>
+
+
+
+<p>But luckily there is another option.<strong> You can host a server</strong> <strong>on</strong> your old PC or notebook or you can use a <strong>Raspberry PI</strong> as I&#8217;ll show in this guide.</p>
+
+
+
+<p></p>
+
+
+
+<h3><strong>What will you need?</strong></h3>
+
+
+
+<ol><li>Raspberry PI 3 or 4 (I&#8217;ll be using Raspberry PI 4B 2GB) with a fan</li><li>Power adapter </li><li>LAN cable</li><li>HDMI cable (optional)</li></ol>
+
+
+
+<p>You can use HDMI cable as an output for your monitor, but I made a guide how to setup Raspberry PI and only use a LAN cable and your PC and I think that&#8217;s way more convenient, so I&#8217;ll not by using HDMI. You can find guide for that <a href="https://thetechcorner.org/?p=136">here</a>.</p>
+
+
+
+<p></p>
+
+
+
+<h3><strong>1.</strong> <strong>Setting up a Raspberry PI</strong></h3>
+
+
+
+<p>I made and entire guide for that, so you can check it out <a href="https://thetechcorner.org/?p=136">here</a>.</p>
+
+
+
+<p></p>
+
+
+
+<h3><strong>2. Overclocking a Rasppberry PI</strong></h3>
+
+
+
+<p>Minecraft server requires a lot of CPU power, so for that we will overclock it a little. If you don&#8217;t know how, you can check out my other guide for that <a href="https://thetechcorner.org/?p=209">here</a>, where I explained everything and guide you threw the whole proccess.</p>
+
+
+
+<p></p>
+
+
+
+<h3><strong>3. Downloading &amp; Installing a Minecraft Server</strong></h3>
+
+
+
+<p><strong>a)</strong> First, we need to <strong>check</strong> if your PI has <strong>Java</strong> and <strong>Java complier</strong>. You can check that out by typing following commands into a terminal:</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">java  -version
+javac –version</pre>
+</div></div>
+
+
+
+<p>You should see something like this. Don&#8217;t worry if you have different versions, these packages are frequently updated and optimized.</p>
+
+
+
+<figure class="wp-block-image size-full is-style-default"><img decoding="async" loading="lazy" width="640" height="144" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-49.png?resize=640%2C144&#038;ssl=1" alt="" class="wp-image-310" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-49.png?w=659&amp;ssl=1 659w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-49.png?resize=300%2C67&amp;ssl=1 300w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p><strong>b)</strong> First, we need to<strong> create a new repository</strong> to store a server file. We can create one in the home folder to make it simple. For that just type following into the terminal:</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted"><strong>cd /home/pi
+mkdir minecraft_server
+cd minecraft_server</strong></pre>
+</div></div>
+
+
+
+<p>Next we need to <strong>download one of the minecraft servers</strong>. There are many options, but if you want something basic but still wants to have an option to install some plugins the <strong>Spigot Minecraft Server is a best choice</strong>. </p>
+
+
+
+<p>To be precise you don&#8217;t really download a whole server, you download a tool that will build it. We will do that with a following command:</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted"><strong>sudo wget https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar</strong></pre>
+</div></div>
+
+
+
+<figure class="wp-block-image size-full is-style-default"><img decoding="async" loading="lazy" width="640" height="302" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-50.png?resize=640%2C302&#038;ssl=1" alt="" class="wp-image-311" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-50.png?w=661&amp;ssl=1 661w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-50.png?resize=300%2C142&amp;ssl=1 300w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p><strong>c)</strong> In the next step we need to <strong>build a server</strong> from a file that we have downloaded.  This <strong>takes some time</strong> depending on your CPU. But if you are using Raspberry PI 4 and you even overclocked it as I did, it&#8217;ll be done in like 10 minutes, but don&#8217;t worry if it takes longer, it can take as long as one hour.</p>
+
+
+
+<p></p>
+
+
+
+<p>To start building a server type following. In the meantime, go grab a coffee or piece of Pi!</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted"><strong>sudo java -jar BuildTools.jar</strong></pre>
+</div></div>
+
+
+
+<p></p>
+
+
+
+<p>After 10-60 minutes you should see a <strong>Success message</strong> in your terminal.</p>
+
+
+
+<figure class="wp-block-image size-full is-style-default"><img decoding="async" loading="lazy" width="640" height="66" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-51.png?resize=640%2C66&#038;ssl=1" alt="" class="wp-image-312" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-51.png?w=713&amp;ssl=1 713w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-51.png?resize=300%2C31&amp;ssl=1 300w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p></p>
+
+
+
+<h3><strong>4. Launching The Server</strong></h3>
+
+
+
+<p>After we have successfully downloaded and build a server <strong>we can</strong> <strong>finally launch it</strong>! <strong>DEPENDING ON YOUR VERSION</strong> you will type following</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">sudo java -Xms512M -Xmx1024M -jar /home/pi/minecraft_server/spigot-<strong>YourVersion</strong>.jar nogui</pre>
+</div></div>
+
+
+
+<p><strong>But instead of &#8220;YourVersion&#8221; you need to type in your version of the server</strong>.  For example, you can find mine in an image above. It&#8217;s &#8220;spigot-1.16.5.jar&#8221; so my command will look like this:</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre id="block-3d37d8b3-4d3e-46cd-bd1f-dfaf50ae639a" class="wp-block-preformatted">sudo java -Xms512M -Xmx1024M -jar /home/pi/minecraft_server/spigot-<strong>1.16.5</strong>.jar nogui</pre>
+</div></div>
+
+
+
+<p>If you can&#8217;t find your just type  </p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">ls | grep spigot</pre>
+</div></div>
+
+
+
+<p>And you should see something like this </p>
+
+
+
+<figure class="wp-block-image size-full is-style-default"><img decoding="async" loading="lazy" width="640" height="28" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-53.png?resize=640%2C28&#038;ssl=1" alt="" class="wp-image-314" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-53.png?w=1033&amp;ssl=1 1033w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-53.png?resize=300%2C13&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-53.png?resize=1024%2C46&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-53.png?resize=768%2C34&amp;ssl=1 768w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>Also, it should be noted that the&nbsp;<code>-Xmx</code>&nbsp;and&nbsp;<code>-Xms</code>&nbsp;flags are allocating the memory used for the server. If you want to increase these values, you can just change the values in this command (in multiples of 1024). (But for 2 GB file this is the best option, you can maybe push it to 1.5GB, I&#8217;m also running a lot of other things on my PI so I only allocated 1 GB)</p>
+
+
+
+<p></p>
+
+
+
+<p><strong>After this you should see an error message asking you for agreeing with end-user licence agreement (EULA)</strong>. It&#8217;s just like when you need to check the box in the installation on the windows saying &#8220;Do you agree with the bla bla&#8221;.</p>
+
+
+
+<figure class="wp-block-image size-full is-style-default"><img decoding="async" loading="lazy" width="640" height="64" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-54.png?resize=640%2C64&#038;ssl=1" alt="" class="wp-image-315" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-54.png?w=987&amp;ssl=1 987w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-54.png?resize=300%2C30&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-54.png?resize=768%2C77&amp;ssl=1 768w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>To do that type:</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted"><strong>sudo nano eula.txt</strong></pre>
+</div></div>
+
+
+
+<p></p>
+
+
+
+<p>Rewrite <strong>&#8220;eula=false</strong>&#8221;  to <strong>&#8220;eula=true&#8221;</strong> and save it be pressing <strong>&#8220;ctrl+o&#8221;</strong> shortcut. After that use<strong> &#8220;ctrl + x</strong>&#8221; shortcut to leave an editor.</p>
+
+
+
+<figure class="wp-block-image size-full is-style-default"><img decoding="async" loading="lazy" width="640" height="80" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-55.png?resize=640%2C80&#038;ssl=1" alt="" class="wp-image-316" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-55.png?w=1055&amp;ssl=1 1055w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-55.png?resize=300%2C38&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-55.png?resize=1024%2C128&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-55.png?resize=768%2C96&amp;ssl=1 768w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>Use upper arrow key or type again:</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre id="block-3d37d8b3-4d3e-46cd-bd1f-dfaf50ae639a" class="wp-block-preformatted">sudo java -Xms512M -Xmx1024M -jar /home/pi/minecraft_server/spigot-<strong>YourVersion</strong>.jar nogui</pre>
+</div></div>
+
+
+
+<p></p>
+
+
+
+<p>Give it a 10 or so minutes, the server needs to build a new map, prepare a spawn area etc.</p>
+
+
+
+<figure class="wp-block-image size-full is-style-default"><img decoding="async" loading="lazy" width="478" height="249" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-56.png?resize=478%2C249&#038;ssl=1" alt="" class="wp-image-317" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-56.png?w=478&amp;ssl=1 478w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-56.png?resize=300%2C156&amp;ssl=1 300w" sizes="(max-width: 478px) 100vw, 478px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>When it says <strong>Done</strong> on the last line your server is up and running. Congratulation!</p>
+
+
+
+<figure class="wp-block-image size-full is-style-default"><img decoding="async" loading="lazy" width="590" height="52" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-57.png?resize=590%2C52&#038;ssl=1" alt="" class="wp-image-319" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-57.png?w=590&amp;ssl=1 590w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-57.png?resize=300%2C26&amp;ssl=1 300w" sizes="(max-width: 590px) 100vw, 590px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<h3><strong>5. Connecting to your Minecraft server from a local network</strong></h3>
+
+
+
+<p>Unfortunately for now you can only connect to the server from your local network at home. <strong>I&#8217;ll explain how to make server public in another step.</strong></p>
+
+
+
+<p>Your minecraft server is running on your Raspberry Pi IP address. If you don&#8217;t know what IP address do you have, you can find out by opening a new terminal window and typing the following command:</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">sudo hostname -I</pre>
+</div></div>
+
+
+
+<p>Now start your minecraft launcher on your PC and click <strong>Join game&gt;Add Server</strong> and insert your <strong>IP address</strong>. </p>
+
+
+
+<figure class="wp-block-image size-full is-style-default"><img decoding="async" loading="lazy" width="640" height="383" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-58.png?resize=640%2C383&#038;ssl=1" alt="" class="wp-image-320" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-58.png?w=853&amp;ssl=1 853w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-58.png?resize=300%2C180&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-58.png?resize=768%2C460&amp;ssl=1 768w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p></p>
+
+
+
+<h3><strong>6. Connecting to your Minecraft server from a public network</strong></h3>
+
+
+
+<p><strong>I&#8217;m gonna show you a two methods how to do this.</strong> First will be <strong>Port Forwarding method</strong> which should be better overall but it may not work for you (it didn&#8217;t work for me either) and <strong>second will be with the software called</strong> <a href="https://ngrok.com/">ngrok</a>.</p>
+
+
+
+<p></p>
+
+
+
+<h4><strong>a) Port Forwardning Method</strong></h4>
+
+
+
+<p>There is hunderd of tutorials on how to do this so I&#8217;m not gonna describe it in a detail. <strong>Here are some guides</strong> [<a href="https://towardsdatascience.com/how-to-set-up-a-public-minecraft-server-33c2da0bbc2">1</a>,<a href="https://www.noip.com/support/knowledgebase/setting-port-forwarding-tp-link-router/">2</a>,<a href="https://www.tp-link.com/us/support/faq/72/">3</a>] or just google <strong>&#8220;how to portforward [NameOfYourRuter]</strong>.</p>
+
+
+
+<p>You will need to<strong> connect to your home router</strong>. For that just type 192.168.0.1 or 192.168.1.1 into your web browser and login in with your details.</p>
+
+
+
+<p>I have tp-link router so I&#8217;ll be using screenshots from that. Go to <strong>Advanced&gt;Nat Forwarding&gt;Virtual Servers</strong> and click <strong>Add</strong>. </p>
+
+
+
+<p>Type in following</p>
+
+
+
+<p>Name into <strong>Service Type</strong>. I named mine MC Server.</p>
+
+
+
+<p><strong>External Port:</strong> 25565</p>
+
+
+
+<p><strong>Internal IP</strong>: IP address of your Raspberry PI (You are using this address to connect to your local MC server as well)</p>
+
+
+
+<p><strong>Internal Port:</strong> 25565</p>
+
+
+
+<p><strong>Protocol</strong>: All</p>
+
+
+
+<p>And <strong>press</strong> the <strong>Save button</strong>.</p>
+
+
+
+<figure class="wp-block-image size-full is-style-default"><img decoding="async" loading="lazy" width="640" height="667" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-59.png?resize=640%2C667&#038;ssl=1" alt="" class="wp-image-322" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-59.png?w=1062&amp;ssl=1 1062w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-59.png?resize=288%2C300&amp;ssl=1 288w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-59.png?resize=982%2C1024&amp;ssl=1 982w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-59.png?resize=768%2C801&amp;ssl=1 768w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p></p>
+
+
+
+<p>If you don&#8217;t know what public IP address is or if you have one you probably don&#8217;t.</p>
+
+
+
+<p><strong>To find out your external IP</strong> (IP that other people and devices see you on the internet) just type &#8220;<strong>what is my ip into a google&#8221;</strong></p>
+
+
+
+<figure class="wp-block-image size-full is-style-default"><img decoding="async" loading="lazy" width="640" height="294" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-74.png?resize=640%2C294&#038;ssl=1" alt="" class="wp-image-343" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-74.png?w=849&amp;ssl=1 849w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-74.png?resize=300%2C138&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-74.png?resize=768%2C353&amp;ssl=1 768w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p><strong>Keep in mind that this IP address can change every few days or whenever you reboot your router</strong> so if your minecraft server connection stop working it&#8217;s probably because of that.</p>
+
+
+
+<p>Your other choice is to call your ISP provider and buy a public IP from him, but that can be pretty expensive sometimes.</p>
+
+
+
+<p></p>
+
+
+
+<p><strong>Now insert this IP address to your minecraft</strong> <strong>multiplayer with a port number :25565</strong></p>
+
+
+
+<p>It&#8217;s going to look something like this</p>
+
+
+
+<figure class="wp-block-image size-large is-style-default"><img decoding="async" loading="lazy" width="640" height="382" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-75.png?resize=640%2C382&#038;ssl=1" alt="" class="wp-image-344" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-75.png?w=845&amp;ssl=1 845w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-75.png?resize=300%2C179&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-75.png?resize=768%2C458&amp;ssl=1 768w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>Your server should now be publicly visible. If you did everything as I did and It&#8217;s still not working don&#8217;t worry I have another method. </p>
+
+
+
+<p></p>
+
+
+
+<p></p>
+
+
+
+<h4><strong>b) Using <a href="https://ngrok.com/">ngrok</a> to make your MC server public</strong></h4>
+
+
+
+<p>Sometimes your <strong>ISP provider is blocking</strong> some of the <strong>ports </strong>or is <strong>using NAT</strong> in their network. If that&#8217;s the case you can&#8217;t just port forward your external IP address. You can either buy public IP or use VPN service like ngrok, that allow us to bypass this.</p>
+
+
+
+<p>You can read all about ngrok on their site. But basically <strong>ngrok serve as a middle man between our router and people on the other side.</strong> But our ISP provider doesn&#8217;t see what&#8217;s going on in this tunnel and it cannot be blocked. It also bypasses NAT so if your provider is using that you should have no problem now. <strong>If you are using VPN it&#8217;s kinda like that.</strong></p>
+
+
+
+<p><strong>First you need to register</strong> <a href="https://dashboard.ngrok.com/signup">here</a>.</p>
+
+
+
+<figure class="wp-block-image size-full is-style-default"><img decoding="async" loading="lazy" width="390" height="793" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-76.png?resize=390%2C793&#038;ssl=1" alt="" class="wp-image-345" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-76.png?w=390&amp;ssl=1 390w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-76.png?resize=148%2C300&amp;ssl=1 148w" sizes="(max-width: 390px) 100vw, 390px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p><strong>After</strong> your <strong>registration</strong>, you need to <strong>confirm a new account in your email address</strong>. When it&#8217;s done we can continue by <strong>download </strong>their software into our Raspberry PI.</p>
+
+
+
+<p><strong>To do that, open up a terminal and type:</strong></p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">cd /home/pi/
+mkdir ngrok
+cd ngrok
+wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-arm.zip </pre>
+</div></div>
+
+
+
+<p></p>
+
+
+
+<figure class="wp-block-image size-full is-style-default"><img decoding="async" loading="lazy" width="640" height="184" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-69.png?resize=640%2C184&#038;ssl=1" alt="" class="wp-image-334" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-69.png?w=660&amp;ssl=1 660w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-69.png?resize=300%2C86&amp;ssl=1 300w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p><strong>Now to unzip it type:</strong></p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">unzip ngrok-stable-linux-arm.zip</pre>
+</div></div>
+
+
+
+<p></p>
+
+
+
+<p>After you have successfully finished your registration, you should see a site with an <strong>authentication token</strong>. It&#8217;s <strong>DIFFERENT</strong> for everybody and it&#8217;s made from your account and password. It should look like this</p>
+
+
+
+<figure class="wp-block-image size-full is-style-default"><img decoding="async" loading="lazy" width="640" height="246" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-77.png?resize=640%2C246&#038;ssl=1" alt="" class="wp-image-346" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-77.png?w=1701&amp;ssl=1 1701w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-77.png?resize=300%2C116&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-77.png?resize=1024%2C394&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-77.png?resize=768%2C296&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-77.png?resize=1536%2C591&amp;ssl=1 1536w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-77.png?w=1280&amp;ssl=1 1280w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p></p>
+
+
+
+<p><strong>Now copy the whole command with your token and paste it into a terminal in your Raspbery PI</strong></p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-code"><code>./ngrok authtoken YourToken</code></pre>
+
+
+
+<p></p>
+
+
+
+<p><strong>After that you are ready to start ngrok</strong>. To do that, type command bellow, but instead of YourRegion type your actually region shortcut (you can find all of them bellow command)</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">./ngrok tcp -region= YOURREGION 25565 </pre>
+</div></div>
+</div></div>
+
+
+
+<figure class="wp-block-image size-large is-style-default"><img decoding="async" loading="lazy" width="504" height="307" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-71.png?resize=504%2C307&#038;ssl=1" alt="" class="wp-image-336" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-71.png?w=504&amp;ssl=1 504w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-71.png?resize=300%2C183&amp;ssl=1 300w" sizes="(max-width: 504px) 100vw, 504px" data-recalc-dims="1" /></figure>
+
+
+
+<p>Because I&#8217;m from EU my command looks like this</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">./ngrok tcp -region eu 25565</pre>
+</div></div>
+
+
+
+<p>Your ngrok should now be up and running.</p>
+
+
+
+<figure class="wp-block-image size-large is-style-default"><img decoding="async" loading="lazy" width="640" height="182" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-78.png?resize=640%2C182&#038;ssl=1" alt="" class="wp-image-347" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-78.png?w=784&amp;ssl=1 784w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-78.png?resize=300%2C85&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-78.png?resize=768%2C218&amp;ssl=1 768w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container"></div></div>
+
+
+
+<p>Copy your IP address (one in the red rectangle) and paste it into your MC multiplayer Add server.</p>
+
+
+
+<figure class="wp-block-image size-full is-style-default"><img decoding="async" loading="lazy" width="640" height="380" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-72.png?resize=640%2C380&#038;ssl=1" alt="" class="wp-image-339" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-72.png?w=849&amp;ssl=1 849w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-72.png?resize=300%2C178&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-72.png?resize=768%2C456&amp;ssl=1 768w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<figure class="wp-block-image size-full is-style-default"><img decoding="async" loading="lazy" width="640" height="382" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-73.png?resize=640%2C382&#038;ssl=1" alt="" class="wp-image-340" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-73.png?w=853&amp;ssl=1 853w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-73.png?resize=300%2C179&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-73.png?resize=768%2C458&amp;ssl=1 768w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p><strong>Congratulation, your Server is now public for all of your friends!</strong> (As long as ngrok is running of course). </p>
+
+
+
+<p></p>
+
+
+
+<p></p>
+
+
+
+<blockquote class="wp-block-quote"><p><span class="has-inline-color has-orange-color">If you found this article interesting or helpful you can support me and TheTechCorner by leaving a comment or &#8220;Buying me a coffee&#8221;. These articles takes some time to write and maintaining a site also take some money. You can do so by clicking a coffee button on the lower right corner or on the bottom of the page.</span></p></blockquote>
+
+
+
+<p></p>
+
+
+
+<div class="wp-block-wpzoom-blocks-social-icons is-style-with-canvas-round" style="--wpz-social-icons-block-item-font-size:20px;--wpz-social-icons-block-item-padding-horizontal:10px;--wpz-social-icons-block-item-padding-vertical:10px;--wpz-social-icons-block-item-margin-horizontal:5px;--wpz-social-icons-block-item-margin-vertical:5px;--wpz-social-icons-block-item-border-radius:50px;--wpz-social-icons-block-label-font-size:20px;--wpz-social-icons-block-label-color:#2e3131;--wpz-social-icons-block-label-color-hover:#2e3131;--wpz-social-icons-alignment:flex-start"><a href="https://www.facebook.com/Filip.Zverec/" class="social-icon-link" style="--wpz-social-icons-block-item-color:#1877F2;--wpz-social-icons-block-item-color-hover:#1877F2"><span class="social-icon socicon socicon-facebook"></span></a><a href="https://twitter.com/FZverec" class="social-icon-link" style="--wpz-social-icons-block-item-color:#1da1f2;--wpz-social-icons-block-item-color-hover:#1da1f2"><span class="social-icon socicon socicon-twitter"></span></a><a href="https://www.linkedin.com/in/filip-zverec-6487221b9/" class="social-icon-link" style="--wpz-social-icons-block-item-color:#0077B5;--wpz-social-icons-block-item-color-hover:#0077B5"><span class="social-icon socicon socicon-linkedin"></span></a><a href="https://mail.google.com/mail/u/0/?hl=sk&amp;view=cm&amp;tf=1&amp;fs=1&amp;to=filipzverec%40gmail.com" class="social-icon-link" style="--wpz-social-icons-block-item-color:#d93e2d;--wpz-social-icons-block-item-color-hover:#d93e2d"><span class="social-icon socicon socicon-google"></span></a></div>
+
+
+
+<p></p>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">306</post-id>	</item>
+		<item>
+		<title>How To Set Up a Pi-Hole</title>
+		<link>https://thetechcorner.org/?p=227&#038;utm_source=rss&#038;utm_medium=rss&#038;utm_campaign=how-to-set-up-a-pi-hole</link>
+		
+		<dc:creator><![CDATA[Filip Zverec]]></dc:creator>
+		<pubDate>Sat, 09 Jan 2021 21:23:38 +0000</pubDate>
+				<category><![CDATA[HomeLab]]></category>
+		<category><![CDATA[ads]]></category>
+		<category><![CDATA[hole]]></category>
+		<category><![CDATA[no]]></category>
+		<category><![CDATA[pi]]></category>
+		<category><![CDATA[pi-hole]]></category>
+		<category><![CDATA[Raspberry]]></category>
+		<guid isPermaLink="false">https://thetechcorner.org/?p=227</guid>
+
+					<description><![CDATA[What is a Pi-Hole you may ask yourself. Is it some sort of cooling solution [&#8230;]]]></description>
+										<content:encoded><![CDATA[
+<p>What is <strong>a Pi-Hole</strong> you may ask yourself.  Is it some sort of cooling solution in which you drill a hole into your Raspberry Pi? Or maybe it is some cooking recipe?! </p>
+
+
+
+<p>The answer is no, it&#8217;s something way better in today&#8217;s digital age.</p>
+
+
+
+<p>According to <a href="https://en.wikipedia.org/wiki/Pi-hole">Wikipedia </a>Pi-Hole is a Linux network-level advertisement and internet tracker blocking application which acts as a DNS sinkhole and optionally a DHCP server, intended for use on a private network.</p>
+
+
+
+<p></p>
+
+
+
+<p>Beautifully said, but maybe I will try to explain it a little bit more &#8220;user friendly&#8221;. I&#8217;ll start with an example.</p>
+
+
+
+<p>Do you know that feeling when you are scrolling on your phone and you see an interesting article, so you click on it and there are either 15 ads waiting for you or one so huge that you cannot see even title of an article? </p>
+
+
+
+<p>Yea, I hate that too. But there is a simple solution to this! </p>
+
+
+
+<p><strong>A</strong> <strong>Pi-Hole</strong> is a peace of code that runs on a Linux (primarily Raspbian) and with very few installation commands it allows you to clear your sides and videos from all the unwanted ads which can even take up a lot of internet bandwidth.</p>
+
+
+
+<p>Now you are like <strong>&#8220;I just turn on my ad-block, I don&#8217;t need no Pi-Hole for that&#8221;</strong> but no, <strong>this is much better</strong> and here is why.</p>
+
+
+
+<p><strong>A</strong> <strong>Pi-Hole</strong> works at the network level layer which means It&#8217;s not filtering them out after your browser downloaded them, you actually wont even download them, which can save up a lot of bandwidth. </p>
+
+
+
+<p>Another great advantage of the Pi-Hole is that It cooperates with the router so <strong>ALL of the devices on your network will be ads free</strong>! You cannot install ad-block and all of your mobile apps that are using ads nor you cannot install ad-block on your TV. But with this you only need one device connected to your router and you are done. </p>
+
+
+
+<p>Just imagine how many ads you see daily, then multiply it by number of devices in your network. How much bandwidth will you save? A lot right?</p>
+
+
+
+<h2><strong>How does it work?</strong></h2>
+
+
+
+<p>Ok, so If you don&#8217;t know what a <strong>DNS</strong> is, basically it&#8217;s a <strong>naming system</strong> in which <strong>IP address</strong> <strong>gets their own domain</strong> (for example 192.0.2.44 = www.amazon.com). This feature is usally provided by billion dollars companies like google, amazon&#8230;</p>
+
+
+
+<p>Your router is configured in the way that when you visit a site, that site makes a lot of requests for a lot of the stuff. And guess what? It uses a DNS for that (well, mostly, I&#8217;ll talk about that later)</p>
+
+
+
+<p>Here is where the Pi-Hole comes. In your network, the <strong>Pi will act as a DNS server</strong>. But you can now insert a list for all of the DNS domains you don&#8217;t want to see, <strong>a blocklist</strong>. This allows the Pi to filter out any ad requests from sites, apps, etc. This list is over 100 000 lines long and it&#8217;s always updating by a people that hate ads as we do!</p>
+
+
+
+<p></p>
+
+
+
+<h2><strong>How to set it up?</strong></h2>
+
+
+
+<h3>1. <strong>First, you will need a few things:</strong></h3>
+
+
+
+<ol><li>Raspberry Pi (any model will do for this)</li><li>SD card / USB</li><li>Power supply </li><li>Ethernet Cable (you could also you a wifi, but ethernet is just way better in performance and reliability)</li></ol>
+
+
+
+<p></p>
+
+
+
+<h3><strong>2. Seting up your your PI. </strong></h3>
+
+
+
+<p>You can find guide for that <a href="https://thetechcorner.org/?p=136">here</a>!</p>
+
+
+
+<p></p>
+
+
+
+<h3><strong>3.  Download and install the Pi-Hole</strong></h3>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">wget -O basic-install.sh https://install.pi-hole.net
+sudo bash basic-install.sh</pre>
+</div></div>
+
+
+
+<p>You should see a welcome window looking like this.</p>
+
+
+
+<figure class="wp-block-image size-full"><img decoding="async" loading="lazy" width="640" height="356" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-28.png?resize=640%2C356&#038;ssl=1" alt="" class="wp-image-229" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-28.png?w=1278&amp;ssl=1 1278w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-28.png?resize=300%2C167&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-28.png?resize=1024%2C570&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-28.png?resize=768%2C427&amp;ssl=1 768w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p><strong>Just press</strong> <strong>OK</strong> to begin the installation. Pi-hole will ask you for a donation, but it&#8217;s totally up to you if you want to donate or not, the program will still be fully functional. I think Pi-Hole is great and maybe if you will like it too you can consider donating something small.</p>
+
+
+
+<figure class="wp-block-image size-full"><img decoding="async" loading="lazy" width="640" height="66" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-29.png?resize=640%2C66&#038;ssl=1" alt="" class="wp-image-230" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-29.png?w=1259&amp;ssl=1 1259w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-29.png?resize=300%2C31&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-29.png?resize=1024%2C106&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-29.png?resize=768%2C79&amp;ssl=1 768w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>In the next step Pi-Hole will explain to you why you need a <strong>static IP address</strong> and in the next section will ask you to make your current IP address static. If you don&#8217;t want to use any particular IP address, than you should choose this one (there is actually one more step before this, but they added it here for some reason).</p>
+
+
+
+<figure class="wp-block-image size-full"><img decoding="async" loading="lazy" width="640" height="60" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-30.png?resize=640%2C60&#038;ssl=1" alt="" class="wp-image-231" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-30.png?w=1257&amp;ssl=1 1257w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-30.png?resize=300%2C28&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-30.png?resize=1024%2C95&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-30.png?resize=768%2C71&amp;ssl=1 768w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p><strong>Pi-Hole will ask</strong> you for the <strong>upstream DNS provider</strong> to which it will connect. You can use this tool as a benchmark for the fastest one for you, but It really won&#8217;t make a big difference, so you can just choose <strong>Google</strong> or <strong>CloudFlare</strong> if you don&#8217;t like google tracking you (not that any other companies won&#8217;t do it).</p>
+
+
+
+<figure class="wp-block-image size-full"><img decoding="async" loading="lazy" width="640" height="87" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-31.png?resize=640%2C87&#038;ssl=1" alt="" class="wp-image-232" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-31.png?w=1257&amp;ssl=1 1257w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-31.png?resize=300%2C41&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-31.png?resize=1024%2C138&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-31.png?resize=768%2C104&amp;ssl=1 768w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>Pi-Hole is just a <strong>computer,</strong> so it doesn&#8217;t know on its own what domains should it block. We have people for that, who make lists of domains for that (blocklists). In this next step Pi-Hole will ask you <strong>what blocklists you want to use</strong>. For maximum efficiency, you should <strong>let it on the default</strong> (that means having all of them checked). Don&#8217;t get scared if you have more or less than I do. People make and merge new together all the time. <strong>You can download more</strong> of these <strong>blocklists</strong>, but more on that later.</p>
+
+
+
+<figure class="wp-block-image size-full"><img decoding="async" loading="lazy" width="640" height="100" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-32.png?resize=640%2C100&#038;ssl=1" alt="" class="wp-image-233" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-32.png?w=1252&amp;ssl=1 1252w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-32.png?resize=300%2C47&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-32.png?resize=1024%2C159&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-32.png?resize=768%2C120&amp;ssl=1 768w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>In the next step Pi-Hole will ask you <strong>what protocols you want to use</strong>. If you don&#8217;t know anything about Ipv4/Ipv6 just leave it <strong>default</strong>.</p>
+
+
+
+<figure class="wp-block-image size-full"><img decoding="async" loading="lazy" width="640" height="49" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-33.png?resize=640%2C49&#038;ssl=1" alt="" class="wp-image-234" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-33.png?w=1258&amp;ssl=1 1258w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-33.png?resize=300%2C23&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-33.png?resize=1024%2C78&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-33.png?resize=768%2C59&amp;ssl=1 768w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>And now Pi-Hole will finally ask you if you want to use this IP address as your static IP address, which means It won&#8217;t change after reboot. If you don&#8217;t know anything about DHCP and static/dynamic IPs <strong>just press yes</strong>.</p>
+
+
+
+<p></p>
+
+
+
+<p>In the last step Pi-Hole will warn you that even if you set up your static IP on your PI your router can still assign it to another device. But with modern routers this shouldn&#8217;t really happen. <strong>Press OK</strong>.</p>
+
+
+
+<figure class="wp-block-image size-full"><img decoding="async" loading="lazy" width="640" height="49" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-34.png?resize=640%2C49&#038;ssl=1" alt="" class="wp-image-235" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-34.png?w=1251&amp;ssl=1 1251w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-34.png?resize=300%2C23&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-34.png?resize=1024%2C78&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-34.png?resize=768%2C58&amp;ssl=1 768w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>Then you will have an option to install the web admin interface. <strong>I really like the web interface</strong> and I think you will like it too!</p>
+
+
+
+<figure class="wp-block-image size-full"><img decoding="async" loading="lazy" width="640" height="78" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-35.png?resize=640%2C78&#038;ssl=1" alt="" class="wp-image-236" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-35.png?w=1257&amp;ssl=1 1257w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-35.png?resize=300%2C37&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-35.png?resize=1024%2C125&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-35.png?resize=768%2C94&amp;ssl=1 768w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>This feature requires a web server to work. They are only giving you the option because maybe you have your own web server and you don&#8217;t want another one. So just <strong>leave it</strong> <strong>on</strong> and <strong>continue</strong>.</p>
+
+
+
+<figure class="wp-block-image size-full is-resized"><img decoding="async" loading="lazy" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-36.png?resize=640%2C100&#038;ssl=1" alt="" class="wp-image-237" width="640" height="100" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-36.png?w=1241&amp;ssl=1 1241w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-36.png?resize=300%2C47&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-36.png?resize=1024%2C160&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-36.png?resize=768%2C120&amp;ssl=1 768w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>In the next step you will have an option to make your Pi-Hole <strong>logs the queries</strong>. This is an important statistic which can help you troubleshoot problems or see how many ads, are you blocking daily/weekly etc. <strong>Keep it On and press OK.</strong></p>
+
+
+
+<figure class="wp-block-image size-full"><img decoding="async" loading="lazy" width="640" height="75" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-38.png?resize=640%2C75&#038;ssl=1" alt="" class="wp-image-241" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-38.png?w=1256&amp;ssl=1 1256w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-38.png?resize=300%2C35&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-38.png?resize=1024%2C121&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-38.png?resize=768%2C90&amp;ssl=1 768w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>Now you will be able to choose between all of the <strong>privacy modes</strong>. You can find what mode blocks what <a href="https://docs.pi-hole.net/ftldns/privacylevels/">here</a>, but if you don&#8217;t want to bother, <strong>just pick the first one</strong>. In this mode, you will be able to see all the statistics in your Pi-Hole web interface.</p>
+
+
+
+<figure class="wp-block-image size-full"><img decoding="async" loading="lazy" width="640" height="81" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-37.png?resize=640%2C81&#038;ssl=1" alt="" class="wp-image-240" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-37.png?w=1261&amp;ssl=1 1261w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-37.png?resize=300%2C38&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-37.png?resize=1024%2C129&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-37.png?resize=768%2C97&amp;ssl=1 768w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>After this, wait a few minutes for Pi-Hole to finish an installation. You should see a window saying <strong>Installation Complete!</strong> But don&#8217;t close this yet! You need the IP address and most importantly your password! <strong>Now write them down</strong> somewhere, so you won&#8217;t forget. This password was randomly generated and <strong>if you lose this, you won&#8217;t be able to log into</strong> your admin account. We will change the password later, so just keep it for now.</p>
+
+
+
+<figure class="wp-block-image size-full"><img decoding="async" loading="lazy" width="640" height="118" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-39.png?resize=640%2C118&#038;ssl=1" alt="" class="wp-image-242" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-39.png?w=1284&amp;ssl=1 1284w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-39.png?resize=300%2C55&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-39.png?resize=1024%2C189&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-39.png?resize=768%2C142&amp;ssl=1 768w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<h3><strong>4. Connecting Pi-Hole to your router</strong></h3>
+
+
+
+<p>Now that Pi-Hole is running on our PI we can go to the routers settings and choose it as our DNS Server. </p>
+
+
+
+<p><strong>To access your router type 192.168.0.1 or 192.168.1.1 into your browser</strong>. If the menu of your router still didn&#8217;t pop off, try googling your model and looking on forums (there will most likely be people like you who don&#8217;t know how to connect to their routers).</p>
+
+
+
+<p>Now you should see a page asking for the <strong>login</strong> and the <strong>password</strong>. If you don&#8217;t know these, you can try to google and ask for default logging information. The password is sometimes written on the bottom of the router and login should be admin. If any of these works you will need to <strong>contact your provider</strong> and for this information. </p>
+
+
+
+<p>If you have successfully connected into your router you will need to look for DNS Server or Primary and Secondary DNS settings. I have tp-link and I can find it under <strong>Advanced&gt;Network&gt;Internet&gt;Advanced&gt;DNS Address</strong> and choose <strong>Use the following DNS Addresses</strong>.</p>
+
+
+
+<figure class="wp-block-image size-full"><img decoding="async" loading="lazy" width="640" height="559" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-41.png?resize=640%2C559&#038;ssl=1" alt="" class="wp-image-246" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-41.png?w=1034&amp;ssl=1 1034w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-41.png?resize=300%2C262&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-41.png?resize=1024%2C894&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-41.png?resize=768%2C671&amp;ssl=1 768w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>After that, you will see two empty columns called <strong>Primary DNS</strong> and <strong>Secondary DNS</strong>. If you remembered we gave our PI-Hole static IP address which we could see in the last step of the installation with the password. Mine is 192.168.137.118, but <strong>yours will be DIFFERENT</strong>. If you don&#8217;t know what is the address of your PI-Hole just <strong>open up a terminal</strong> in Raspbian and type:</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">ip a</pre>
+</div></div>
+
+
+
+<p>Now <strong>type</strong> that I<strong>P</strong> <strong>into</strong> the <strong>Primary DNS</strong> column and <strong>press save</strong>.</p>
+
+
+
+<figure class="wp-block-image size-full"><img decoding="async" loading="lazy" width="640" height="448" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-42.png?resize=640%2C448&#038;ssl=1" alt="" class="wp-image-247" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-42.png?w=1069&amp;ssl=1 1069w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-42.png?resize=300%2C210&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-42.png?resize=1024%2C717&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-42.png?resize=768%2C537&amp;ssl=1 768w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>You <strong>don&#8217;t need to fill out the Secondary DNS</strong> address because we only have one. </p>
+
+
+
+<p></p>
+
+
+
+<h3><strong>4B Connecting a Pi-Hole to your device</strong></h3>
+
+
+
+<p>There is <strong>one more way</strong> to connect your Pi-Hole into your device, but <strong>only that one device would be able to use a Pi-Hole</strong>. This kinda loses its purpose and you will probably be better off with ad-block. But if for some reason you don&#8217;t want or can&#8217;t connect a Pi-Hole to your router, but still want to use this feature, <a href="https://www.windowscentral.com/how-change-your-pcs-dns-settings-windows-10">here</a> is a tutorial how to change a DNS in your PC.</p>
+
+
+
+<p></p>
+
+
+
+<p></p>
+
+
+
+<h3><strong>5. Accessing the web interface of the Pi-Hole</strong></h3>
+
+
+
+<p>To see a statistic of how many domains are your Pi-Hole blocking, you can <strong>access a web interface</strong> that you have agreed to install earlier. You can also make some <strong>extra configuration</strong> and <strong>customization</strong>, but your <strong>Pi-Hole set up</strong> is pretty much <strong>done</strong> so there isn&#8217;t much to do if anything. </p>
+
+
+
+<p><strong>You can access the web interface anywhere from your local network</strong>. </p>
+
+
+
+<p><strong>You can find it by typing http://IPofYourPi-Hole/admin. For me its http://192.168.137.118/admin/</strong></p>
+
+
+
+<p>You should see something like this </p>
+
+
+
+<figure class="wp-block-image size-full"><img decoding="async" loading="lazy" width="640" height="223" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-43.png?resize=640%2C223&#038;ssl=1" alt="" class="wp-image-250" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-43.png?w=1254&amp;ssl=1 1254w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-43.png?resize=300%2C105&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-43.png?resize=1024%2C357&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-43.png?resize=768%2C268&amp;ssl=1 768w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>On the left side, click <strong>Login</strong> and <strong>type in your password</strong> which was randomly generated in the installation and I told you to write it down!</p>
+
+
+
+<p> </p>
+
+
+
+<h3><strong>6. Adding more blocklists</strong></h3>
+
+
+
+<p>One useful thing you can do is to <strong>add more of the blocklists</strong>. You can find the biggest collection of them <strong><a href="https://firebog.net/">here</a></strong>. They are made and updated by a guy with a nickname <strong><a href="https://firebog.net/about">Wally3K</a></strong> so big shout out to him!</p>
+
+
+
+<p>You can choose whatever lists you like <strong>BUT BE AWARE THAT WITH THE MORE BLOCKLISTS YOU ADD THERE IS A BIGGER POSSIBILITY OF INTERFIERING WITH YOUR BROWSING EXPERIENCE</strong>. So, preferably only use the green ones because those shoudln&#8217;t interfere with the browsing.</p>
+
+
+
+<p>The UI of the Pi-Hole is ever-changing, but for me it looks like this now. Go into a <strong>Group Management>Adlist</strong> and in the top you should see <strong>Add a new adlist</strong> and type the URL of the list you chose into the <strong>Address</strong>: column and press <strong>Add</strong>.</p>
+
+
+
+<figure class="wp-block-image size-full"><img decoding="async" loading="lazy" width="640" height="417" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-44.png?resize=640%2C417&#038;ssl=1" alt="" class="wp-image-251" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-44.png?w=1263&amp;ssl=1 1263w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-44.png?resize=300%2C195&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-44.png?resize=1024%2C666&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-44.png?resize=768%2C500&amp;ssl=1 768w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p><strong>Congratulations</strong>, you have added a new blocklists into your Pi-Hole.</p>
+
+
+
+<p></p>
+
+
+
+<p>There is so much more you can do with a Pi-Hole but I wanted to make this installation <strong>easy</strong> and <strong>user friendly</strong> so I&#8217;ll end it here. I hope you enjoyed this tutorial and for now just enjoy your piece of a Pi.</p>
+
+
+
+<p></p>
+
+
+
+<h3><strong>More advanced Pi-Hole tutorials:</strong> (coming)</h3>
+
+
+
+<ul><li>Most useful Pi-Hole <strong>commands</strong></li><li>How to automatically <strong>sync</strong> your blocklists with the updates?</li><li>How to make your browsing even more anonymous&nbsp; with the <strong>DNS over HTTPS</strong> and <strong>Unbound</strong></li></ul>
+
+
+
+<p><a rel="noreferrer noopener" href="https://www.buymeacoffee.com/thetechcorner" target="_blank"></a></p>
+
+
+
+
+
+<div class="is-layout-flex wp-block-buttons"></div>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">227</post-id>	</item>
+		<item>
+		<title>How To Overclock the Raspberry PI 4 B</title>
+		<link>https://thetechcorner.org/?p=209&#038;utm_source=rss&#038;utm_medium=rss&#038;utm_campaign=how-to-overclock-the-raspberry-pi-4-b</link>
+					<comments>https://thetechcorner.org/?p=209#comments</comments>
+		
+		<dc:creator><![CDATA[Filip Zverec]]></dc:creator>
+		<pubDate>Thu, 07 Jan 2021 12:25:59 +0000</pubDate>
+				<category><![CDATA[HomeLab]]></category>
+		<category><![CDATA[cpu]]></category>
+		<category><![CDATA[gpu]]></category>
+		<category><![CDATA[overclock]]></category>
+		<category><![CDATA[pi]]></category>
+		<category><![CDATA[Raspberry]]></category>
+		<guid isPermaLink="false">https://thetechcorner.org/?p=209</guid>
+
+					<description><![CDATA[Raspberry PI 4 B comes with the 1.5GHz 4 cores ARM Cortex-A72 processor. But this [&#8230;]]]></description>
+										<content:encoded><![CDATA[
+<p><strong>Raspberry PI 4 B</strong> comes with the <strong>1.5GHz</strong> 4 cores ARM Cortex-A72 processor. But this number can be pushed even further with some easy overclocking adjustments. </p>
+
+
+
+<p>This can help a lot with your future projects which might require a lot computing power.</p>
+
+
+
+<p>I <strong>HIGHLY</strong> recommend using some sort of cooling case or fan because Raspberry PI 4 B has gotten so powerfull that now you pretty much need to have a fan to be able to use it to full potential.</p>
+
+
+
+<p></p>
+
+
+
+<p></p>
+
+
+
+<h3><strong>WARNING! </strong></h3>
+
+
+
+<p>You might see some crashes if you don&#8217;t have a fan or you want to push your PI even harder. This might corrupt your SD card, so if you have any data that you don&#8217;t want to lose you should backup your PI or use clean Raspbian installation. </p>
+
+
+
+<p></p>
+
+
+
+<h4><strong>Useful information</strong></h4>
+
+
+
+<p>Although Raspberry PI 4 B can run at 1.5GHz, it typically idles at 600MHz and only boost clock higher when needed. </p>
+
+
+
+<p>if you don&#8217;t know what overclocking is, basically it&#8217;s just process in which we set higher allowed maximum clock speed.</p>
+
+
+
+<p>Every unit is <strong>different!</strong> My settings might end up crashing your PI and vice versa. Also it should be noted that I&#8217;m using both fan and aluminium case which can absorb a lot of heat. </p>
+
+
+
+<p></p>
+
+
+
+<p></p>
+
+
+
+<h3><strong>Let&#8217;s get started</strong> </h3>
+
+
+
+<ol><li>If you didn&#8217;t setup your PI yet, here is a tutorial for that.</li><li>After that, make sure you are running the latest update and the latest version of the Raspbian OS. For that open terminal and type</li></ol>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted"><strong>sudo apt update &amp;&amp; sudo apt dist-upgrade -y</strong></pre>
+
+
+
+<pre class="wp-block-preformatted"><strong>sudo shutdown -r +0</strong></pre>
+</div></div>
+
+
+
+<p></p>
+
+
+
+<p>3.  Next we need to watch our current clock speed. For that open another terminal (in a PuTTy you can just right click&gt;Duplicate Session) and type:</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-code"><code>watch -n 1 vcgencmd measure_clock arm</code></pre>
+</div></div>
+
+
+
+<p>As you can see our clock speed is idling around 600MHz. And if I open something in the background (browser, for example) It changes to 1.5GHz</p>
+
+
+
+<div class="wp-block-image"><figure class="aligncenter size-large"><img decoding="async" loading="lazy" width="640" height="96" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-21.png?resize=640%2C96&#038;ssl=1" alt="" class="wp-image-212" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-21.png?w=659&amp;ssl=1 659w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-21.png?resize=300%2C45&amp;ssl=1 300w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+
+<div class="wp-block-image"><figure class="aligncenter size-large"><img decoding="async" loading="lazy" width="640" height="98" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-22.png?resize=640%2C98&#038;ssl=1" alt="" class="wp-image-213" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-22.png?w=656&amp;ssl=1 656w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-22.png?resize=300%2C46&amp;ssl=1 300w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p></p>
+
+
+
+<p>4. We are going to set a new value for our frequency in a config file. For that we need to open a new terminal and type:</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">sudo nano /boot/config.txt</pre>
+</div></div>
+
+
+
+<p>You should be in the config.txt file. Scroll down a little bit and you should see something like this </p>
+
+
+
+<div class="wp-block-image"><figure class="aligncenter size-large"><img decoding="async" loading="lazy" width="458" height="55" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-24.png?resize=458%2C55&#038;ssl=1" alt="" class="wp-image-216" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-24.png?w=458&amp;ssl=1 458w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-24.png?resize=300%2C36&amp;ssl=1 300w" sizes="(max-width: 458px) 100vw, 458px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p>Now change it to <strong>over_voltage=2</strong> and <strong>arm_freq=1750</strong>. Over voltage is a setting that tells how much voltage should PI send into the CPU/GPU. With higher clocks you need to give a PI more juice right? The default value is 0, but you can change it anywhere between -18 and 8.</p>
+
+
+
+<p>You need to be careful because with higher voltage intake there is a higher temperature and with the higher temperature your PI will automatically slow down to prevent melting.</p>
+
+
+
+<p>On the other side if you would see a yellow lightings bolt looking like this</p>
+
+
+
+<div class="wp-block-image"><figure class="aligncenter size-large is-resized"><img decoding="async" loading="lazy" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/ezgif-4-beb0a7cb95d5.png?resize=45%2C45&#038;ssl=1" alt="" class="wp-image-220" width="45" height="45" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/ezgif-4-beb0a7cb95d5.png?w=180&amp;ssl=1 180w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/ezgif-4-beb0a7cb95d5.png?resize=150%2C150&amp;ssl=1 150w" sizes="(max-width: 45px) 100vw, 45px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p></p>
+
+
+
+<p>then your PI is not getting enough voltage or amps (in this case you would need a stronger power supply)</p>
+
+
+
+<div class="wp-block-image"><figure class="aligncenter size-large"><img decoding="async" loading="lazy" width="463" height="68" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-25.png?resize=463%2C68&#038;ssl=1" alt="" class="wp-image-217" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-25.png?w=463&amp;ssl=1 463w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-25.png?resize=300%2C44&amp;ssl=1 300w" sizes="(max-width: 463px) 100vw, 463px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p>If you do have a fan, you can probably push it even more. You can see my settings here:</p>
+
+
+
+<div class="wp-block-image"><figure class="aligncenter size-large"><img decoding="async" loading="lazy" width="458" height="63" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-26.png?resize=458%2C63&#038;ssl=1" alt="" class="wp-image-218" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-26.png?w=458&amp;ssl=1 458w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-26.png?resize=300%2C41&amp;ssl=1 300w" sizes="(max-width: 458px) 100vw, 458px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p></p>
+
+
+
+<p>Press <strong>ctrl + o</strong> to save changed edited file and confirm with ENTER. Then press <strong>ctrl + x</strong> to exit from the file. </p>
+
+
+
+<p>Now we need to reboot PI to apply the new settings. Type:</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre id="block-f1025b7e-6831-4143-b9a4-8023ff1be7df" class="wp-block-preformatted"><strong>sudo shutdown -r +0</strong></pre>
+</div></div>
+
+
+
+<p>I would not try to overclock more if your PI seems stable and you are not getting any crashes. </p>
+
+
+
+<p>You should play with the value on your own and try all possible combinations to fit your best preferences. </p>
+
+
+
+<p>You want a faster but louder PI, push it to the maximum! Or maybe you don&#8217;t want to hear that annoying fan and you only want to use PI to learn some Linux basics. In that case maybe don&#8217;t overclock at all. It&#8217;s enterily up to you.</p>
+
+
+
+<p></p>
+
+
+
+<p>For last but not least I will show you how to overclock the GPU. This can be very useful if you are planning on playing games, or watching 4K content or maybe using your GPU for AI rendering.</p>
+
+
+
+<p>Again open <strong>/boot/config.txt</strong> file and add a new line <strong>gpu_freq=750</strong>.</p>
+
+
+
+<div class="wp-block-image"><figure class="aligncenter size-large"><img decoding="async" loading="lazy" width="459" height="67" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-27.png?resize=459%2C67&#038;ssl=1" alt="" class="wp-image-221" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-27.png?w=459&amp;ssl=1 459w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-27.png?resize=300%2C44&amp;ssl=1 300w" sizes="(max-width: 459px) 100vw, 459px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p></p>
+
+
+
+<p>Save and exit from the file, reboot the PI and you are ready to go!</p>
+
+
+
+<p>I hope you didn&#8217;t overcook your PI! And if so, then just write a new image on the SD card and repeat with lower settings.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://thetechcorner.org/?feed=rss2&#038;p=209</wfw:commentRss>
+			<slash:comments>1</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">209</post-id>	</item>
+		<item>
+		<title>How to Change Raspberry PI&#8217;s Hostname / Password</title>
+		<link>https://thetechcorner.org/?p=177&#038;utm_source=rss&#038;utm_medium=rss&#038;utm_campaign=how-to-change-raspberry-pis-hostname-password</link>
+		
+		<dc:creator><![CDATA[Filip Zverec]]></dc:creator>
+		<pubDate>Wed, 06 Jan 2021 10:59:49 +0000</pubDate>
+				<category><![CDATA[HomeLab]]></category>
+		<category><![CDATA[change]]></category>
+		<category><![CDATA[CLI]]></category>
+		<category><![CDATA[desktop]]></category>
+		<category><![CDATA[GUI]]></category>
+		<category><![CDATA[hostname]]></category>
+		<category><![CDATA[password]]></category>
+		<category><![CDATA[pi]]></category>
+		<category><![CDATA[Raspberry]]></category>
+		<category><![CDATA[Raspbian]]></category>
+		<category><![CDATA[terminal]]></category>
+		<guid isPermaLink="false">https://thetechcorner.org/?p=177</guid>
+
+					<description><![CDATA[By default your Raspberry PI&#8217;s hostname is raspberrypi and your password is raspberry. There is [&#8230;]]]></description>
+										<content:encoded><![CDATA[
+<p>By default your Raspberry PI&#8217;s hostname is <strong>raspberrypi</strong> and your password is <strong>raspberry</strong>.</p>
+
+
+
+<p>There is nothing wrong with this name until you have multiple PIes in your network and trust me when you buy one, you will want more of them to do even more cool projects. </p>
+
+
+
+<p>So in this short guide I&#8217;ll show you how to change the hostname and the password.</p>
+
+
+
+<p>We can choose multiple paths to do so. In this guide I&#8217;ll show you one way over <strong>CLI</strong> (console) and one way over <strong>GUI</strong> (graphical interface)</p>
+
+
+
+<p></p>
+
+
+
+<h3><strong>Changing Hostname / Password Using CLI</strong></h3>
+
+
+
+<p>Because our PI is running Raspbian we can use one of it&#8217;s features that is called <strong>raspi-config</strong> which allow us to change these things with very friendly user interface.</p>
+
+
+
+<p><strong>Connect</strong> and <strong>login</strong> to your PI, you can find how in this <a href="https://thetechcorner.org/?p=136">guide</a>.</p>
+
+
+
+<p>In the console type:</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-code"><code>sudo raspi-config </code></pre>
+</div></div>
+
+
+
+<p>You should see option menu like this. Choose the <strong>System option</strong>.</p>
+
+
+
+<figure class="wp-block-image size-large"><img decoding="async" loading="lazy" width="640" height="374" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-14.png?resize=640%2C374&#038;ssl=1" alt="" class="wp-image-180" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-14.png?w=867&amp;ssl=1 867w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-14.png?resize=300%2C175&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-14.png?resize=768%2C449&amp;ssl=1 768w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>Select the <strong>S4 Hostname</strong> and choose a new hostname. Keep in mind that you can only use <strong>ASCII</strong> letters <strong>a-z</strong>, the digits <strong>0-9</strong> and the <strong>hyphen</strong>, but hostname cannot begin nor end with hyphen.</p>
+
+
+
+<figure class="wp-block-image size-large"><img decoding="async" loading="lazy" width="640" height="378" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-15.png?resize=640%2C378&#038;ssl=1" alt="" class="wp-image-181" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-15.png?w=868&amp;ssl=1 868w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-15.png?resize=300%2C177&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-15.png?resize=768%2C453&amp;ssl=1 768w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>Congratulation, now do the same for the password and you will be send into a terminal in which you will type your new password.</p>
+
+
+
+<figure class="wp-block-image size-large"><img decoding="async" loading="lazy" width="640" height="377" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-17.png?resize=640%2C377&#038;ssl=1" alt="" class="wp-image-183" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-17.png?w=864&amp;ssl=1 864w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-17.png?resize=300%2C177&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-17.png?resize=768%2C452&amp;ssl=1 768w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<figure class="wp-block-image size-large"><img decoding="async" loading="lazy" width="640" height="81" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-16.png?resize=640%2C81&#038;ssl=1" alt="" class="wp-image-182" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-16.png?w=866&amp;ssl=1 866w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-16.png?resize=300%2C38&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-16.png?resize=768%2C98&amp;ssl=1 768w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>Keep in mind that you need to reboot your device before hostname changes will take a place. For reboot just type:</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">sudo shutdown -r +0</pre>
+</div></div>
+
+
+
+<p></p>
+
+
+
+<h3><strong>Changing Hostname / Password Using GUI</strong></h3>
+
+
+
+<p> If you have installed <strong>Raspberry PI OS with desktop</strong> and you are more used to work with graphical intreface, this is even easier method of changing the hostname or password. </p>
+
+
+
+<p>First you need to connect your monitor or launch VNC to connect to the PI with ahernet cable. You can find guide for that <a href="https://thetechcorner.org/?p=136">here</a>.</p>
+
+
+
+<p>In the left upper corner select <strong>Raspbian Icon</strong> and select <strong>Prefrences&gt;Raspberry Pi Configuration</strong>.</p>
+
+
+
+<figure class="wp-block-image size-large"><img decoding="async" loading="lazy" width="640" height="474" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-19.png?resize=640%2C474&#038;ssl=1" alt="" class="wp-image-186" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-19.png?w=1024&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-19.png?resize=300%2C222&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-19.png?resize=768%2C569&amp;ssl=1 768w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>You should see an option to change hostname and password. Click into the window where it says <strong>raspberrypi</strong> and rename it to whatever you want. </p>
+
+
+
+<p>Then click on <strong>Change Password</strong> and pick your new password.</p>
+
+
+
+<figure class="wp-block-image size-large"><img decoding="async" loading="lazy" width="603" height="464" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-20.png?resize=603%2C464&#038;ssl=1" alt="" class="wp-image-187" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-20.png?w=603&amp;ssl=1 603w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-20.png?resize=300%2C231&amp;ssl=1 300w" sizes="(max-width: 603px) 100vw, 603px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>Congratulation, you have successfully changed your hostname and password. Now you dont have worry about logging into a wrong PI or about somebody logging into yours!</p>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">177</post-id>	</item>
+	</channel>
+</rss>

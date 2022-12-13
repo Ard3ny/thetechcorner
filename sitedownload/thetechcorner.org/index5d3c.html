@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	
+	xmlns:georss="http://www.georss.org/georss"
+	xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+	>
+
+<channel>
+	<title>old &#8211; TheTechCorner</title>
+	<atom:link href="https://thetechcorner.org/?feed=rss2&#038;tag=old" rel="self" type="application/rss+xml" />
+	<link>https://thetechcorner.org</link>
+	<description>A corner on the internet where I share my ideas, guides and projects</description>
+	<lastBuildDate>Sun, 04 Dec 2022 21:09:49 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.1.1</generator>
+<site xmlns="com-wordpress:feed-additions:1">187618359</site>	<item>
+		<title>Turn your old laptop into Proxmox server</title>
+		<link>https://thetechcorner.org/?p=1564&#038;utm_source=rss&#038;utm_medium=rss&#038;utm_campaign=turn-your-old-laptop-into-proxmox-server</link>
+					<comments>https://thetechcorner.org/?p=1564#respond</comments>
+		
+		<dc:creator><![CDATA[Filip Zverec]]></dc:creator>
+		<pubDate>Sun, 04 Dec 2022 21:09:47 +0000</pubDate>
+				<category><![CDATA[HomeLab]]></category>
+		<category><![CDATA[homelab]]></category>
+		<category><![CDATA[hypervisor]]></category>
+		<category><![CDATA[notebook]]></category>
+		<category><![CDATA[old]]></category>
+		<category><![CDATA[proxmox]]></category>
+		<category><![CDATA[VM]]></category>
+		<guid isPermaLink="false">https://thetechcorner.org/?p=1564</guid>
+
+					<description><![CDATA[Begging of your Homelab life As a first step on your homelab journey, you should [&#8230;]]]></description>
+										<content:encoded><![CDATA[
+<h3>Begging of your Homelab life</h3>
+
+
+
+<p>As a first step on your homelab journey, you should set up an environment where you can easily deploy, manage and backup your virtual machines (VMs). Running your services in virtual machines rather than on bare metal hardware is much more efficient, cheaper and overall less difficult. </p>
+
+
+
+<h3>Hypervisor</h3>
+
+
+
+<p>Hypervisor is just a fancy-sounding word for the software/firmware/hardware that actually creates and manages virtual machines.</p>
+
+
+
+<p>There are two primary types: bare metal and hosted.</p>
+
+
+
+<p>Type 1 or bare metal hypervisors are installed directly onto the host system&#8217;s hardware. You can think of a bare metal hypervisor being like an operating system that is just dedicated to creating and managing virtual machines.</p>
+
+
+
+<p>Type 2 or hosted hypervisors are like those you&#8217;ve already mentioned. VirtualBox, VMWare Workstation, etc., are hypervisors installed on an existing operating system that lets you run virtual machines on that system. They are not directly managing the hardware of your system, but rely on the underlying OS for that.</p>
+
+
+
+<p>It also helps to think of these things in layers. In a type 1 architecture, the layering goes: hardware &gt; hypervisor &gt; guest operating system(s).</p>
+
+
+
+<p>In a type 2 architecture, the layering goes: hardware &gt; host operating system &gt; hypervisor &gt; guest operating system(s)</p>
+
+
+
+<p></p>
+
+
+
+<p><strong>My choice of a hypervisor is <a href="https://www.proxmox.com/en/">Proxmox</a>.</strong></p>
+
+
+
+<div class="is-layout-constrained wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">Proxmox is complete open-source platform for enterprise virtualization. With the built-in web interface you can easily manage VMs and containers, software-defined storage and networking, high-availability clustering, and multiple out-of-the-box tools on a single solution.</pre>
+</div></div>
+
+
+
+<p>It&#8217;s very light way compared to other hypervisor with very nice GUI and great community. It&#8217;s running od debian so you can use pretty much anything to host your proxmox.</p>
+
+
+
+<p>In my case, I&#8217;m going to use an old laptop (Asus X550vb) which has been sitting on my shelf eating dust for a few years now.</p>
+
+
+
+<p></p>
+
+
+
+<h3>Preparation before install </h3>
+
+
+
+<p><strong>What will you need:</strong></p>
+
+
+
+<ul>
+<li>Something to host on Proxmox (old laptop, desktop..)</li>
+
+
+
+<li>SSD disk for operating system, proxmox and VMs (at least 256GB)</li>
+
+
+
+<li>USB disk for installation of an OS</li>
+</ul>
+
+
+
+<p></p>
+
+
+
+<h3>Installation guide</h3>
+
+
+
+<p>I&#8217;m gonna keep it simple, because there are already plenty of blogs and videos on how to do this</p>
+
+
+
+<p></p>
+
+
+
+<ol>
+<li><strong>Download Proxmox</strong></li>
+</ol>
+
+
+
+<p>You can download ISO from their official site</p>
+
+
+
+<p><a href="https://www.proxmox.com/en/downloads/category/iso-images-pve">https://www.proxmox.com/en/downloads/category/iso-images-pve</a></p>
+
+
+<div class="wp-block-image">
+<figure class="aligncenter size-full"><img decoding="async" width="640" height="519" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image.png?resize=640%2C519&#038;ssl=1" alt="" class="wp-image-1568" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image.png?w=1002&amp;ssl=1 1002w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image.png?resize=300%2C243&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image.png?resize=768%2C623&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image.png?resize=24%2C19&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image.png?resize=36%2C29&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image.png?resize=48%2C39&amp;ssl=1 48w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+<p><strong>2. Flash ISO onto USB </strong></p>
+
+
+
+<p>There are multiple ways on how to flash ISO onto USB, but my favorite is using a utility called <a href="https://rufus.ie/en/">Rufus</a>. I&#8217;ve explained the step-by-step process <a href="https://thetechcorner.org/?p=136">on this blog as well</a>.</p>
+
+
+<div class="wp-block-image">
+<figure class="aligncenter size-full"><img decoding="async" loading="lazy" width="468" height="534" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-1.png?resize=468%2C534&#038;ssl=1" alt="" class="wp-image-1569" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-1.png?w=468&amp;ssl=1 468w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-1.png?resize=263%2C300&amp;ssl=1 263w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-1.png?resize=21%2C24&amp;ssl=1 21w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-1.png?resize=32%2C36&amp;ssl=1 32w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-1.png?resize=42%2C48&amp;ssl=1 42w" sizes="(max-width: 468px) 100vw, 468px" data-recalc-dims="1" /></figure></div>
+
+
+<p></p>
+
+
+
+<p><strong>3. Stick USB into laptop and change BIOS boot options</strong></p>
+
+
+
+<p>As all the others OS installation, you need to change boot process priority from things like SSD, HDD.. to prioritizes USB input first.</p>
+
+
+
+<p> Again, there are countless guides for this, so I&#8217;m just gonna put one here and it&#8217;s up to you to find one which suits needs for your specific hardware.</p>
+
+
+
+<p><a href="https://softwarekeep.com/help-center/how-to-change-your-computers-boot-order">https://softwarekeep.com/help-center/how-to-change-your-computers-boot-order</a></p>
+
+
+
+<p></p>
+
+
+
+<p><strong>4.</strong> <strong>Complete installation setup</strong></p>
+
+
+
+<p>Start your laptop/desktop with the USB stick inside and boot priority set for an USB.</p>
+
+
+
+<p>You&#8217;ll be greeted by this screen. Select install proxmox VE</p>
+
+
+<div class="wp-block-image">
+<figure class="aligncenter size-large is-resized"><img decoding="async" loading="lazy" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-2.png?resize=640%2C464&#038;ssl=1" alt="" class="wp-image-1571" width="640" height="464" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-2.png?resize=1024%2C743&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-2.png?resize=300%2C218&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-2.png?resize=768%2C557&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-2.png?resize=24%2C17&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-2.png?resize=36%2C26&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-2.png?resize=48%2C35&amp;ssl=1 48w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-2.png?w=1217&amp;ssl=1 1217w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+<p></p>
+
+
+
+<p>Accept the EULA</p>
+
+
+<div class="wp-block-image">
+<figure class="aligncenter size-large is-resized"><img decoding="async" loading="lazy" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-3.png?resize=640%2C401&#038;ssl=1" alt="" class="wp-image-1572" width="640" height="401" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-3.png?resize=1024%2C640&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-3.png?resize=300%2C188&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-3.png?resize=768%2C480&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-3.png?resize=24%2C15&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-3.png?resize=36%2C23&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-3.png?resize=48%2C30&amp;ssl=1 48w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-3.png?w=1511&amp;ssl=1 1511w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-3.png?w=1280&amp;ssl=1 1280w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+<p></p>
+
+
+
+<p>Choose your SSD as target hard disk </p>
+
+
+<div class="wp-block-image">
+<figure class="aligncenter size-large is-resized"><img decoding="async" loading="lazy" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-4.png?resize=640%2C398&#038;ssl=1" alt="" class="wp-image-1573" width="640" height="398" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-4.png?resize=1024%2C638&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-4.png?resize=300%2C187&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-4.png?resize=768%2C478&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-4.png?resize=24%2C15&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-4.png?resize=36%2C22&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-4.png?resize=48%2C30&amp;ssl=1 48w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-4.png?w=1514&amp;ssl=1 1514w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-4.png?w=1280&amp;ssl=1 1280w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+<p>Select country and timezone of your choice</p>
+
+
+<div class="wp-block-image">
+<figure class="aligncenter size-large is-resized"><img decoding="async" loading="lazy" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-5.png?resize=640%2C403&#038;ssl=1" alt="" class="wp-image-1574" width="640" height="403" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-5.png?resize=1024%2C646&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-5.png?resize=300%2C189&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-5.png?resize=768%2C484&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-5.png?resize=24%2C15&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-5.png?resize=36%2C23&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-5.png?resize=48%2C30&amp;ssl=1 48w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-5.png?w=1503&amp;ssl=1 1503w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-5.png?w=1280&amp;ssl=1 1280w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+<p>Choose your root password and mail for notifications</p>
+
+
+<div class="wp-block-image">
+<figure class="aligncenter size-large is-resized"><img decoding="async" loading="lazy" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-6.png?resize=640%2C404&#038;ssl=1" alt="" class="wp-image-1575" width="640" height="404" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-6.png?resize=1024%2C646&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-6.png?resize=300%2C189&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-6.png?resize=768%2C484&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-6.png?resize=24%2C15&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-6.png?resize=36%2C23&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-6.png?resize=48%2C30&amp;ssl=1 48w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-6.png?w=1500&amp;ssl=1 1500w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-6.png?w=1280&amp;ssl=1 1280w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+<p>Now type out  hostname in FQDN (fully qualified domain name) which basically means with the domain you want to use. Mine is thetechcorner.sk so hostname will look like this. If you don&#8217;t own any, you can just use &#8220;.home.arpa&#8221; which is used for homelab stuff.</p>
+
+
+
+<p>Also choose some static IP address in your range of network.</p>
+
+
+<div class="wp-block-image">
+<figure class="aligncenter size-large is-resized"><img decoding="async" loading="lazy" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-7.png?resize=640%2C398&#038;ssl=1" alt="" class="wp-image-1576" width="640" height="398" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-7.png?resize=1024%2C637&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-7.png?resize=300%2C186&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-7.png?resize=768%2C477&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-7.png?resize=24%2C15&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-7.png?resize=36%2C22&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-7.png?resize=48%2C30&amp;ssl=1 48w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-7.png?w=1517&amp;ssl=1 1517w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-7.png?w=1280&amp;ssl=1 1280w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+<p>Everything should be set and you can begin the installation.</p>
+
+
+<div class="wp-block-image">
+<figure class="aligncenter size-large is-resized"><img decoding="async" loading="lazy" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-8.png?resize=640%2C400&#038;ssl=1" alt="" class="wp-image-1577" width="640" height="400" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-8.png?resize=1024%2C641&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-8.png?resize=300%2C188&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-8.png?resize=768%2C480&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-8.png?resize=24%2C15&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-8.png?resize=36%2C23&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-8.png?resize=48%2C30&amp;ssl=1 48w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-8.png?w=1509&amp;ssl=1 1509w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-8.png?w=1280&amp;ssl=1 1280w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+<p>When it&#8217;s done, you should see something like this on your screen</p>
+
+
+<div class="wp-block-image">
+<figure class="aligncenter size-large is-resized"><img decoding="async" loading="lazy" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-9.png?resize=640%2C166&#038;ssl=1" alt="" class="wp-image-1579" width="640" height="166" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-9.png?resize=1024%2C267&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-9.png?resize=300%2C78&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-9.png?resize=768%2C200&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-9.png?resize=24%2C6&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-9.png?resize=36%2C9&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-9.png?resize=48%2C13&amp;ssl=1 48w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-9.png?w=1155&amp;ssl=1 1155w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+<p>Now open up browser in your local network and enter the URL.</p>
+
+
+<div class="wp-block-image">
+<figure class="aligncenter size-large is-resized"><img decoding="async" loading="lazy" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-10.png?resize=640%2C300&#038;ssl=1" alt="" class="wp-image-1580" width="640" height="300" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-10.png?resize=1024%2C483&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-10.png?resize=300%2C141&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-10.png?resize=768%2C362&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-10.png?resize=1536%2C724&amp;ssl=1 1536w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-10.png?resize=2048%2C965&amp;ssl=1 2048w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-10.png?resize=24%2C11&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-10.png?resize=36%2C17&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-10.png?resize=48%2C23&amp;ssl=1 48w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-10.png?w=1280&amp;ssl=1 1280w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-10.png?w=1920&amp;ssl=1 1920w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+<p>Congratulation, everything is now set and you can begin your homelab journey.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://thetechcorner.org/?feed=rss2&#038;p=1564</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">1564</post-id>	</item>
+	</channel>
+</rss>

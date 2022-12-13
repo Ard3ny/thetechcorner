@@ -1,0 +1,615 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	
+	xmlns:georss="http://www.georss.org/georss"
+	xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+	>
+
+<channel>
+	<title>cpu &#8211; TheTechCorner</title>
+	<atom:link href="https://thetechcorner.org/?feed=rss2&#038;tag=cpu-en" rel="self" type="application/rss+xml" />
+	<link>https://thetechcorner.org</link>
+	<description>A corner on the internet where I share my ideas, guides and projects</description>
+	<lastBuildDate>Sun, 23 Jan 2022 10:27:51 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.1.1</generator>
+<site xmlns="com-wordpress:feed-additions:1">187618359</site>	<item>
+		<title>Identify CPU/memory intensive processes and kill processes</title>
+		<link>https://thetechcorner.org/?p=864&#038;utm_source=rss&#038;utm_medium=rss&#038;utm_campaign=identify-cpu-memory-intensive-processes-and-kill-processes</link>
+		
+		<dc:creator><![CDATA[Filip Zverec]]></dc:creator>
+		<pubDate>Sun, 23 Jan 2022 10:27:45 +0000</pubDate>
+				<category><![CDATA[RHCSA]]></category>
+		<category><![CDATA[cpu]]></category>
+		<category><![CDATA[identify]]></category>
+		<category><![CDATA[Identify CPU/memory intensive processes and kill processes]]></category>
+		<category><![CDATA[kill]]></category>
+		<category><![CDATA[rhcsa]]></category>
+		<guid isPermaLink="false">https://thetechcorner.org/?p=864</guid>
+
+					<description><![CDATA[To be able of identifying these processes first you need to know a little bit [&#8230;]]]></description>
+										<content:encoded><![CDATA[
+<p>To be able of identifying these processes first you need to know a little bit about them.</p>
+
+
+
+<p></p>
+
+
+
+<blockquote class="wp-block-quote"><p><a href="https://harithj.medium.com/processes-in-linux-dce78e03172e">Process </a>is simply a <strong>running</strong> application, command, or any other program. For example, whenever you open up your browser, it is stated as being a process until the time you exit it. Another example of a process is a command that is executing until the time it <strong>completes</strong> executing.</p><p>A process is assigned many properties such as its memory context, priority which dictates how much time the CPU allocates the process, and most importantly Process ID <strong>(PID)</strong>.</p><p>After a Linux computer has been booted up, the Linux Kernel hands control over to a process known as <strong>PID1</strong>. PID1 is the primary process which is also the first process to start when Linux boots up. On older Linux systems, the primary process was known as <em>init</em>, while today, it is known as <em>Systemd</em>. The primary process has not only gone through the name transformation, but it also handles processes in a more streamlined manner. PID1 is the parent process and all the other processes are it’s child processes.</p></blockquote>
+
+
+
+<p></p>
+
+
+
+<p><strong>You can list processes by typing command &#8220;ps aux&#8221; into the terminal, where flag aux</strong></p>
+
+
+
+<ul><li><strong>a</strong>: Shows information about all users</li><li><strong>-x</strong>: Shows information about processes without terminals</li><li><strong>-u</strong>: Shows additional information like -f option</li></ul>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">ps aux</pre>
+</div></div>
+
+
+
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-full"><img decoding="async" width="640" height="186" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-150.png?resize=640%2C186&#038;ssl=1" alt="" class="wp-image-865" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-150.png?w=752&amp;ssl=1 752w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-150.png?resize=300%2C87&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-150.png?resize=24%2C7&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-150.png?resize=36%2C10&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-150.png?resize=48%2C14&amp;ssl=1 48w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p>Note: There is also command  &#8220;ps -aux&#8221; and  &#8220;ps -ef&#8221;  which are commonly used as well, you can find the difference between the two <a href="https://www.quora.com/What-is-the-difference-between-ps-elf-and-ps-aux-in-Linux">here</a>.</p>
+
+
+
+<p></p>
+
+
+
+<h3><strong>Types of Processes</strong></h3>
+
+
+
+<ol><li><strong>Parent and Child process :</strong> The 2nd and 3rd column of the ps –f command shows process id and parent’s process id number. For each user process, there’s a parent process in the system, with most of the commands having shell as their parent.</li><li><strong>Zombie and Orphan process : </strong>After completing its execution, a child process is terminated or killed and SIGCHLD updates the parent process about the termination and thus can continue the task assigned to it. But at times when the parent process is killed before the termination of the child process, the child processes become orphan processes, with the parent of all processes “init” process, becomes their new PID. <br>A process which is killed but still shows its entry in the process status or the process table is called a zombie process, they are dead and are not used.</li><li><strong>Daemon process : </strong>They are system-related background processes that often run with the permissions of root and services requests from other processes, they most of the time run in the background and wait for processes it can work along with for ex print daemon. <br>When ps –ef is executed, the process with ? in the tty field are daemon processes.</li></ol>
+
+
+
+<h3><strong>Signals</strong></h3>
+
+
+
+<p>What is signal?</p>
+
+
+
+<p>A <strong>signal</strong> is an event generated by the system in response to a specific condition. When a process receives a signal it may take an action. A standard signal has a default disposition, and it determines the behavior of the process after it is delivered.</p>
+
+
+
+<p></p>
+
+
+
+<p>Signals can be sent to a process when the system detects a software event. It can either be a user-generated signal or a process generated signal.</p>
+
+
+
+<p></p>
+
+
+
+<p><strong>What are the types of signals?</strong></p>
+
+
+
+<p id="d170">Every signal falls into one of the five classes:</p>
+
+
+
+<ul><li>Process Control</li><li>Resource Control</li><li>I/O Notification</li><li>Hardware Condition</li><li>Software Condition</li></ul>
+
+
+
+<p>There are many many signals in the Linux, you can list them by typing</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">kill -l</pre>
+</div></div>
+
+
+
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-full"><img decoding="async" loading="lazy" width="640" height="276" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-151.png?resize=640%2C276&#038;ssl=1" alt="" class="wp-image-866" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-151.png?w=736&amp;ssl=1 736w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-151.png?resize=300%2C129&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-151.png?resize=24%2C10&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-151.png?resize=36%2C16&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-151.png?resize=48%2C21&amp;ssl=1 48w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p id="3e42">The following are the signals that are commonly encountered:</p>
+
+
+
+<p id="1794"><strong>SIGHUP (1):&nbsp;</strong>If a process is running from a terminal and that terminal is closed accidentally, then the process receives this signal. “HUP” is short for “hang up” and terminates the process. If you don’t want to hang up the process when the terminal is disconnected, start the process with nohup.</p>
+
+
+
+<p id="a1b1"><strong>SIGINT (2):&nbsp;</strong>Manual interruption of a process from a keyboard. When you hit Ctrl-C, it sends a SIGINT signal to the running process and terminates it.</p>
+
+
+
+<p id="0e73"><strong>SIGQUIT(3): </strong>When a user types <code>&lt;ctrl>+\</code> in the terminal. It will force the process to produce a core dump and will terminate the process.</p>
+
+
+
+<p id="ed75"><strong>SIGKILL(9):</strong>&nbsp;Forcefully terminate a process. This signal can’t be blocked or handled. The receiving process cannot perform clean up when it is terminated with SIGKILL.</p>
+
+
+
+<p id="f77c"><strong>SIGPIPE (13)</strong>: Broken pipe. If a process is piping in its output to another process (producer | consumer) and if the consumer dies, the producer gets the SIGPIPE signal from the consumer, which terminates the producer process</p>
+
+
+
+<p id="7663"><strong>SIGTERM (15):&nbsp;</strong>It is the software termination signal. This is the signal that is sent by the kill command by default.</p>
+
+
+
+<p id="a04a"><strong>SIGCHLD(17):</strong>&nbsp;This signal is sent by a child process to its parent to intimate that the child is stopped or terminated. If a child process terminates before the parent calls the wait syscall on it, the kernel tries to keep the information about the process so that the parent can later call wait to get to know the exit status. This state of the child process, where the process terminates but the entry for the child still exists on the process table of the kernel, is referred to as zombie state and the process is called the zombie process.</p>
+
+
+
+<p id="3824"><strong>SIGUSR1, SIGUSR2: </strong>Signals reserved for developers. These signals can have a custom disposition as configured by the developer. One instance of this signal usage</p>
+
+
+
+<p></p>
+
+
+
+<h3>TOP TOOL</h3>
+
+
+
+<p>Another very useful and commonly used tool for working with Linux process and system resources is top</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">man top </pre>
+</div></div>
+
+
+
+<figure class="wp-block-image size-large is-style-default"><img decoding="async" loading="lazy" width="640" height="143" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-152.png?resize=640%2C143&#038;ssl=1" alt="" class="wp-image-867" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-152.png?resize=1024%2C228&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-152.png?resize=300%2C67&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-152.png?resize=768%2C171&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-152.png?resize=24%2C5&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-152.png?resize=36%2C8&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-152.png?resize=48%2C11&amp;ssl=1 48w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-152.png?w=1532&amp;ssl=1 1532w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-152.png?w=1280&amp;ssl=1 1280w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<figure class="wp-block-image size-full is-style-default"><img decoding="async" loading="lazy" width="640" height="248" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-153.png?resize=640%2C248&#038;ssl=1" alt="" class="wp-image-868" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-153.png?w=928&amp;ssl=1 928w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-153.png?resize=300%2C116&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-153.png?resize=768%2C298&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-153.png?resize=24%2C9&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-153.png?resize=36%2C14&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-153.png?resize=48%2C19&amp;ssl=1 48w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>In short, the top shows all currently running processes in the default order for CPU usage.</p>
+
+
+
+<p>You can change the order as anything in the Linux, for example press P is for CPU order, M is for memory etc&#8230; </p>
+
+
+
+<p></p>
+
+
+
+<h3>Identifying the processes </h3>
+
+
+
+<p>Now you finally have all the necessary knowledge and tools to manage process and send signals to them to alter their behavior.</p>
+
+
+
+<p>I&#8217;ll demonstrate this on an example. Let&#8217;s make a mini script which will act as our &#8220;unwanted process&#8221; . Simply open one terminal and type</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">while true; do echo "Make text" >> test.txt; done;</pre>
+</div></div>
+
+
+
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-full"><img decoding="async" loading="lazy" width="640" height="101" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-154.png?resize=640%2C101&#038;ssl=1" alt="" class="wp-image-869" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-154.png?w=729&amp;ssl=1 729w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-154.png?resize=300%2C47&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-154.png?resize=24%2C4&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-154.png?resize=36%2C6&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-154.png?resize=48%2C8&amp;ssl=1 48w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p>This script will repeatedly write text to the file. It&#8217;s simple, but It can get out of the hand real quick. Let&#8217;s fix that. Open another terminal alongside of our script.</p>
+
+
+
+<p>We have multiple choices now. We can either:</p>
+
+
+
+<ul><li><strong>Use top tool </strong></li></ul>
+
+
+
+<figure class="wp-block-image size-full is-style-default"><img decoding="async" loading="lazy" width="640" height="65" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-156.png?resize=640%2C65&#038;ssl=1" alt="" class="wp-image-871" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-156.png?w=982&amp;ssl=1 982w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-156.png?resize=300%2C30&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-156.png?resize=768%2C77&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-156.png?resize=24%2C2&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-156.png?resize=36%2C4&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-156.png?resize=48%2C5&amp;ssl=1 48w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p>We can already see our process as the second in the list. We know it&#8217;s our process because the command identify as bash in which is our script written. And in just the few seconds it&#8217;s taking a lot of resources.</p>
+
+
+
+<p>Now we know the PID of the process we want to end, press &#8220;k&#8221; on your keyboard while you are still in the top utility.</p>
+
+
+
+<p>You will be prompted with &#8220;mini killing terminal&#8221; in which you just type the process name.</p>
+
+
+
+<figure class="wp-block-image size-full is-style-default"><img decoding="async" loading="lazy" width="640" height="152" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-157.png?resize=640%2C152&#038;ssl=1" alt="" class="wp-image-872" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-157.png?w=991&amp;ssl=1 991w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-157.png?resize=300%2C71&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-157.png?resize=768%2C183&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-157.png?resize=24%2C6&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-157.png?resize=36%2C9&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-157.png?resize=48%2C11&amp;ssl=1 48w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>Press enter and the top command will ask you which signal do you which to send to the process (the default one is 15). The 15 or SIGTERM can be ignored be the process, so I always prefer to send SIGKILL with number 9 and press enter.</p>
+
+
+
+<p></p>
+
+
+
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-full"><img decoding="async" loading="lazy" width="640" height="138" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-158.png?resize=640%2C138&#038;ssl=1" alt="" class="wp-image-873" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-158.png?w=981&amp;ssl=1 981w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-158.png?resize=300%2C65&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-158.png?resize=768%2C165&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-158.png?resize=24%2C5&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-158.png?resize=36%2C8&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-158.png?resize=48%2C10&amp;ssl=1 48w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+
+<ul><li><strong>Use px aux</strong></li></ul>
+
+
+
+<p>While the top command shows you a live feed of processes, the ps aux makes a current snapshot and sends it to the terminal. Both are not good or bad, it&#8217;s just simply about the uses cases.</p>
+
+
+
+<p>The default ps aux displays process sorted by PID number, which is a little useless to us at the moment.</p>
+
+
+
+<figure class="wp-block-image size-full is-style-default"><img decoding="async" loading="lazy" width="640" height="167" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-159.png?resize=640%2C167&#038;ssl=1" alt="" class="wp-image-874" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-159.png?w=988&amp;ssl=1 988w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-159.png?resize=300%2C78&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-159.png?resize=768%2C201&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-159.png?resize=24%2C6&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-159.png?resize=36%2C9&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-159.png?resize=48%2C13&amp;ssl=1 48w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>To change this we use pipe and grep to filter out results.</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">ps aux | grep bash</pre>
+</div></div>
+
+
+
+<figure class="wp-block-image size-full is-style-default"><img decoding="async" loading="lazy" width="640" height="79" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-160.png?resize=640%2C79&#038;ssl=1" alt="" class="wp-image-875" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-160.png?w=906&amp;ssl=1 906w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-160.png?resize=300%2C37&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-160.png?resize=768%2C95&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-160.png?resize=24%2C3&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-160.png?resize=36%2C4&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-160.png?resize=48%2C6&amp;ssl=1 48w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>We can see a few things here, but with a little thinking you can easily figure out which one is our unwanted process.</p>
+
+
+
+<p>When you have the right process, we are going to use the kill command with the signal we want to send.</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">kill -9 *PID*</pre>
+
+
+
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-full"><img decoding="async" loading="lazy" width="640" height="141" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-162.png?resize=640%2C141&#038;ssl=1" alt="" class="wp-image-877" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-162.png?w=731&amp;ssl=1 731w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-162.png?resize=300%2C66&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-162.png?resize=24%2C5&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-162.png?resize=36%2C8&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-162.png?resize=48%2C11&amp;ssl=1 48w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+</div></div>
+
+
+
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-full"><img decoding="async" loading="lazy" width="640" height="116" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-163.png?resize=640%2C116&#038;ssl=1" alt="" class="wp-image-878" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-163.png?w=736&amp;ssl=1 736w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-163.png?resize=300%2C54&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-163.png?resize=24%2C4&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-163.png?resize=36%2C7&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/01/image-163.png?resize=48%2C9&amp;ssl=1 48w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p></p>
+
+
+
+<p>One last command I&#8217;ll show you is &#8220;pkill&#8221; which doesn&#8217;t need PID of process we want to kill but rather name. This can be very dangerous, and it&#8217;s not so versatile, so I don&#8217;t like to use it. This will kill all the process which we greped above. Even our console we are watching the processes from. </p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">pkill bash</pre>
+
+
+
+<p></p>
+
+
+
+<p></p>
+</div></div>
+
+
+
+<blockquote class="wp-block-quote"><p>Note: You&#8217;ve maybe noticed the another process that is taking a lot of resources. &#8220;tracker-miner-f&#8221; is on the top of top command, but what is it? Because we have been constantly writing new text in to the file, we also used a lot of resources on the process which is indexing these files. </p><p>tracker -miner-f is used to index the names and contents of your files in order to easily search and access them in Nautilus</p></blockquote>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">864</post-id>	</item>
+		<item>
+		<title>How To Overclock the Raspberry PI 4 B</title>
+		<link>https://thetechcorner.org/?p=209&#038;utm_source=rss&#038;utm_medium=rss&#038;utm_campaign=how-to-overclock-the-raspberry-pi-4-b</link>
+					<comments>https://thetechcorner.org/?p=209#comments</comments>
+		
+		<dc:creator><![CDATA[Filip Zverec]]></dc:creator>
+		<pubDate>Thu, 07 Jan 2021 12:25:59 +0000</pubDate>
+				<category><![CDATA[HomeLab]]></category>
+		<category><![CDATA[cpu]]></category>
+		<category><![CDATA[gpu]]></category>
+		<category><![CDATA[overclock]]></category>
+		<category><![CDATA[pi]]></category>
+		<category><![CDATA[Raspberry]]></category>
+		<guid isPermaLink="false">https://thetechcorner.org/?p=209</guid>
+
+					<description><![CDATA[Raspberry PI 4 B comes with the 1.5GHz 4 cores ARM Cortex-A72 processor. But this [&#8230;]]]></description>
+										<content:encoded><![CDATA[
+<p><strong>Raspberry PI 4 B</strong> comes with the <strong>1.5GHz</strong> 4 cores ARM Cortex-A72 processor. But this number can be pushed even further with some easy overclocking adjustments. </p>
+
+
+
+<p>This can help a lot with your future projects which might require a lot computing power.</p>
+
+
+
+<p>I <strong>HIGHLY</strong> recommend using some sort of cooling case or fan because Raspberry PI 4 B has gotten so powerfull that now you pretty much need to have a fan to be able to use it to full potential.</p>
+
+
+
+<p></p>
+
+
+
+<p></p>
+
+
+
+<h3><strong>WARNING! </strong></h3>
+
+
+
+<p>You might see some crashes if you don&#8217;t have a fan or you want to push your PI even harder. This might corrupt your SD card, so if you have any data that you don&#8217;t want to lose you should backup your PI or use clean Raspbian installation. </p>
+
+
+
+<p></p>
+
+
+
+<h4><strong>Useful information</strong></h4>
+
+
+
+<p>Although Raspberry PI 4 B can run at 1.5GHz, it typically idles at 600MHz and only boost clock higher when needed. </p>
+
+
+
+<p>if you don&#8217;t know what overclocking is, basically it&#8217;s just process in which we set higher allowed maximum clock speed.</p>
+
+
+
+<p>Every unit is <strong>different!</strong> My settings might end up crashing your PI and vice versa. Also it should be noted that I&#8217;m using both fan and aluminium case which can absorb a lot of heat. </p>
+
+
+
+<p></p>
+
+
+
+<p></p>
+
+
+
+<h3><strong>Let&#8217;s get started</strong> </h3>
+
+
+
+<ol><li>If you didn&#8217;t setup your PI yet, here is a tutorial for that.</li><li>After that, make sure you are running the latest update and the latest version of the Raspbian OS. For that open terminal and type</li></ol>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted"><strong>sudo apt update &amp;&amp; sudo apt dist-upgrade -y</strong></pre>
+
+
+
+<pre class="wp-block-preformatted"><strong>sudo shutdown -r +0</strong></pre>
+</div></div>
+
+
+
+<p></p>
+
+
+
+<p>3.  Next we need to watch our current clock speed. For that open another terminal (in a PuTTy you can just right click&gt;Duplicate Session) and type:</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-code"><code>watch -n 1 vcgencmd measure_clock arm</code></pre>
+</div></div>
+
+
+
+<p>As you can see our clock speed is idling around 600MHz. And if I open something in the background (browser, for example) It changes to 1.5GHz</p>
+
+
+
+<div class="wp-block-image"><figure class="aligncenter size-large"><img decoding="async" loading="lazy" width="640" height="96" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-21.png?resize=640%2C96&#038;ssl=1" alt="" class="wp-image-212" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-21.png?w=659&amp;ssl=1 659w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-21.png?resize=300%2C45&amp;ssl=1 300w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+
+<div class="wp-block-image"><figure class="aligncenter size-large"><img decoding="async" loading="lazy" width="640" height="98" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-22.png?resize=640%2C98&#038;ssl=1" alt="" class="wp-image-213" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-22.png?w=656&amp;ssl=1 656w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-22.png?resize=300%2C46&amp;ssl=1 300w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p></p>
+
+
+
+<p>4. We are going to set a new value for our frequency in a config file. For that we need to open a new terminal and type:</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">sudo nano /boot/config.txt</pre>
+</div></div>
+
+
+
+<p>You should be in the config.txt file. Scroll down a little bit and you should see something like this </p>
+
+
+
+<div class="wp-block-image"><figure class="aligncenter size-large"><img decoding="async" loading="lazy" width="458" height="55" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-24.png?resize=458%2C55&#038;ssl=1" alt="" class="wp-image-216" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-24.png?w=458&amp;ssl=1 458w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-24.png?resize=300%2C36&amp;ssl=1 300w" sizes="(max-width: 458px) 100vw, 458px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p>Now change it to <strong>over_voltage=2</strong> and <strong>arm_freq=1750</strong>. Over voltage is a setting that tells how much voltage should PI send into the CPU/GPU. With higher clocks you need to give a PI more juice right? The default value is 0, but you can change it anywhere between -18 and 8.</p>
+
+
+
+<p>You need to be careful because with higher voltage intake there is a higher temperature and with the higher temperature your PI will automatically slow down to prevent melting.</p>
+
+
+
+<p>On the other side if you would see a yellow lightings bolt looking like this</p>
+
+
+
+<div class="wp-block-image"><figure class="aligncenter size-large is-resized"><img decoding="async" loading="lazy" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/ezgif-4-beb0a7cb95d5.png?resize=45%2C45&#038;ssl=1" alt="" class="wp-image-220" width="45" height="45" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/ezgif-4-beb0a7cb95d5.png?w=180&amp;ssl=1 180w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/ezgif-4-beb0a7cb95d5.png?resize=150%2C150&amp;ssl=1 150w" sizes="(max-width: 45px) 100vw, 45px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p></p>
+
+
+
+<p>then your PI is not getting enough voltage or amps (in this case you would need a stronger power supply)</p>
+
+
+
+<div class="wp-block-image"><figure class="aligncenter size-large"><img decoding="async" loading="lazy" width="463" height="68" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-25.png?resize=463%2C68&#038;ssl=1" alt="" class="wp-image-217" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-25.png?w=463&amp;ssl=1 463w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-25.png?resize=300%2C44&amp;ssl=1 300w" sizes="(max-width: 463px) 100vw, 463px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p>If you do have a fan, you can probably push it even more. You can see my settings here:</p>
+
+
+
+<div class="wp-block-image"><figure class="aligncenter size-large"><img decoding="async" loading="lazy" width="458" height="63" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-26.png?resize=458%2C63&#038;ssl=1" alt="" class="wp-image-218" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-26.png?w=458&amp;ssl=1 458w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-26.png?resize=300%2C41&amp;ssl=1 300w" sizes="(max-width: 458px) 100vw, 458px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p></p>
+
+
+
+<p>Press <strong>ctrl + o</strong> to save changed edited file and confirm with ENTER. Then press <strong>ctrl + x</strong> to exit from the file. </p>
+
+
+
+<p>Now we need to reboot PI to apply the new settings. Type:</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre id="block-f1025b7e-6831-4143-b9a4-8023ff1be7df" class="wp-block-preformatted"><strong>sudo shutdown -r +0</strong></pre>
+</div></div>
+
+
+
+<p>I would not try to overclock more if your PI seems stable and you are not getting any crashes. </p>
+
+
+
+<p>You should play with the value on your own and try all possible combinations to fit your best preferences. </p>
+
+
+
+<p>You want a faster but louder PI, push it to the maximum! Or maybe you don&#8217;t want to hear that annoying fan and you only want to use PI to learn some Linux basics. In that case maybe don&#8217;t overclock at all. It&#8217;s enterily up to you.</p>
+
+
+
+<p></p>
+
+
+
+<p>For last but not least I will show you how to overclock the GPU. This can be very useful if you are planning on playing games, or watching 4K content or maybe using your GPU for AI rendering.</p>
+
+
+
+<p>Again open <strong>/boot/config.txt</strong> file and add a new line <strong>gpu_freq=750</strong>.</p>
+
+
+
+<div class="wp-block-image"><figure class="aligncenter size-large"><img decoding="async" loading="lazy" width="459" height="67" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-27.png?resize=459%2C67&#038;ssl=1" alt="" class="wp-image-221" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-27.png?w=459&amp;ssl=1 459w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-27.png?resize=300%2C44&amp;ssl=1 300w" sizes="(max-width: 459px) 100vw, 459px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p></p>
+
+
+
+<p>Save and exit from the file, reboot the PI and you are ready to go!</p>
+
+
+
+<p>I hope you didn&#8217;t overcook your PI! And if so, then just write a new image on the SD card and repeat with lower settings.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://thetechcorner.org/?feed=rss2&#038;p=209</wfw:commentRss>
+			<slash:comments>1</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">209</post-id>	</item>
+	</channel>
+</rss>

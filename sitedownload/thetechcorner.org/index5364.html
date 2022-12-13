@@ -1,0 +1,854 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	
+	xmlns:georss="http://www.georss.org/georss"
+	xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+	>
+
+<channel>
+	<title>Networking Basics &#8211; TheTechCorner</title>
+	<atom:link href="https://thetechcorner.org/?feed=rss2&#038;cat=142" rel="self" type="application/rss+xml" />
+	<link>https://thetechcorner.org</link>
+	<description>A corner on the internet where I share my ideas, guides and projects</description>
+	<lastBuildDate>Tue, 29 Nov 2022 19:06:50 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.1.1</generator>
+<site xmlns="com-wordpress:feed-additions:1">187618359</site>	<item>
+		<title>SPF, DKIM and DMARC explained</title>
+		<link>https://thetechcorner.org/?p=1494&#038;utm_source=rss&#038;utm_medium=rss&#038;utm_campaign=spf-dkim-and-dmarc-explained</link>
+					<comments>https://thetechcorner.org/?p=1494#respond</comments>
+		
+		<dc:creator><![CDATA[Filip Zverec]]></dc:creator>
+		<pubDate>Sun, 27 Nov 2022 11:59:21 +0000</pubDate>
+				<category><![CDATA[Networking Basics]]></category>
+		<category><![CDATA[dmarc]]></category>
+		<guid isPermaLink="false">https://thetechcorner.org/?p=1494</guid>
+
+					<description><![CDATA[What even is SPF, DKIM and DMARC? SPF, DKIM and DMARC are simply a set [&#8230;]]]></description>
+										<content:encoded><![CDATA[
+<p></p>
+
+
+
+<h3>What even is SPF, DKIM and DMARC?</h3>
+
+
+
+<p>SPF, DKIM and DMARC are simply a set of email authentication protocols, that prove to ISPs and mail services that senders are truly authorized to send email from a particular domain. These tools provide proof that an email message is genuine and that it’s coming from who it claims to be from.</p>
+
+
+
+<p></p>
+
+
+
+<h3>SPF</h3>
+
+
+
+<p><strong>SPF (Sender Policy Framework)&nbsp;</strong>is a DNS record containing information about&nbsp;<strong>servers allowed to send emails</strong>&nbsp;from a specific domain (for example,&nbsp;thetechcorner.org). To do that, the domain owner can add a file or record on the server which tells the receiving server what domains are actually allowed to send emails.</p>
+
+
+
+<p>SPF is both useful for protecting against MailFrom spoofing of your domain towards your users, but also to external destinations where it could harm your brand. Ie, Microsoft&#8217;s SPF record stops MailFrom spoofing from @microsoft.com not just to @microsoft.com but also to you which helps stop some fake Microsoft phishing emails.</p>
+
+
+
+<p><strong>How does it look like</strong></p>
+
+
+
+<div class="is-layout-constrained wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-code"><code>v=spf1 include:5123454.thetechcorner.org ~all</code></pre>
+</div></div>
+
+
+<div class="wp-block-image">
+<figure class="aligncenter size-large is-resized"><img decoding="async" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-1.png?resize=640%2C360&#038;ssl=1" alt="" class="wp-image-1496" width="640" height="360" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-1.png?resize=1024%2C576&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-1.png?resize=300%2C169&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-1.png?resize=768%2C432&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-1.png?resize=1536%2C864&amp;ssl=1 1536w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-1.png?resize=2048%2C1152&amp;ssl=1 2048w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-1.png?resize=24%2C14&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-1.png?resize=36%2C20&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-1.png?resize=48%2C27&amp;ssl=1 48w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-1.png?w=1280&amp;ssl=1 1280w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-1.png?w=1920&amp;ssl=1 1920w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+<p></p>
+
+
+
+<h3>DKIM</h3>
+
+
+
+<p>DKIM or (<strong>DomainKeys Identified Mail</strong>) is an authentication similar to SPF. DKIM is a key-pair signing mechanism for the header of mail messages. . When you send mail you attach a signature to the message using a private key which is compared to a public key published in DNS for your domain. DKIM adds authenticity to a message and guards against tampering with the header by down-stream mail servers. One of the benefits to working on the header is it survives SMTP relaying and auto-forwarding.</p>
+
+
+
+<p>DKIM is added as a TXT record by adding it into your domain panel. </p>
+
+
+
+<p><strong>DKIM does not directly prevent abusive / malicious behavior.</strong>&nbsp;DKIM is just a signature&#8230; If I hand you a letter with my signature on it there&#8217;s added authenticity; However, if I hand you a letter without my signature if there&#8217;s no requirement for the letter to be signed there&#8217;s no reason to be suspicious. It&#8217;s like SSL, just because a website doesn&#8217;t have SSL doesn&#8217;t mean it&#8217;s fake, but it&#8217;s preferred when SSL is used.</p>
+
+
+
+<p><strong>How does it look like</strong></p>
+
+
+
+<div class="is-layout-constrained wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-code"><code>k=rsa; p=MIGfMA0GCksjlkdixcieJDDSFIELDSKfdsfsdfsdfsfksflsfldfsfjhsdfsdfhuisdhfuiehfhNyyHs77EoDFDDEEFFEKJKLJHLKifLN51IIvwIDAQABQp6nIyi5oioyZh+1jDXoCDDFDSFEEDSFSEFE85N7b76aTtHmy2wTgR2LFS</code></pre>
+</div></div>
+
+
+<div class="wp-block-image">
+<figure class="aligncenter size-large is-resized"><img decoding="async" loading="lazy" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-2.png?resize=640%2C359&#038;ssl=1" alt="" class="wp-image-1497" width="640" height="359" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-2.png?resize=1024%2C576&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-2.png?resize=300%2C169&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-2.png?resize=768%2C432&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-2.png?resize=1536%2C864&amp;ssl=1 1536w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-2.png?resize=2048%2C1152&amp;ssl=1 2048w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-2.png?resize=24%2C14&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-2.png?resize=36%2C20&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-2.png?resize=48%2C27&amp;ssl=1 48w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-2.png?w=1280&amp;ssl=1 1280w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-2.png?w=1920&amp;ssl=1 1920w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+<p></p>
+
+
+
+<h3>DMARC</h3>
+
+
+
+<p><strong>DMARC (Domain-based Message Authentication, Reporting &amp; Conformance)&nbsp;</strong>defines how the recipient’s mail server should process incoming emails if they don’t pass the authentication check (either SPF, DKIM, or both).</p>
+
+
+
+<p>If the message fails authentication, it’s processed according to the selected DMARC policy:&nbsp;<strong>none, reject,&nbsp;</strong>or&nbsp;<strong>quarantine.</strong></p>
+
+
+
+<ul>
+<li>Under the&nbsp;<strong>“none”</strong>&nbsp;policy, the receiving server doesn’t take any action if your emails fail authentication. It doesn’t impact your deliverability. But it also doesn’t protect you from scammers, so we don’t recommend setting it. Only by introducing stricter policies can you block them in the very beginning and let the world know you care about your customers and brand.&nbsp;</li>
+
+
+
+<li>Here, messages that come from your domain but don’t pass the DMARC check go to&nbsp;<strong>“quarantine.”</strong>&nbsp;In such a case, the provider is advised to send your email to the spam folder.&nbsp;</li>
+
+
+
+<li>Under the&nbsp;<strong>“reject”&nbsp;</strong>policy, the receiving server rejects all messages that don’t pass email authentication. This means such emails won’t reach an addressee and will result in a bounce.</li>
+</ul>
+
+
+
+<p></p>
+
+
+
+<p>The R in DMARC is for the Reporting component of the protocol. These reports allow the domain owner to see where all email using their domain in the From address is being sent from.</p>
+
+
+
+<p></p>
+
+
+
+<p><strong>The DMARC record of the domain in the header from address is used if it exists.</strong>&nbsp;Like the above records, it exists as a TXT record in DNS.</p>
+
+
+
+<p>DMARC&#8217;s conformance check is called &#8220;alignment&#8221; and it checks that the header from is &#8220;aligned&#8221; with other authenticated domains on the message, either via DKIM or SPF. If&nbsp;<strong>either</strong>&nbsp;DKIM or SPF alignment passes, DMARC evaluates as a &#8220;PASS.&#8221;</p>
+
+
+
+<p><strong>SPF Alignment:</strong>&nbsp;The domain in the header from and envelope from must be the same (or sub-domains of the same parent domain if &#8220;relaxed&#8221;) and must pass SPF.</p>
+
+
+
+<p><strong>DKIM Alignment:</strong>&nbsp;DMARC requires a valid signature where the domain specified in the&nbsp;<code>d=</code>&nbsp;tag aligns with the sender&#8217;s domain from the header from field.</p>
+
+
+
+<p><strong>How does it look like</strong></p>
+
+
+
+<div class="is-layout-constrained wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-code"><code>&nbsp;_dmarc.thetechcorner.org. IN TXT "v=DMARC1\; p=none\; rua=mailto:dmarc-aggregate@thetechcorner.org\; ruf=mailto:dmarc-afrf@thetechcorner.org\; pct=100"</code></pre>
+</div></div>
+
+
+<div class="wp-block-image">
+<figure class="aligncenter size-large is-resized"><img decoding="async" loading="lazy" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-3.png?resize=640%2C358&#038;ssl=1" alt="" class="wp-image-1498" width="640" height="358" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-3.png?resize=1024%2C574&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-3.png?resize=300%2C168&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-3.png?resize=2048%2C1149&amp;ssl=1 2048w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-3.png?resize=24%2C13&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-3.png?resize=36%2C20&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-3.png?resize=48%2C27&amp;ssl=1 48w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-3.png?w=1280&amp;ssl=1 1280w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-3.png?w=1920&amp;ssl=1 1920w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+<p></p>
+
+
+
+<h3>TLDR:</h3>
+
+
+
+<ul>
+<li>Envelope from spoofing: SPF</li>
+
+
+
+<li>Header from spoofing: SPF + DMARC, DKIM + DMARC, or SPF + DKIM + DMARC. No one mechanism alone will be sufficient.</li>
+
+
+
+<li>Display name spoofing: Advanced threat filters, transport rules, and user training. None of the mechanisms care about the display name.</li>
+
+
+
+<li>Compromised mailboxes or &#8220;legitimate&#8221; senders: Advanced threat filters, transport rules, and user training.</li>
+</ul>
+
+
+
+<p></p>
+
+
+
+<h3>Useful tools:</h3>
+
+
+
+<p><a href="https://mxtoolbox.com/">https://mxtoolbox.com/</a>                                             &#8230;. Multiple mail tools like SPF lookup, blacklist DMARC&#8230;.</p>
+
+
+
+<p><a href="https://www.learndmarc.com/#">https://www.learndmarc.com/#</a>                            &#8230; SPF, DKIM DMARC training tool</p>
+
+
+
+<p><a href="https://kitterman.com/spf/validate.html">https://kitterman.com/spf/validate.html</a>             &#8230; Validate your SPF record</p>
+
+
+
+<p><a href="https://www.mailgenius.com/">https://www.mailgenius.com/</a>                                 &#8230;.Check your mail server/domain score</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://thetechcorner.org/?feed=rss2&#038;p=1494</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">1494</post-id>	</item>
+		<item>
+		<title>Networking basics II &#8211; DNS, SSH, NFS, NAT</title>
+		<link>https://thetechcorner.org/?p=575&#038;utm_source=rss&#038;utm_medium=rss&#038;utm_campaign=networking-basics-ii-dns-ssh-nfs-nat</link>
+		
+		<dc:creator><![CDATA[Filip Zverec]]></dc:creator>
+		<pubDate>Fri, 24 Dec 2021 12:57:59 +0000</pubDate>
+				<category><![CDATA[Networking Basics]]></category>
+		<category><![CDATA[basics]]></category>
+		<category><![CDATA[nat]]></category>
+		<category><![CDATA[nfs]]></category>
+		<guid isPermaLink="false">https://thetechcorner.org/?p=575</guid>
+
+					<description><![CDATA[In the previous post I&#8217;ve explained to you the very basics of the networking, what&#8217;s [&#8230;]]]></description>
+										<content:encoded><![CDATA[
+<p>In the previous <a href="https://thetechcorner.org/?p=267">post</a> I&#8217;ve explained to you the very basics of the networking, what&#8217;s the OSI Model, TCP/IP model, Router, Switch, LAN and WAN. </p>
+
+
+
+<p>In the second chapter of this series, I&#8217;m going to continue with another important protocols that are regularly used in administration or even non-tech person life.</p>
+
+
+
+<p></p>
+
+
+
+<h3><strong>DNS</strong></h3>
+
+
+
+<p> You could say that the Domain Name System or shortly DNS is the phone book of the internet.  </p>
+
+
+
+<p>So what is does is translation of the IP addresses to domain names. </p>
+
+
+
+<p>While the IP convention scheme allows computers to send each other messages, it&#8217;s not really handy for people to remember. For example, what would be easier for you to remember, the domain www.google.com or 8.8.8.8.? Maybe that was a bad example because the IP of Google is so easy, but you get the point.</p>
+
+
+
+<p><strong>How does it work?</strong></p>
+
+
+
+<p>The process of DNS resolution involves converting a hostname (www.test.com) into a computer friendly IP address, such as 192.168.1.1. An IP address is given to each device on the Internet, and that address is necessary to find the appropriate Internet device &#8211; like a street address is used to find a particular home. When a user wants to load a webpage, a translation must occur between what a user types into their web browser (example.com) and the machine-friendly address necessary to locate the example.com webpage.</p>
+
+
+
+<p></p>
+
+
+
+<h3><strong>SSH</strong></h3>
+
+
+
+<p>SSH or Secure Shell is a network communication protocol that enables two computers to communicate with each other and share data. This communication is encrypted, meaning it&#8217;s suitable for use on an insecure network.</p>
+
+
+
+<p>It&#8217;s most used case scenario is login and remote work on computers/servers, but it&#8217;s also possible to transfer data with it.</p>
+
+
+
+<p></p>
+
+
+
+<h3><strong>NFS</strong></h3>
+
+
+
+<p>Network File System or NFS is a protocol invented in the 80&#8217;s to facilitate better remote file sharing between computers. It enables the storage and retrieval of the data from multiple disks and directories across a shared network.</p>
+
+
+
+<p>An NFS uses a basic system where a “mount”  command will prompt the server to link with many clients. The clients will get access to the same files on the server through the proper platform. The design can use security protocols to dictate who will access certain files, producing a simplified and safe approach to work.</p>
+
+
+
+<p></p>
+
+
+
+<p><strong>How does it work?</strong></p>
+
+
+
+<p>An NFS can also use a file locking system that allows many clients to share the same files. The NFS can manage multiple application or compute threads for operation.<br>The NFS uses several hosts that will access the same files. It does not require one application for its operation, providing a simple design for handling the content one will read.</p>
+
+
+
+<h3><br><strong>NAT</strong></h3>
+
+
+
+<p>Network Address Translation or NAT is a process in which one or more local IP address is translated into one or more global IP addresses.</p>
+
+
+
+<p>The idea of NAT is to allow multiple devices to access the internet through a single public address.</p>
+
+
+
+<p></p>
+
+
+
+<p><strong>How does it work?</strong></p>
+
+
+
+<p>Generally, the border router is configured for NAT i.e the router which has one interface in the local (inside) network and one interface in the global (outside) network. When a packet traverse outside the local (inside) network, then NAT converts that local (private) IP address to a global (public) IP address. When a packet enters the local network, the global (public) IP address is converted to a local (private) IP address.&nbsp;</p>
+
+
+
+<div class="wp-block-image"><figure class="aligncenter size-large is-resized"><img decoding="async" loading="lazy" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/pngegg.png?resize=502%2C332&#038;ssl=1" alt="" class="wp-image-576" width="502" height="332" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/pngegg.png?resize=1024%2C677&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/pngegg.png?resize=300%2C198&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/pngegg.png?resize=768%2C508&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/pngegg.png?resize=1536%2C1016&amp;ssl=1 1536w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/pngegg.png?resize=24%2C16&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/pngegg.png?resize=36%2C24&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/pngegg.png?resize=48%2C32&amp;ssl=1 48w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/pngegg.png?w=2000&amp;ssl=1 2000w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/pngegg.png?w=1280&amp;ssl=1 1280w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/pngegg.png?w=1920&amp;ssl=1 1920w" sizes="(max-width: 502px) 100vw, 502px" data-recalc-dims="1" /></figure></div>
+
+
+
+<h3><strong>Firewall</strong></h3>
+
+
+
+<p>A firewall is a security device, it can be computer hardware or software. Firewall&nbsp;can help protect your network by filtering traffic and blocking outsiders from&nbsp;gaining unauthorized access to the private data on your computer.</p>
+
+
+
+<p>Not only does a firewall block unwanted traffic, it can also help block malicious software from infecting your computer.</p>
+
+
+
+<p>A firewall acts as a gatekeeper. It monitors attempts to gain access to&nbsp;your operating system and blocks unwanted traffic or unrecognized sources.</p>
+
+
+
+<p>How does it do this? A firewall acts as a barrier or filter between your&nbsp;computer and another network such as the internet.&nbsp;</p>
+
+
+
+<p></p>
+
+
+
+<p><strong>How does it work?</strong></p>
+
+
+
+<p>To start, a firewalled system analyzes network traffic based on rules. A&nbsp;firewall only welcomes those incoming connections that it has been configured&nbsp;to accept. It does this by allowing or blocking specific data packets — units&nbsp;of communication you send over digital networks — based on pre-established&nbsp;security rules.</p>
+
+
+
+<p>A firewall works like a traffic guard at your computer’s entry point, or&nbsp;port. Only trusted sources, or IP addresses, are allowed in. IP addresses are&nbsp;important because they&nbsp;identify a computer or source, just like your postal address identifies where you live.</p>
+
+
+
+<p></p>
+
+
+
+<div class="wp-block-image"><figure class="aligncenter size-full is-resized"><img decoding="async" loading="lazy" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/pngegg-1.png?resize=500%2C323&#038;ssl=1" alt="" class="wp-image-577" width="500" height="323" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/pngegg-1.png?w=636&amp;ssl=1 636w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/pngegg-1.png?resize=300%2C194&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/pngegg-1.png?resize=24%2C16&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/pngegg-1.png?resize=36%2C23&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/pngegg-1.png?resize=48%2C31&amp;ssl=1 48w" sizes="(max-width: 500px) 100vw, 500px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p></p>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">575</post-id>	</item>
+		<item>
+		<title>Networking basics &#8211; OSI Model, TCP/IP Model, Router, Switch, LAN, WAN</title>
+		<link>https://thetechcorner.org/?p=267&#038;utm_source=rss&#038;utm_medium=rss&#038;utm_campaign=networking-basics-osi-model-tcp-ip-model-router-switch-lan-wan</link>
+					<comments>https://thetechcorner.org/?p=267#comments</comments>
+		
+		<dc:creator><![CDATA[Filip Zverec]]></dc:creator>
+		<pubDate>Tue, 12 Jan 2021 18:52:42 +0000</pubDate>
+				<category><![CDATA[Networking Basics]]></category>
+		<category><![CDATA[basics]]></category>
+		<category><![CDATA[IP]]></category>
+		<category><![CDATA[LAN]]></category>
+		<category><![CDATA[networking]]></category>
+		<category><![CDATA[OSI]]></category>
+		<category><![CDATA[router]]></category>
+		<category><![CDATA[TCP]]></category>
+		<category><![CDATA[WAN]]></category>
+		<guid isPermaLink="false">https://thetechcorner.org/?p=267</guid>
+
+					<description><![CDATA[To start learning about networking and how it all works, first you need to understand [&#8230;]]]></description>
+										<content:encoded><![CDATA[
+<p>To start learning about networking and how it all works, first you need to understand <strong>the</strong> <strong>basics</strong>. One of the most important ones is the <strong>concept</strong> <strong>of </strong>that <strong>how communication</strong> between devices on the network <strong>works</strong>.</p>
+
+
+
+<p><strong>OSI Model</strong> can give you the best idea for that. There is a new model that is used nowadays called <strong>TCP/IP</strong> but I think this is better to start with. </p>
+
+
+
+<p></p>
+
+
+
+<h2><strong>OSI Model</strong></h2>
+
+
+
+<p>Simply put <strong>OSI model</strong> is a sequence of steps for communication between devices which are described in <strong>7 layer model</strong> called the OSI model. It was made so there would be strict protocol, which <strong>all devices must follow</strong>, so there wouldn&#8217;t be any confusion and for people to understand how it all works.</p>
+
+
+
+<p>It looks something like this and it works both ways. That means it <strong>starts</strong> with a <strong>Senders application layer </strong>going threw all of the layers, <strong>ends </strong>with <strong>Physical layer </strong>and then is <strong>sent</strong> <strong>over the network</strong> to the <strong>physical layer</strong> of the <strong>Reciever</strong> and <strong>again</strong> <strong>going threw all the layers</strong> and ends with the <strong>Application layer</strong>.</p>
+
+
+
+<div class="wp-block-image"><figure class="aligncenter size-full"><img decoding="async" loading="lazy" width="640" height="369" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/pngegg-1-3.png?resize=640%2C369&#038;ssl=1" alt="" class="wp-image-277" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/pngegg-1-3.png?w=735&amp;ssl=1 735w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/pngegg-1-3.png?resize=300%2C173&amp;ssl=1 300w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p></p>
+
+
+
+<p><strong>Let&#8217;s start from the top</strong> I think that&#8217;s the easiest way to explain it.</p>
+
+
+
+<h4><strong>Layer 7: Application Layer</strong></h4>
+
+
+
+<p>Communication starts <strong>on</strong> the <strong>top</strong> with the <strong>Appliccation layer which is closest to the end user</strong>. <strong>This layer interacts with the software applications</strong>. There applications are outside of the OSI model. Application layer functions typically include identifying communication partners, determining resource availability and synchronizing communication.</p>
+
+
+
+<p></p>
+
+
+
+<h4><strong>Layer 6: Presentation Layer</strong></h4>
+
+
+
+<p><strong>The presentation layer establishes&nbsp;a bridge&nbsp;between application layer entities</strong> (which can all have different syntax and langue) <strong>and the</strong> <strong>network format </strong>(which need to stay the same).</p>
+
+
+
+<p></p>
+
+
+
+<h4><strong>Layer 5: Session Layer</strong></h4>
+
+
+
+<p>The session layer main function is to establish, manage and terminate the connections between the local and remote application. Simply put, it controls the dialogues (connections) between computers. </p>
+
+
+
+<p>The session layer ensures that the session stays open long enough to transfer all the data being exchanged, and then promptly closes the session in order to avoid wasting resources.</p>
+
+
+
+<h4><strong>Layer 4: Transport Layer</strong></h4>
+
+
+
+<p><strong>The transport Layer is responsible for end-to-end communication between the two devices</strong>. It takes data from the session layer and breaks them up into chunks called segments before sending it to layer 3. </p>
+
+
+
+<p>Layer 4 is also responsible for the flow control (optimal speed so it won&#8217;t be too slow or too fast)and error control (when it receives the data, it makes sure that they are complete and request a retransmission they aren&#8217;t).</p>
+
+
+
+<p></p>
+
+
+
+<h4><strong>Layer 3: Network Layer</strong></h4>
+
+
+
+<p><strong>The network layer is responsible for managing data transfer between two different networks.</strong> If the two devices are on the same network, then this layer is unnecessary.</p>
+
+
+
+<p>The network layer breaks up segments from&nbsp;the transport layer&nbsp;into even smaller units called packets.&nbsp;Then these packets&nbsp;are sent&nbsp;to the&nbsp;receiver&nbsp;and&nbsp;reassembled&nbsp;there. </p>
+
+
+
+<p>This layer is also responsible for finding the best physical path for the data to reach its destination.</p>
+
+
+
+<p></p>
+
+
+
+<h4><strong>Layer 2: The Data link Layer</strong></h4>
+
+
+
+<p>The data link layer is very similar to the network layer except <strong>it is used when data is transferred between devices on the same network.</strong></p>
+
+
+
+<p>The data link layer takes packets from the network layer and breaks them into even smaller pieces called frames.</p>
+
+
+
+<p>As network layer it&#8217;s also responsible for the flow control and error control.</p>
+
+
+
+<p></p>
+
+
+
+<h4><strong>Layer 1: The Physical Layer</strong></h4>
+
+
+
+<p><strong>The physical layer is responsible for the transmission and reception of unstructured raw data between devices.</strong> It converts the digital bits (frames) into analog electrical, radio (wifi) or optical signal.</p>
+
+
+
+<p>Layer specifications define characteristics such as voltage levels, the timing of voltage changes, physical data rates, maximum transmission distances, channel access method and physical connectors, etc.</p>
+
+
+
+<p></p>
+
+
+
+<p></p>
+
+
+
+<h2><strong>TCP/IP Model</strong></h2>
+
+
+
+<p>The&nbsp;<strong>OSI Model</strong>&nbsp;I just explained to you is just a <strong>reference/logical model</strong>. It was designed to describe the functions of the communication system by dividing the communication procedure into smaller and simpler components. But TCP/IP model was designed and developed by the Department of Defense (DoD) in 1960s and is based on standard protocols. It stands for T<strong>ransmission Control Protocol/Internet Protocol</strong>. The&nbsp;<strong>TCP/IP model</strong>&nbsp;is a concise version of the OSI model. It contains four layers, unlike seven layers in the OSI model. The layers are:</p>
+
+
+
+<ol><li><strong>Process/Application Layer</strong></li><li><strong>Host-to-Host/Transport Layer</strong></li><li><strong>Internet Layer</strong></li><li><strong>Network Access/Link Layer</strong></li></ol>
+
+
+
+<p>Here is a comparison of the two modes from <a href="https://www.educba.com/">www.educba.com</a></p>
+
+
+
+<figure class="wp-block-image size-large"><img decoding="async" loading="lazy" width="640" height="367" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/OSI-Model-vs-TCPIP-Model.png?resize=640%2C367&#038;ssl=1" alt="" class="wp-image-285" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/OSI-Model-vs-TCPIP-Model.png?w=775&amp;ssl=1 775w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/OSI-Model-vs-TCPIP-Model.png?resize=300%2C172&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/OSI-Model-vs-TCPIP-Model.png?resize=768%2C441&amp;ssl=1 768w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p><strong>It is the condensed version of the OSI Model.</strong></p>
+
+
+
+<h4><strong>Network Access Layer</strong></h4>
+
+
+
+<p><strong>Network Access Layer is the combination of Data Link Layer and Physical Layer</strong> available in the OSI model. Physical Addressing is done in this layer, i.e. &nbsp;MAC Address of source and destination is assigned to the data packets. Hence this layer is responsible for the physical transmission of data.</p>
+
+
+
+<h4><strong>Internet Layer</strong></h4>
+
+
+
+<p><strong>The Internet layer is used to send an independent packet to a network to the destination</strong>. All the machines, Web servers, nodes that are attached to the TCP/IP network are assigned in this layer.</p>
+
+
+
+<h4><strong>Transport layer</strong></h4>
+
+
+
+<p><strong>It allows the information to be delivered in an informative chart format from the source to the destination host without defects.</strong></p>
+
+
+
+<h4><strong>Application Layer</strong></h4>
+
+
+
+<p><strong>Application layer performs the tasks of the OSI model in three layers: Application, Presentation and Session Layer. </strong>It is required for the interaction between node and node and handles the requirements of the user interface. Protocols available in the Application Layer are TFTP, HTTP, Telnet, SSH, NTP, DNS, NFS, FTP, SNMP, DHCP, SMTP (which I will talk about later in other posts).</p>
+
+
+
+<p></p>
+
+
+
+<p></p>
+
+
+
+<p><strong>Now you should have the slightest idea of how the data is sent from device to device. But let&#8217;s talk about the devices now.</strong></p>
+
+
+
+<p><strong>I&#8217;m gonna talk about networking devices only as I don&#8217;t think I need to explain what&#8217;s the PC, printer, etc.</strong></p>
+
+
+
+<p></p>
+
+
+
+<h2><strong>Network hub</strong></h2>
+
+
+
+<p><strong>A network hub</strong>, also called <strong>ethernet hub</strong>, <strong>repeater</strong> or just <strong>hub</strong> is a networking device for <strong>connecting multiple ethernet devices together</strong> and making them act as a single network. If you know USB hubs this is same thing, but for ethernet devices.</p>
+
+
+
+<p>It has multiple ports that works both ways, they receive but they also send data. This feature is called I/O &#8211; Input/output. </p>
+
+
+
+<p>The way it works it&#8217;s very simple. Singnal introduced at the input of any ports appears at the output of every port except one that send the singnal. That&#8217;s why it&#8217;s called repeater, it only repeats the signal. </p>
+
+
+
+<p></p>
+
+
+
+<p><strong>Hubs work at the Layer 1 (physical layer) of the OSI model</strong>.  So it&#8217;s working with the raw analog signal. From all the devices I&#8217;m gonna tell you about this one is the most simple one. You can try reading again about the OSI model if you got lost.</p>
+
+
+
+<p>One the left you can see how it may look like and on the right side there is a CISCO (one of the biggest network organizations) symbol for a hub.</p>
+
+
+
+<figure class="wp-block-image size-large"><img decoding="async" loading="lazy" width="640" height="237" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/pngegg-1-2.png?resize=640%2C237&#038;ssl=1" alt="" class="wp-image-271" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/pngegg-1-2.png?w=746&amp;ssl=1 746w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/pngegg-1-2.png?resize=300%2C111&amp;ssl=1 300w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<h2><strong>Switch</strong></h2>
+
+
+
+<p><strong>A switch</strong> is a networking device that <strong>also connects multiple devices together to the one network</strong>. That includes computers, printers and servers. Because of the switch they can all communicate together regardless of their position.</p>
+
+
+
+<p>You may be asking yourself now, hmm but what&#8217;s the difference, isn&#8217;t this just the hub? <strong>The difference between a hub and a switch is that switch only forwards data to the device that it should receive but hub sends data to all of the devices.</strong></p>
+
+
+
+<p>For that switch uses MAC addresses to forward data to the correct destination.</p>
+
+
+
+<p><strong>It&#8217;s a Layer 2 device operating on the data link layer of the OSi model. </strong></p>
+
+
+
+<figure class="wp-block-image size-full"><img decoding="async" loading="lazy" width="640" height="244" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-46.png?resize=640%2C244&#038;ssl=1" alt="" class="wp-image-272" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-46.png?w=1108&amp;ssl=1 1108w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-46.png?resize=300%2C115&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-46.png?resize=1024%2C391&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-46.png?resize=768%2C293&amp;ssl=1 768w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<h2><strong>Router </strong></h2>
+
+
+
+<p><strong>A router</strong> is a networking device that serve two primary functions:</p>
+
+
+
+<ul><li><strong>creating and maintaing a local area network</strong></li><li><strong>managing the data (inside the network and entering the networking as well)</strong></li></ul>
+
+
+
+<p></p>
+
+
+
+<p><strong>Simply put they connect computer networks together</strong>. For example, one is connecting your home network to the internet just now. But don&#8217;t get confused the one that you have in your home is a multifunction device that serve as a Router, Wifi Access Point, Switch and even more. </p>
+
+
+
+<p><strong>Routers operate at Layer 3 (network layer) of the OSI model.</strong></p>
+
+
+
+<p>Ultimately, a router works as a dispatcher, directing traffic and choosing the most efficient route for information, in the form of data packets, to travel across a network. A router connects your device to the world, protects information from security threats, and even decides which devices have priority over others.</p>
+
+
+
+<p></p>
+
+
+
+<p>Your router at home looks probably something like this. </p>
+
+
+
+<figure class="wp-block-image size-large"><img decoding="async" loading="lazy" width="640" height="285" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-47.png?resize=640%2C285&#038;ssl=1" alt="" class="wp-image-276" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-47.png?w=834&amp;ssl=1 834w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-47.png?resize=300%2C134&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-47.png?resize=768%2C343&amp;ssl=1 768w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p></p>
+
+
+
+<h2><strong>LAN</strong></h2>
+
+
+
+<p><strong>A local area network (LAN)</strong> is a computer network that <strong>interconnects computers within a limited area</strong> (your home, school, office building).</p>
+
+
+
+<p><strong>According to CISCO</strong> a LAN comprises cables, access points, switches, routers, and other components that enable devices to connect to internal servers, web servers, and other LANs via wide area networks (WAN).</p>
+
+
+
+<p>The rise of virtualization has also fueled the development of virtual LANs, which enable network administrators to logically group network nodes and partition their networks without a need for major infrastructure changes.</p>
+
+
+
+<p>For example, in an office with multiple departments, such as accounting, IT support, and administration, each department&#8217;s computer could be logically connected to the same switch but segmented to behave as if they are separate.</p>
+
+
+
+<p></p>
+
+
+
+<h2><strong>WAN</strong></h2>
+
+
+
+<p><strong>A wide area network (WAN) is a network that extends over a large geographic area. </strong></p>
+
+
+
+<p>It&#8217;s a collection of LANs, or other networks that communicate together. </p>
+
+
+
+<p>Simply but It ties all of LANs together.</p>
+
+
+
+<p></p>
+
+
+
+<figure class="wp-block-image size-full"><img decoding="async" loading="lazy" width="640" height="453" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/LAN_WAN_scheme.svg_.png?resize=640%2C453&#038;ssl=1" alt="" class="wp-image-288" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/LAN_WAN_scheme.svg_.png?w=1920&amp;ssl=1 1920w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/LAN_WAN_scheme.svg_.png?resize=300%2C212&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/LAN_WAN_scheme.svg_.png?resize=1024%2C724&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/LAN_WAN_scheme.svg_.png?resize=768%2C543&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/LAN_WAN_scheme.svg_.png?resize=1536%2C1086&amp;ssl=1 1536w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/LAN_WAN_scheme.svg_.png?w=1280&amp;ssl=1 1280w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>I think <strong>these are must know basics for absolute beginners</strong>. There is so much <strong>more</strong> to explain, but I don&#8217;t want to overcomplicate this if this is all new for you. </p>
+
+
+
+<p>In my next article I&#8217;ll explain what is IP and MAC address, the fundamental protocol for communication TCP/IP, how IP address gets its own domain and more. So if you are interested, check out my blog next time as well.</p>
+
+
+
+<p></p>
+
+
+
+<p></p>
+
+
+
+<blockquote class="wp-block-quote"><p><span class="has-inline-color has-orange-color">If you found this article interesting or helpful you can support me and TheTechCorner by leaving a comment or &#8220;Buying me a coffee&#8221;. These articles takes some time to write and managing and maintaining a site also take some money. You can do so by clicking a coffee button on the lower right corner or on the bottom of the page. </span></p></blockquote>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container"></div></div>
+
+
+
+<p></p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://thetechcorner.org/?feed=rss2&#038;p=267</wfw:commentRss>
+			<slash:comments>1</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">267</post-id>	</item>
+	</channel>
+</rss>

@@ -1,0 +1,756 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	
+	xmlns:georss="http://www.georss.org/georss"
+	xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+	>
+
+<channel>
+	<title>Raspbian &#8211; TheTechCorner</title>
+	<atom:link href="https://thetechcorner.org/?feed=rss2&#038;tag=raspbian-en" rel="self" type="application/rss+xml" />
+	<link>https://thetechcorner.org</link>
+	<description>A corner on the internet where I share my ideas, guides and projects</description>
+	<lastBuildDate>Tue, 04 Jan 2022 09:46:57 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.1.1</generator>
+<site xmlns="com-wordpress:feed-additions:1">187618359</site>	<item>
+		<title>Setting up a log rotate utility in Linux</title>
+		<link>https://thetechcorner.org/?p=525&#038;utm_source=rss&#038;utm_medium=rss&#038;utm_campaign=setting-up-a-log-rotate-utility-in-linux</link>
+		
+		<dc:creator><![CDATA[Filip Zverec]]></dc:creator>
+		<pubDate>Thu, 02 Dec 2021 12:22:10 +0000</pubDate>
+				<category><![CDATA[Linux essentials]]></category>
+		<category><![CDATA[linux]]></category>
+		<category><![CDATA[logrotate]]></category>
+		<category><![CDATA[Raspbian]]></category>
+		<guid isPermaLink="false">https://thetechcorner.org/?p=525</guid>
+
+					<description><![CDATA[Arguably, one of the most used Linux directories is /var/log. Most of the services are [&#8230;]]]></description>
+										<content:encoded><![CDATA[
+<p>Arguably, one of the most used Linux directories is <strong>/var/log</strong>. Most of the services are logging all of the info into the logs in this directory. Administrators are using these logs <strong>to determine problems when troubleshooting the system</strong> or service.</p>
+
+
+
+<p>I&#8217;ll use Raspbian OS just because I use it in most of my guides, so why not again.</p>
+
+
+
+<p></p>
+
+
+
+<p>We can see some of the content of my /var/log directory below:</p>
+
+
+
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-full"><img decoding="async" width="550" height="382" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-2.png?resize=550%2C382&#038;ssl=1" alt="" class="wp-image-528" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-2.png?w=550&amp;ssl=1 550w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-2.png?resize=300%2C208&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-2.png?resize=24%2C17&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-2.png?resize=36%2C25&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-2.png?resize=48%2C33&amp;ssl=1 48w" sizes="(max-width: 550px) 100vw, 550px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p></p>
+
+
+
+<p>We can see that some of the files end with a <strong>.gz</strong> extension, some of them have<strong> log</strong> in the name and some of them are combinations. They have one in common, and that is that they are logs. </p>
+
+
+
+<p>For the purpose of not filling up the whole directory space, they are eventually divided and can be gziped aka they are being <strong>rotated</strong>.</p>
+
+
+
+<p></p>
+
+
+
+<p><strong>Phrase rotated comes from a utility named Logrotate which whole purpose is to make this job of dividing files into smaller ones and gziping them up much easier. </strong></p>
+
+
+
+<p></p>
+
+
+
+<h3>Installing Logrorate </h3>
+
+
+
+<p>Depending on your package manager there are different ways to install this utility. In my case I&#8217;ll use Raspbian which is Debian based and comes with APT package manager</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted"><strong>sudo apt-get install logrotate</strong></pre>
+
+
+
+<p></p>
+</div></div>
+
+
+
+<h3>Configurating Logrotate</h3>
+
+
+
+<p>Logrotate is very  useful and all-around tool in which we can configure the parameters of how the log are going to be rotated.</p>
+
+
+
+<p>We can configure these settings by creating a text file inside the /etc/logrotate.d directory. To do that, we type: </p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">sudo <strong>nano /etc/logrotate.d/apache2.conf</strong></pre>
+
+
+
+<p></p>
+</div></div>
+
+
+
+<p>And inside these file paste following content </p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">/var/log/apache2/* {
+    weekly
+    rotate 3
+    size 10M
+    compress
+    delaycompress
+}</pre>
+
+
+
+<p></p>
+</div></div>
+
+
+
+<p>There are much more options that can be configured, you can just google them or use man logrotate</p>
+
+
+
+<p>Let&#8217;s get over each line and explain it&#8217;s purpose:</p>
+
+
+
+<ul><li><strong>weekly </strong>: as the name suggest, it means that logrotate will rotate the logs every week<ul><li>we can also use value : daily, monthly</li></ul></li><li><strong>rotate 3</strong> : implies that only 3 of the logs are going to be kept, thus older files than 3 are going to be deleted</li><li><strong>size=10</strong> : sets the minimal size of the logs to be 10M</li><li><strong>compress</strong> : implies we want the logs to be gziped or compress by any other method</li><li><strong>delaycompress</strong> : implies that we want the recent logs uncompressed until the next rotation cycle</li></ul>
+
+
+
+<p></p>
+
+
+
+<p>Let&#8217;s try out these settings by forcing logrotate to rotate logs now with this command:</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">logrotate -d /etc/logrotate.d/apache2.conf</pre>
+</div></div>
+
+
+
+<p></p>
+
+
+
+<p>Alright, let&#8217;s try adding some additional settings to better understand this:</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted"> /var/log/apache2/* { 
+    weekly
+    create 0644 root root
+    rotate 4
+    size 5m
+    datetext
+    dateformat -%d%m%Y
+    notifempty
+    mail filip@thetechcorner.org  
+}</pre>
+
+
+
+<p></p>
+</div></div>
+
+
+
+<p>As you can see we have changed a few things. <strong>The log will now not by rotated, it&#8217;s just going to be moved and renamed to time and date when it reaches a 5M size</strong>. <strong>The mail log file will get new permission, which we set to 0644 with a root owner. And finally, when the number of logs reaches 5, the oldest one will be sent to the configured email address. </strong></p>
+
+
+
+<p></p>
+
+
+
+<h3>Cron</h3>
+
+
+
+<p>When we install logrotate utility by default, logrotate will create a file named logrotate inside /etc/cron.daily which will be executed daily at <strong>6:25 am</strong>. You can check this by listing a content of this folder.</p>
+
+
+
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-full"><img decoding="async" loading="lazy" width="457" height="183" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-3.png?resize=457%2C183&#038;ssl=1" alt="" class="wp-image-529" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-3.png?w=457&amp;ssl=1 457w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-3.png?resize=300%2C120&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-3.png?resize=24%2C10&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-3.png?resize=36%2C14&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/12/image-3.png?resize=48%2C19&amp;ssl=1 48w" sizes="(max-width: 457px) 100vw, 457px" data-recalc-dims="1" /></figure></div>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">525</post-id>	</item>
+		<item>
+		<title>Set Up New Minecraft 1.17 Server on Rasppbery PI [Java16]</title>
+		<link>https://thetechcorner.org/?p=499&#038;utm_source=rss&#038;utm_medium=rss&#038;utm_campaign=set-up-new-minecraft-1-17-server-on-rasppbery-pi-java16</link>
+		
+		<dc:creator><![CDATA[Filip Zverec]]></dc:creator>
+		<pubDate>Mon, 22 Nov 2021 13:16:14 +0000</pubDate>
+				<category><![CDATA[HomeLab]]></category>
+		<category><![CDATA[pi]]></category>
+		<category><![CDATA[Raspberry]]></category>
+		<category><![CDATA[Raspbian]]></category>
+		<category><![CDATA[setup]]></category>
+		<guid isPermaLink="false">https://thetechcorner.org/?p=499</guid>
+
+					<description><![CDATA[With the new Minecraft version 1.17 you have to now use Java 16, which is [&#8230;]]]></description>
+										<content:encoded><![CDATA[
+<p>With the new Minecraft version 1.17 you have to now use Java 16, which is not a problem on most Linux kernels, but so far Raspbian doesn&#8217;t natively support this. So in this quick guide, I&#8217;ll show you how to upgrade or setup this server on a new Java version.</p>
+
+
+
+<p></p>
+
+
+
+<p>I had previously posted a guide about setting up a Minecraft server, you can check it out here. But now few things have changed, so the process is a little different.</p>
+
+
+
+<p></p>
+
+
+
+<h3><strong>What will you need?</strong></h3>
+
+
+
+<ol><li>Raspberry PI 3 or 4 (I’ll be using Raspberry PI 4B 2GB) with a fan</li><li>Power adapter</li><li>LAN cable</li><li>HDMI cable (optional)</li></ol>
+
+
+
+<p>You can use HDMI cable as an output for your monitor, but I made a guide how to set up Raspberry PI and only use a LAN cable and your PC and I think that’s way more convenient, so I’ll not by using HDMI. You can find guide for that <a href="https://thetechcorner.org/?p=136">here</a>.</p>
+
+
+
+<h3><strong>1.</strong>&nbsp;<strong>Setting up a Raspberry PI</strong></h3>
+
+
+
+<p>I made an entire guide for that, so you can check it out&nbsp;<a href="https://thetechcorner.org/?p=136">here</a>.</p>
+
+
+
+<h3><strong>2. Overclocking a Rasppberry PI</strong></h3>
+
+
+
+<p>Minecraft server requires a lot of CPU power, so for that we will overclock it a little. If you don’t know how, you can check out my other guide for that <a href="https://thetechcorner.org/?p=209">here</a>, where I explained everything and guide you through the whole process.</p>
+
+
+
+<p></p>
+
+
+
+<h3><strong>3. Downloading and installing Java 16</strong></h3>
+
+
+
+<ol><li>sudo apt install openjdk-8-jdk</li><li>wget https://github.com/AdoptOpenJDK/openjdk16-binaries/releases/download/jdk-16.0.1%2B9/OpenJDK16U-jdk_arm_linux_hotspot_16.0.1_9.tar.gz</li><li>sudo mv OpenJDK16U-jdk_arm_linux_hotspot_16.0.1_9.tar.gz /lib/jvm &amp;&amp; cd /lib/jvm</li><li>sudo tar xvf OpenJDK16U-jdk_arm_linux_hotspot_16.0.1_9.tar.gz &amp;&amp; cd OpenJDK16U-jdk_arm_linux_hotspot_16.0.1_9</li><li>sudo update-alternatives &#8211;install /usr/bin/java /usr/lib/jvm/jdk-16.0.1+9/bin/java 1131</li></ol>
+
+
+
+<p></p>
+
+
+
+<p>And now we can check if the new version is installed with this command</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">sudo update-alternatives --config java </pre>
+
+
+
+<p></p>
+
+
+
+<p></p>
+
+
+
+<p>The rest of the guide stays the same, you can just follow it <a href="https://thetechcorner.org/?p=306">here</a>.</p>
+
+
+
+<p></p>
+</div></div>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">499</post-id>	</item>
+		<item>
+		<title>How to Change Raspberry PI&#8217;s Hostname / Password</title>
+		<link>https://thetechcorner.org/?p=177&#038;utm_source=rss&#038;utm_medium=rss&#038;utm_campaign=how-to-change-raspberry-pis-hostname-password</link>
+		
+		<dc:creator><![CDATA[Filip Zverec]]></dc:creator>
+		<pubDate>Wed, 06 Jan 2021 10:59:49 +0000</pubDate>
+				<category><![CDATA[HomeLab]]></category>
+		<category><![CDATA[change]]></category>
+		<category><![CDATA[CLI]]></category>
+		<category><![CDATA[desktop]]></category>
+		<category><![CDATA[GUI]]></category>
+		<category><![CDATA[hostname]]></category>
+		<category><![CDATA[password]]></category>
+		<category><![CDATA[pi]]></category>
+		<category><![CDATA[Raspberry]]></category>
+		<category><![CDATA[Raspbian]]></category>
+		<category><![CDATA[terminal]]></category>
+		<guid isPermaLink="false">https://thetechcorner.org/?p=177</guid>
+
+					<description><![CDATA[By default your Raspberry PI&#8217;s hostname is raspberrypi and your password is raspberry. There is [&#8230;]]]></description>
+										<content:encoded><![CDATA[
+<p>By default your Raspberry PI&#8217;s hostname is <strong>raspberrypi</strong> and your password is <strong>raspberry</strong>.</p>
+
+
+
+<p>There is nothing wrong with this name until you have multiple PIes in your network and trust me when you buy one, you will want more of them to do even more cool projects. </p>
+
+
+
+<p>So in this short guide I&#8217;ll show you how to change the hostname and the password.</p>
+
+
+
+<p>We can choose multiple paths to do so. In this guide I&#8217;ll show you one way over <strong>CLI</strong> (console) and one way over <strong>GUI</strong> (graphical interface)</p>
+
+
+
+<p></p>
+
+
+
+<h3><strong>Changing Hostname / Password Using CLI</strong></h3>
+
+
+
+<p>Because our PI is running Raspbian we can use one of it&#8217;s features that is called <strong>raspi-config</strong> which allow us to change these things with very friendly user interface.</p>
+
+
+
+<p><strong>Connect</strong> and <strong>login</strong> to your PI, you can find how in this <a href="https://thetechcorner.org/?p=136">guide</a>.</p>
+
+
+
+<p>In the console type:</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-code"><code>sudo raspi-config </code></pre>
+</div></div>
+
+
+
+<p>You should see option menu like this. Choose the <strong>System option</strong>.</p>
+
+
+
+<figure class="wp-block-image size-large"><img decoding="async" loading="lazy" width="640" height="374" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-14.png?resize=640%2C374&#038;ssl=1" alt="" class="wp-image-180" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-14.png?w=867&amp;ssl=1 867w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-14.png?resize=300%2C175&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-14.png?resize=768%2C449&amp;ssl=1 768w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>Select the <strong>S4 Hostname</strong> and choose a new hostname. Keep in mind that you can only use <strong>ASCII</strong> letters <strong>a-z</strong>, the digits <strong>0-9</strong> and the <strong>hyphen</strong>, but hostname cannot begin nor end with hyphen.</p>
+
+
+
+<figure class="wp-block-image size-large"><img decoding="async" loading="lazy" width="640" height="378" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-15.png?resize=640%2C378&#038;ssl=1" alt="" class="wp-image-181" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-15.png?w=868&amp;ssl=1 868w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-15.png?resize=300%2C177&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-15.png?resize=768%2C453&amp;ssl=1 768w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>Congratulation, now do the same for the password and you will be send into a terminal in which you will type your new password.</p>
+
+
+
+<figure class="wp-block-image size-large"><img decoding="async" loading="lazy" width="640" height="377" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-17.png?resize=640%2C377&#038;ssl=1" alt="" class="wp-image-183" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-17.png?w=864&amp;ssl=1 864w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-17.png?resize=300%2C177&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-17.png?resize=768%2C452&amp;ssl=1 768w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<figure class="wp-block-image size-large"><img decoding="async" loading="lazy" width="640" height="81" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-16.png?resize=640%2C81&#038;ssl=1" alt="" class="wp-image-182" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-16.png?w=866&amp;ssl=1 866w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-16.png?resize=300%2C38&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-16.png?resize=768%2C98&amp;ssl=1 768w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>Keep in mind that you need to reboot your device before hostname changes will take a place. For reboot just type:</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">sudo shutdown -r +0</pre>
+</div></div>
+
+
+
+<p></p>
+
+
+
+<h3><strong>Changing Hostname / Password Using GUI</strong></h3>
+
+
+
+<p> If you have installed <strong>Raspberry PI OS with desktop</strong> and you are more used to work with graphical intreface, this is even easier method of changing the hostname or password. </p>
+
+
+
+<p>First you need to connect your monitor or launch VNC to connect to the PI with ahernet cable. You can find guide for that <a href="https://thetechcorner.org/?p=136">here</a>.</p>
+
+
+
+<p>In the left upper corner select <strong>Raspbian Icon</strong> and select <strong>Prefrences&gt;Raspberry Pi Configuration</strong>.</p>
+
+
+
+<figure class="wp-block-image size-large"><img decoding="async" loading="lazy" width="640" height="474" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-19.png?resize=640%2C474&#038;ssl=1" alt="" class="wp-image-186" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-19.png?w=1024&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-19.png?resize=300%2C222&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-19.png?resize=768%2C569&amp;ssl=1 768w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>You should see an option to change hostname and password. Click into the window where it says <strong>raspberrypi</strong> and rename it to whatever you want. </p>
+
+
+
+<p>Then click on <strong>Change Password</strong> and pick your new password.</p>
+
+
+
+<figure class="wp-block-image size-large"><img decoding="async" loading="lazy" width="603" height="464" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-20.png?resize=603%2C464&#038;ssl=1" alt="" class="wp-image-187" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-20.png?w=603&amp;ssl=1 603w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-20.png?resize=300%2C231&amp;ssl=1 300w" sizes="(max-width: 603px) 100vw, 603px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>Congratulation, you have successfully changed your hostname and password. Now you dont have worry about logging into a wrong PI or about somebody logging into yours!</p>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">177</post-id>	</item>
+		<item>
+		<title>Setup your Raspberry PI with / without a monitor</title>
+		<link>https://thetechcorner.org/?p=136&#038;utm_source=rss&#038;utm_medium=rss&#038;utm_campaign=raspberri-pi-setup-with-or-without-monitor</link>
+					<comments>https://thetechcorner.org/?p=136#comments</comments>
+		
+		<dc:creator><![CDATA[Filip Zverec]]></dc:creator>
+		<pubDate>Tue, 05 Jan 2021 13:12:35 +0000</pubDate>
+				<category><![CDATA[HomeLab]]></category>
+		<category><![CDATA[4B]]></category>
+		<category><![CDATA[pi]]></category>
+		<category><![CDATA[Raspberry]]></category>
+		<category><![CDATA[Raspbian]]></category>
+		<category><![CDATA[VNC]]></category>
+		<category><![CDATA[with monitor]]></category>
+		<category><![CDATA[without monitor]]></category>
+		<guid isPermaLink="false">https://thetechcorner.org/?p=136</guid>
+
+					<description><![CDATA[If you are reading this then you prabaly know what a Raspberry PI is, but [&#8230;]]]></description>
+										<content:encoded><![CDATA[
+<p>If you are reading this then you prabaly know what a <strong>Raspberry PI</strong> is, but if you don&#8217;t it&#8217;s ok I&#8217;ll try to explain it to you as simple as possible and guide you threw the whole setup process.</p>
+
+
+
+<p><strong>First, we need to clarify what Raspberi PI is:</strong></p>
+
+
+
+<p>The&nbsp;<em><a href="https://www.raspberrypi.org/help/what-%20is-a-raspberry-pi/">Raspberry Pi</a></em>&nbsp;is a low cost, credit-card sized computer that plugs into a computer monitor or TV, and uses a standard keyboard and mouse. It is a capable little device that enables people of all ages to explore computing, and to learn how to program in languages like Scratch and Python. It’s capable of doing everything you’d expect a desktop computer to do, from browsing the internet and playing high-definition video, to making spreadsheets, word-processing, and playing games.</p>
+
+
+
+<p></p>
+
+
+
+<div class="wp-block-image"><figure class="aligncenter size-full"><img decoding="async" loading="lazy" width="583" height="340" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/ezgif-1-110d2299363a.png?resize=583%2C340&#038;ssl=1" alt="" class="wp-image-138" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/ezgif-1-110d2299363a.png?w=583&amp;ssl=1 583w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/ezgif-1-110d2299363a.png?resize=300%2C175&amp;ssl=1 300w" sizes="(max-width: 583px) 100vw, 583px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p></p>
+
+
+
+<p>So bassically, the Raspberry Pi is just a small computer that you can program to do pretty much anything with the right sensors and code.</p>
+
+
+
+<p>The instructions that you will find here will guide you threw whole process of installation and will concist of the following:</p>
+
+
+
+<ol><li><strong>All the necessary equipment you will need</strong></li><li><strong>How to download and write the operating system onto SD card</strong></li><li><strong>Installation process with a monitor</strong></li><li><strong>Installation process without a monitor</strong></li></ol>
+
+
+
+<p></p>
+
+
+
+<p></p>
+
+
+
+<h3><strong>All the necessary equipment you will need</strong></h3>
+
+
+
+<ol><li><strong>Raspberry PI</strong> (for this guide I will be using Raspberry PI 4 B, but you can use any model)</li><li><strong>Power supply for model you are using</strong> (you will need stronger power supply with newer model)</li><li><strong>SD Card </strong>or<strong> USB Flash Drive</strong></li><li><strong>Network </strong>or<strong> HDMI cable</strong> depending if you want to use monitor or not (for model 4B you will need micro HDMI)</li><li><strong>PC </strong>or<strong> laptop </strong>for downloading the OS and writing the image one SD card / USB</li></ol>
+
+
+
+<p></p>
+
+
+
+<p></p>
+
+
+
+<h3><strong>How to download and write the operating system onto SD card</strong></h3>
+
+
+
+<ol><li>First you will need to download some sort of operating system.  There are probabaly at minimum around 20 OS&#8217;s you can run on Raspberry PI.  You can even run the Windows ARM version on your PI. But then your full small programmable computer that can do pretty much anything kinda loses it&#8217;s purpose, right? Therefore, for this example we will run Raspbian, because it&#8217;s the easiest one to run and is probably the most compatible one as it was made exactly for this reason. But you can check out all the other possible OS&#8217;s <a href="https://www.raspberrypi.org/software/operating-systems/">here</a>. </li></ol>
+
+
+
+<p>You can download three versions of Rasbian. Lite version, OS with desktop GUI version and OS with desktop GUI and all the other recommended software version. </p>
+
+
+
+<figure class="wp-block-image size-full"><img decoding="async" loading="lazy" width="640" height="389" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-1.png?resize=640%2C389&#038;ssl=1" alt="" class="wp-image-141" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-1.png?w=1608&amp;ssl=1 1608w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-1.png?resize=300%2C182&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-1.png?resize=1024%2C622&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-1.png?resize=768%2C467&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-1.png?resize=1536%2C933&amp;ssl=1 1536w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-1.png?w=1280&amp;ssl=1 1280w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p>We will continue with the <strong>Raspberry PI OS with desktop and recommended software</strong> because is the one that requries the least knowledge if you are not familiar with using a terminal or Linux. You can download the newest version <a href="https://www.raspberrypi.org/software/operating-systems/">here</a>.</p>
+
+
+
+<p>2. Our next step will be downloading the software that will help us with writing the image. My favourite one is <a href="https://rufus.ie/">Rufus</a> so I&#8217;ll be using that. You will need to insert your SD card or USB into your PC and open up Rufus. Then, you will select the <strong>Device</strong> on which you want to write the image and <strong>SELECT</strong> the image that you want to write and then you press <strong>START</strong>.</p>
+
+
+
+<div class="wp-block-image"><figure class="aligncenter size-full"><img decoding="async" loading="lazy" width="466" height="533" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-2.png?resize=466%2C533&#038;ssl=1" alt="" class="wp-image-142" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-2.png?w=466&amp;ssl=1 466w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-2.png?resize=262%2C300&amp;ssl=1 262w" sizes="(max-width: 466px) 100vw, 466px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p></p>
+
+
+
+<p></p>
+
+
+
+<h3><strong>Installation process with a monitor</strong></h3>
+
+
+
+<p>After the proccess of writing the image is complete you will need to <strong>insert</strong> the <strong>SD card/USB into your Raspberry PI </strong>and <strong>connect</strong> your <strong>HDMI</strong> and <strong>power supply</strong> as well as your peripherals (<strong>keyboard and mouse</strong>). After a few seconds you should be greeted with a booting screen and a configuration process of your new OS in which you will select your country, timezone, language and the password of your wifi network. Now, If you connect your PI to WIFI, the system will ask you if you wish to automaticaly update your software packages to the newest version (If you don&#8217;t want to connect to WIFI now, or you want to use the ethernet cable, I will show you how to do so later on in this guide).</p>
+
+
+
+<p></p>
+
+
+
+<p></p>
+
+
+
+<h3><strong>Installation process without a monitor</strong></h3>
+
+
+
+<p>If you are like me and you had no idea that <strong>Raspberry PI 4 B</strong> comes with a <strong>mini HDMI port</strong> and not a normal sized version, this guide is for you! </p>
+
+
+
+<p>The proccess is similar to an installation with a monitor, but first we need to add one more file into the booting section so Raspberry PI will know we want to connect to it over <strong>SSH</strong>. Now we need to create an empty file named &#8220;SSH&#8221;. The tricky part is that windows isn&#8217;t exactly the best thing for doing this easily. First, we need to <strong>right click&gt;new text document</strong> and call it <strong>SSH</strong>. However, we just made a text file and we need an empty file right? To do this, we need to <strong>open</strong> our <strong>SSH.txt</strong> file and in the left upper corner click <strong>File&gt;Save as</strong> and we will rename it to <strong>&#8220;SSH&#8221;</strong> with the quotation marks and select our Save as type as All Files. Then just press save and we should have an empty file called SSH.</p>
+
+
+
+<div class="wp-block-image"><figure class="aligncenter size-full"><img decoding="async" loading="lazy" width="640" height="465" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-4.png?resize=640%2C465&#038;ssl=1" alt="" class="wp-image-146" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-4.png?w=1043&amp;ssl=1 1043w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-4.png?resize=300%2C218&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-4.png?resize=1024%2C743&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-4.png?resize=768%2C557&amp;ssl=1 768w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p></p>
+
+
+
+<p>After this you can insert the SD card/USB into a PI, connect all your peripherals (keyboard and mouse) and a network cable. The other side of the network cable connects to your PC. </p>
+
+
+
+<p>We will need some sort of SSH client. One of the most popular and user friendly ones is the <strong>PuTTY</strong>. You can download it <a href="https://www.putty.org/">here</a>. After you have downloaded and installed PuTTY,  type <strong>raspberrypi.local</strong> into a hostname and select port <strong>22</strong>. After that just select <strong>Open</strong>.</p>
+
+
+
+<div class="wp-block-image"><figure class="aligncenter size-full"><img decoding="async" loading="lazy" width="450" height="434" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-6.png?resize=450%2C434&#038;ssl=1" alt="" class="wp-image-149" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-6.png?w=450&amp;ssl=1 450w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-6.png?resize=300%2C289&amp;ssl=1 300w" sizes="(max-width: 450px) 100vw, 450px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p></p>
+
+
+
+<p>After that you will be prompted with the console asking for your login information. The default login and password information are</p>
+
+
+
+<p><strong>Login: </strong>pi</p>
+
+
+
+<p><strong>Password:</strong> raspberry</p>
+
+
+
+<p></p>
+
+
+
+<p>After this we need to enable the VNC interface which allows us to send display output over the network interface. We can do this by typing</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted"> pi@raspberrypi:~ $&nbsp;<strong>sudo raspi-config</strong></pre>
+
+
+
+<p></p>
+</div></div>
+
+
+
+<p>You will see this menu in which you will select <strong>Interface Option</strong> and then <strong>P3 VNC</strong>.</p>
+
+
+
+<figure class="wp-block-image size-full"><img decoding="async" loading="lazy" width="640" height="206" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-8.png?resize=640%2C206&#038;ssl=1" alt="" class="wp-image-152" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-8.png?w=1280&amp;ssl=1 1280w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-8.png?resize=300%2C96&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-8.png?resize=1024%2C329&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-8.png?resize=768%2C247&amp;ssl=1 768w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>Then go back into the menu again and select <strong>System Options</strong> and <strong>S5 Boot / Auto login</strong> and then <strong>B3 Desktop</strong>.</p>
+
+
+
+<figure class="wp-block-image size-full"><img decoding="async" loading="lazy" width="640" height="210" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-11.png?resize=640%2C210&#038;ssl=1" alt="" class="wp-image-155" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-11.png?w=1257&amp;ssl=1 1257w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-11.png?resize=300%2C99&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-11.png?resize=1024%2C336&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-11.png?resize=768%2C252&amp;ssl=1 768w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p>And now just leave the menu with ESC and for a reboot type </p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted"><strong>sudo shutdown -r +0</strong></pre>
+</div></div>
+
+
+
+<p> After a few minutes your PI should be up again and we can continue.</p>
+
+
+
+<p>We will need to download the <a href="https://www.realvnc.com/en/connect/download/vnc/">VNC</a> that serves as a virtual bridge to our PI display interface. Install and open the VNC and on the top side of the software type the hostname of our device which we previosly entered into the PuTTY is <strong>raspberrypi.local</strong>. Enter our username which is <strong>PI</strong> and password <strong>raspberry</strong> and press ok.</p>
+
+
+
+<figure class="wp-block-image size-large"><img decoding="async" loading="lazy" width="640" height="454" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-12.png?resize=640%2C454&#038;ssl=1" alt="" class="wp-image-157" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-12.png?w=876&amp;ssl=1 876w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-12.png?resize=300%2C213&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-12.png?resize=768%2C545&amp;ssl=1 768w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p>With that your setup of the Raspberry PI is completed and you can fully enjoy it as you would be able to with the connected display.</p>
+
+
+
+<p></p>
+
+
+
+<p></p>
+
+
+
+<h3>Final configuration of the Raspbian OS</h3>
+
+
+
+<p>After booting into your OS with or without a monitor you will need to make some finnal configurations of the system, such as updating your OS, changing your username, password, resolution etc. I will make another guide for this soon, but for now, have a nice day and enjoy your piece of PI. </p>
+
+
+
+<p></p>
+
+
+
+<p></p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://thetechcorner.org/?feed=rss2&#038;p=136</wfw:commentRss>
+			<slash:comments>3</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">136</post-id>	</item>
+	</channel>
+</rss>

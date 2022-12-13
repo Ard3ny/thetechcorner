@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	
+	xmlns:georss="http://www.georss.org/georss"
+	xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+	>
+
+<channel>
+	<title>Uncategorized &#8211; TheTechCorner</title>
+	<atom:link href="https://thetechcorner.org/?feed=rss2&#038;cat=1" rel="self" type="application/rss+xml" />
+	<link>https://thetechcorner.org</link>
+	<description>A corner on the internet where I share my ideas, guides and projects</description>
+	<lastBuildDate>Tue, 19 Apr 2022 08:50:12 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.1.1</generator>
+<site xmlns="com-wordpress:feed-additions:1">187618359</site>	<item>
+		<title>Sieťové základy &#8211; OSI Model, TCP/IP Model, Router, Switch, LAN, WAN</title>
+		<link>https://thetechcorner.org/?p=415&#038;utm_source=rss&#038;utm_medium=rss&#038;utm_campaign=siet-zaklady-osi-model-tcp-ip-model-router-switch-lan-wan</link>
+		
+		<dc:creator><![CDATA[Filip Zverec]]></dc:creator>
+		<pubDate>Tue, 12 Jan 2021 18:52:42 +0000</pubDate>
+				<category><![CDATA[Uncategorized]]></category>
+		<category><![CDATA[IP]]></category>
+		<category><![CDATA[LAN]]></category>
+		<category><![CDATA[OSI]]></category>
+		<category><![CDATA[pocitacove siete]]></category>
+		<category><![CDATA[siete]]></category>
+		<category><![CDATA[sietove technologie]]></category>
+		<category><![CDATA[switch]]></category>
+		<category><![CDATA[WAN]]></category>
+		<category><![CDATA[zaklady]]></category>
+		<guid isPermaLink="false">https://thetechcorner.org/?p=267</guid>
+
+					<description><![CDATA[Ak sa chcete porozumieť sieťovým protokolom a ako internetová komunikácia vlastne funguje, najprv musíte pochopiť [&#8230;]]]></description>
+										<content:encoded><![CDATA[
+<p>Ak sa chcete porozumieť sieťovým protokolom a ako internetová komunikácia vlastne funguje, najprv musíte pochop<strong>iť </strong>z<strong>áklady</strong>. </p>
+
+
+
+<p>Vysvetlením OSI modelu získate základné porozumenie toho ako takáto internetová komunikácia asi prebieha . Existuje aj ďalší model s ná<strong>zvom T</strong>CP/IP, ktorý sa v súčasnosti používa, ale ten nie je tak dobrý na vysvetľovanie ako na je na praktické využitie.</p>
+
+
+
+<p></p>
+
+
+
+<h2><strong>OSI Model</strong></h2>
+
+
+
+<p>Je to postupnosť krokov pre sieťovú komunikáciu medzi zariadeniami. Tieto kroky sú opísané v 7<strong>-vrstvovom mod</strong>eli nazývanom OSI model. Tento protokol<strong> musia dodržiavať všet</strong>ky sieťové zariadenia a je to prvý dôležitý protokol, ktorý musí ovládať každý sieťar.</p>
+
+
+
+<p>Všetko to začín<strong>a odosielateľom A na aplikačnej v</strong>rstve, ktorý odosiela správu pre príjimateľa B. Správa ide cez všetky vrs<strong>tvy,</strong> kon<strong>čí fyzickou v</strong>rstvou stále na zariadení odosielateľa A, kde pokračuje <strong>cestou cez internetovú sieť</strong> <strong>do fyzickej</strong> vrstvy<strong> </strong>prijímateľa B. Odtiaľ <strong>znova prejde cez všetky vr</strong>stvy až po aplikačnú, ktorá je prepojená z aplikáciou užívateľa.</p>
+
+
+
+<div class="wp-block-image"><figure class="aligncenter size-full"><img decoding="async" width="640" height="369" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/pngegg-1-3.png?resize=640%2C369&#038;ssl=1" alt="" class="wp-image-277" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/pngegg-1-3.png?w=735&amp;ssl=1 735w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/pngegg-1-3.png?resize=300%2C173&amp;ssl=1 300w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p></p>
+
+
+
+<h4><strong>Vrstva 7: Aplikačná vrstva</strong></h4>
+
+
+
+<p>Komunikácia začína v h<strong>or</strong>nej ča<strong>sti</strong> s aplikačnou vrstvou<strong>, ktorá je najbližšie ku koncového používateľ</strong>i. <strong>Táto vrstva spolupracuje so softvérovými aplikáciami</strong>. Aplikácie sú mimo modelu OSI. Funkcia aplikačnej vrstvy zvyčajne zahŕňajú identifikáciu komunikačných partnerov, určenie dostupnosti prostriedkov a synchronizáciu komunikácie.</p>
+
+
+
+<p></p>
+
+
+
+<h4><strong>Vrstva 6: Prezenčná vrstva</strong></h4>
+
+
+
+<p><strong>Prezentačná vrstva vytvára most medzi aplikačnou (</strong>aplikácie môžu mať rôzny syntax) a s<strong>ieťový</strong>m<strong> formátom (k</strong>torý musí byť rovnaký).</p>
+
+
+
+<p></p>
+
+
+
+<h4><strong>Vrstva 5: Relačná vrstva</strong></h4>
+
+
+
+<p>Hlavnou funkciou relačnej vrstvy je vytvorenie, správa a ukončenie pripojení medzi lokálnou a vzdialenou aplikáciou. Jednoducho povedané, riadi dialógy (pripojenia) medzi počítačmi. </p>
+
+
+
+<p>Relačná vrstva zabezpečuje, že relácia zostane otvorená dostatočne dlho na prenos všetkých vymieňaných údajov a potom okamžite zatvorí reláciu, aby sa zabránilo zbytočnému strácaniu prostriedkov.</p>
+
+
+
+<h4><strong>Vrstva 4: Transportná vrstva</strong></h4>
+
+
+
+<p><strong>Transportná vrstva je zodpovedná za end-to-end komunikáciu medzi dvoma zariadeniam</strong>i, ktoré spolu komunikujú. Berie údaje z relačnej vrstvy a rozdeľuje ich na kúsky nazývané segmenty ešte pred ich odoslaním do 3. vrstvy.</p>
+
+
+
+<p>4. vrstva je tiež zodpovedná za riadenie toku (optimálna rýchlosť, takže komunikácia nebude príliš pomalá alebo príliš rýchla) a riadenie chýb (keď dostane údaje, zabezpečuje, že sú úplné a požiada o retransmisiu ak nie sú).</p>
+
+
+
+<p></p>
+
+
+
+<h4><strong>Vrstva 3: Sieťová vrstva</strong></h4>
+
+
+
+<p><strong>Sieťová vrstva je zodpovedná za správu prenosu dát medzi dvoma rôznymi sieťami.</strong> Ak sú tieto dve zariadenia pripojené k rovnakej sieti, potom táto vrstva nie je potrebná.</p>
+
+
+
+<p>Sieťová vrstva rozdeľuje segmenty z transportnej vrstvy na ešte menšie jednotky nazývané pakety.Potom sa tieto pakety odošlú do prijímača a tam sa znovu zmontujú. </p>
+
+
+
+<p>Táto vrstva je tiež zodpovedná za nájdenie najlepšej fyzickej cesty, aby údaje dosiahli svoj cieľ.</p>
+
+
+
+<p></p>
+
+
+
+<h4><strong>Vrstva 2: Linková vrstva</strong></h4>
+
+
+
+<p>Linková vrstva je veľmi podobná sieťovej vrstve až na to<strong>, že sa používa pri prenose údajov medzi zariadeniami v tej istej lokálnej sieti.</strong></p>
+
+
+
+<p>Linková vrstva berie pakety zo sieťovej vrstvy a rozdeľuje ich na ešte menšie kúsky nazývané rámce.</p>
+
+
+
+<p>Rovnako ako sieťová vrstva, linková vrstva je taktiež zodpovedná za riadenie toku a kontrolu chýb.</p>
+
+
+
+<p></p>
+
+
+
+<h4><strong>Vrstva 1: Fyzická vrstva</strong></h4>
+
+
+
+<p><strong>Fyzická vrstva je zodpovedná za prenos a príjem neštruktúrovaných nespracovaných dát medzi zariadeniami.</strong> Prevádza digitálne bity (rámce) na analógový elektrický, rádiový (wifi) alebo optický signál.</p>
+
+
+
+<p>Špecifikácie charakteristiky, ako sú úrovne napätia, načasovanie zmien napätia, fyzické rýchlosti prenosu dát, maximálne prenosové vzdialenosti, metóda prístupu k kanálu a fyzické konektory atď.</p>
+
+
+
+<p></p>
+
+
+
+<p></p>
+
+
+
+<h2><strong>TCP/IP Model</strong></h2>
+
+
+
+<p>Mode<strong>l OSI, kto</strong>rý som vám práve vysvetlil, je len akým si ref<strong>erenčným/logickým modelo</strong>m, ktorý slúži na učenie a vysvetlenie konceptu sieťovej komunikácie. TCP/IP model bol navrhnutý a vyvinutý Ministerstvom obrany (DoD) v roku 1960 a je založený na štandardných protokoloch. Je skratkou pre<strong> Transmission Control Protocol/Internet Protoco</strong>l. Mod<strong>el TCP/IP</strong> je stručná verzia modelu OSI. Obsahuje štyri vrstvy, na rozdiel od siedmich vrstiev v modeli OSI. Vrstvy sú:</p>
+
+
+
+<ol><li><strong>Aplikačná vrstva</strong></li><li><strong>Transportná vrstva</strong></li><li><strong>Sieťová vrstva</strong></li><li><strong>Sieťové rozhranie</strong></li></ol>
+
+
+
+<p>Podrobnejší opis týchto model a ich porovnanie môžete nájsť <a href="https://www.samuraj-cz.com/clanek/tcpip-model-encapsulace-paketu-vs-ramec/">tu</a>. </p>
+
+
+
+<figure class="wp-block-image size-large"><img decoding="async" loading="lazy" width="640" height="367" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/OSI-Model-vs-TCPIP-Model.png?resize=640%2C367&#038;ssl=1" alt="" class="wp-image-285" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/OSI-Model-vs-TCPIP-Model.png?w=775&amp;ssl=1 775w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/OSI-Model-vs-TCPIP-Model.png?resize=300%2C172&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/OSI-Model-vs-TCPIP-Model.png?resize=768%2C441&amp;ssl=1 768w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<h4><strong><strong>Sieťové rozhranie</strong></strong></h4>
+
+
+
+<p><strong>Vrstva sieťového rozhrania je kombináciou linkovej a fyzickej v</strong>rstvy dostupnej v modeli OSI. Pridelovanie adresovanie sa vykonáva v tejto vrstve, t. j. &nbsp;MAC Adresa zdroja a cieľa je priradená k dátovým paketom. Preto je táto vrstva zodpovedná za fyzický prenos údajov.</p>
+
+
+
+<h4><strong><strong>Sieťová vrstva</strong></strong></h4>
+
+
+
+<p>Sieťová vrstva&nbsp;podľa pôvodnej definície riešila problém transportu paketov v rámci jednej siete. S príchodom konceptu spájanie sietí bola pridaná ďalšia funkcionalita, menovite transport dát z jednej siete&nbsp;do druhej. Sem vo všeobecnosti patrí&nbsp;smerovanie paketu sieťou sietí, známou ako internet.</p>
+
+
+
+<h4><strong><strong>Transportná vrstva</strong></strong></h4>
+
+
+
+<p>Protokoly&nbsp;<a href="https://sk.wikipedia.org/wiki/Transportn%C3%A1_vrstva">transportnej vrstvy</a>&nbsp;riešia problémy ako spoľahlivosť a zabezpečujú, že dáta prídu v správnom poradí. V balíku protokolov TCP/IP tiež určujú, na akú aplikáciu sú dáta určené.</p>
+
+
+
+<h4><strong><strong>Aplikačná vrstva</strong></strong></h4>
+
+
+
+<p><a href="https://sk.wikipedia.org/wiki/Aplika%C4%8Dn%C3%A1_vrstva">Aplikačná vrstva</a>&nbsp;je vrstva bežne používaná väčšinou programov pracujúcich so sieťou na komunikáciu prostredníctvom siete. Procesy na tejto vrstve závisia na konkrétnej aplikácii; dáta prenášané programom v jeho internom formáte sú kódované do štandardného protokolu.</p>
+
+
+
+<p>Niektoré programy bežiace na tejto vrstve poskytujú služby, ktoré priamo podporujú používateľské aplikácie, sem patria programy a ich špecifické protokoly ako&nbsp;<a href="https://sk.wikipedia.org/wiki/HTTP">HTTP</a>&nbsp;(<a href="https://sk.wikipedia.org/wiki/World_Wide_Web">World Wide Web</a>),&nbsp;<a href="https://sk.wikipedia.org/wiki/FTP">FTP</a>&nbsp;(prenos súborov),&nbsp;<a href="https://sk.wikipedia.org/wiki/SMTP">SMTP</a>&nbsp;(<a href="https://sk.wikipedia.org/wiki/E-mail">e-mail</a>),&nbsp;<a href="https://sk.wikipedia.org/wiki/SSH">SSH</a>&nbsp;(zabezpečené vzdialené prihlasovanie),&nbsp;<a href="https://sk.wikipedia.org/wiki/DNS">DNS</a>&nbsp;(vyhľadávania hostname/IP adresy) a mnohé iné.</p>
+
+
+
+<p></p>
+
+
+
+<h2><strong>Ethernetový Hub</strong></h2>
+
+
+
+<p><strong>Sieťový hub</strong>, nazývaný <strong>aj ethernetov</strong>ý <strong>hu</strong>b alebo opakovač je sieťové<strong> zariadenie na prepojenie viacerých ethernetových</strong> zariadení a ich spojenie do jednej siete. Ak poznáte USB hub, tak toto zariadenia je úplne rovnaké, ale na miesto USB portov sú na zariadení ethernetové porty.</p>
+
+
+
+<p>Na takomto hube sa nachádzsa viacero portov, ktoré posielajú dáta oboma smermi, prijímajú, ale taktiež odosielajú údaje. </p>
+
+
+
+<p>Spôsob, akým hub funguje, je veľmi jednoduchý. Singnál na vstupe jedného z portov sa zobrazí na výstupe každého portu okrem portu, ktorý odosiela singnal. Preto sa to volá opakovač, len opakuje signál. </p>
+
+
+
+<p></p>
+
+
+
+<p><strong>Hub pracuje na 1. vrstve  (fyzická vrstva) modelu OS</strong>I.  Takže pracuje s nespracovaným analógovým signálom. Zo všetkých zariadení ktoré popíšem je hub to najjednoduchšie a &#8220;najhlúpejšie&#8221;. </p>
+
+
+
+<p>Vľavo môžete vidieť, ako asi môže vyzerať taký hub a na pravej strane je CISCO (jedna z najväčších sieťových organizácií) symbol pre hub.</p>
+
+
+
+<figure class="wp-block-image size-large"><img decoding="async" loading="lazy" width="640" height="237" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/pngegg-1-2.png?resize=640%2C237&#038;ssl=1" alt="" class="wp-image-271" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/pngegg-1-2.png?w=746&amp;ssl=1 746w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/pngegg-1-2.png?resize=300%2C111&amp;ssl=1 300w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<h2><strong>Switch</strong></h2>
+
+
+
+<p><strong>Switch nazývaný aj prepínač</strong> je sieťové zariadenie,<strong> ktoré tiež spája viacero zariadení k do jednej siete</strong>. To zahŕňa počítače, tlačiarne a servery atď. . Vďaka prepínaču môžu všetky tieto zariadenia komunikovať, ako by boli priamo prepojené.</p>
+
+
+
+<p>Možno sa teraz pýtaš, hmm, ale aký je rozdiel medzi switchom a hubom tým pádom? <strong>Rozdiel medzi hubom a switchom  spočíva v tom, že switch odosiela  údaje iba do zariadení, pre ktoré sú dáta určené, ale hub odosiela údaje do všetkých zariadení.</strong></p>
+
+
+
+<p>Aby posielal správy na správne zariadenia switch používa MAC adresy.</p>
+
+
+
+<p><strong>Switch pracuje na 2. vrstve OSI Modelu</strong></p>
+
+
+
+<figure class="wp-block-image size-full"><img decoding="async" loading="lazy" width="640" height="244" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-46.png?resize=640%2C244&#038;ssl=1" alt="" class="wp-image-272" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-46.png?w=1108&amp;ssl=1 1108w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-46.png?resize=300%2C115&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-46.png?resize=1024%2C391&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-46.png?resize=768%2C293&amp;ssl=1 768w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<h2><strong>Router </strong></h2>
+
+
+
+<p><strong>Router nazývaný aj smerovač</strong> je sieťové zariadenie, ktoré slúži dvom primárnym funkciám:</p>
+
+
+
+<ul><li><strong>vytvorenie a údržba lokálnej siete</strong></li><li><strong>managovanie dát (v rámci siete a tiež pri vstupe nových dát do siete)</strong></li></ul>
+
+
+
+<p></p>
+
+
+
+<p><strong>Jednoducho povedané routre prepájajú počítačové siete</strong> z ďalšími počítačovými sieťami. Jedno také prepojenie máte aj doma, kde vaša domáca siet je projená z ďalšim routerom, ktorý vám dáva možnosť pripojiť sa na internet. Ale nenechajte sa zmiasť pojmom routerom, ten ktorý máte doma je multifunkčné zariadenie, ktoré slúži ako Router, Wifi Prístupový bod, Swich&#8230; </p>
+
+
+
+<p><strong>Routre pracujú na 3. vrstve (sieťová vrstva) modelu OSI.</strong></p>
+
+
+
+<p>Router pracuju ako dispečer, ktorý riadi prevádzku a vyberá najefektívnejšiu smerovaniu trasu. Router pripája vaše zariadenie k svetu, chráni vaše informácie pred bezpečnostnými hrozbami.</p>
+
+
+
+<p></p>
+
+
+
+<figure class="wp-block-image size-large"><img decoding="async" loading="lazy" width="640" height="285" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-47.png?resize=640%2C285&#038;ssl=1" alt="" class="wp-image-276" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-47.png?w=834&amp;ssl=1 834w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-47.png?resize=300%2C134&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/image-47.png?resize=768%2C343&amp;ssl=1 768w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p></p>
+
+
+
+<h2><strong>Lan</strong></h2>
+
+
+
+<p><strong>Lokálna počítačová sieť (</strong>LAN) je počítačová sieť, kt<strong>orá prepája počítače v obmedzenej oblasti (v</strong>áš domov, škola, kancelárska budova).</p>
+
+
+
+<p><strong>Podľa CISCOLAN pozo</strong>stáva z káblov, prístupových bodov, switchov, routerov a ďalších komponentov, ktoré umožňujú zariadeniam pripojiť sa k interným serverom, webovým serverom a iným sieťam LAN prostredníctvom rozsiahlych sietí (WAN).</p>
+
+
+
+<p>Nárast virtualizácie tiež pomohol rozvoju virtuálnych sietí LAN, ktoré umožňujú správcom siete logicky zoskupovať sieťové uzly a rozdeľovať svoje siete bez potreby veľkých zmien infraštruktúry.</p>
+
+
+
+<p>Napríklad v kancelárii s viacerými oddeleniami, ako je účtovníctvo, podpora IT a administratíva, môže byť počítač každého oddelenia logicky pripojený k rovnakému prepínaču, ale segmentovaný tak, aby sa správal, akoby bol samostatný.</p>
+
+
+
+<p></p>
+
+
+
+<h2><strong>Wan</strong></h2>
+
+
+
+<p><strong>Sieť WAN (Wide Area Network) je sieť, ktorá sa rozprestiera na veľkej geografickej oblasti. </strong></p>
+
+
+
+<p>Je to kolekcia sietí LAN alebo iných sietí, ktoré komunikujú spoločne. </p>
+
+
+
+<p>Jednoducho povedane spája všetky LAN dohromady.</p>
+
+
+
+<p></p>
+
+
+
+<figure class="wp-block-image size-full"><img decoding="async" loading="lazy" width="640" height="453" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/LAN_WAN_scheme.svg_.png?resize=640%2C453&#038;ssl=1" alt="" class="wp-image-288" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/LAN_WAN_scheme.svg_.png?w=1920&amp;ssl=1 1920w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/LAN_WAN_scheme.svg_.png?resize=300%2C212&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/LAN_WAN_scheme.svg_.png?resize=1024%2C724&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/LAN_WAN_scheme.svg_.png?resize=768%2C543&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/LAN_WAN_scheme.svg_.png?resize=1536%2C1086&amp;ssl=1 1536w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2021/01/LAN_WAN_scheme.svg_.png?w=1280&amp;ssl=1 1280w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>Myslím, ž<strong>e toto sú úplné základy  pre absolútnych začiatočníko</strong>v. Je toho oveľa viac<strong>, čo</strong> treba vysvetliť, ale nechcem to príliš komplikovať, takže to rozdelím na viac postov. </p>
+
+
+
+<p>V ďalšom článku vysvetlím, čo je IP a MAC adresa, základný protokol pre komunikáciu TCP/IP, ako IP adresa dostane svoju vlastnú doménu a ďalšie. .</p>
+
+
+
+<p></p>
+
+
+
+<p></p>
+
+
+
+<blockquote class="wp-block-quote"><p><mark style="background-color:rgba(0, 0, 0, 0)" class="has-inline-color has-orange-color">Ak vám tento článok prišiel zaujímavý alebo užitočný, môžete mňa a TheTechCorner podporiť zanechaním komentára alebo &#8220;Kúpou kávy&#8221;. Tieto články trvá nejaký čas napísať a udržiavanie stránky tiež stojí nejaké peniaze. Môžete tak urobiť kliknutím na tlačidlo kávy v pravom dolnom rohu alebo v dolnej časti stránky, ďakujem.</mark></p></blockquote>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container"></div></div>
+
+
+
+<p></p>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">415</post-id>	</item>
+	</channel>
+</rss>

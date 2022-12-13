@@ -1,0 +1,1797 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	
+	xmlns:georss="http://www.georss.org/georss"
+	xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+	>
+
+<channel>
+	<title>Filip Zverec &#8211; TheTechCorner</title>
+	<atom:link href="https://thetechcorner.org/?feed=rss2&#038;author=1" rel="self" type="application/rss+xml" />
+	<link>https://thetechcorner.org</link>
+	<description>A corner on the internet where I share my ideas, guides and projects</description>
+	<lastBuildDate>Sun, 04 Dec 2022 21:09:49 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.1.1</generator>
+<site xmlns="com-wordpress:feed-additions:1">187618359</site>	<item>
+		<title>Turn your old laptop into Proxmox server</title>
+		<link>https://thetechcorner.org/?p=1564&#038;utm_source=rss&#038;utm_medium=rss&#038;utm_campaign=turn-your-old-laptop-into-proxmox-server</link>
+					<comments>https://thetechcorner.org/?p=1564#respond</comments>
+		
+		<dc:creator><![CDATA[Filip Zverec]]></dc:creator>
+		<pubDate>Sun, 04 Dec 2022 21:09:47 +0000</pubDate>
+				<category><![CDATA[HomeLab]]></category>
+		<category><![CDATA[homelab]]></category>
+		<category><![CDATA[hypervisor]]></category>
+		<category><![CDATA[notebook]]></category>
+		<category><![CDATA[old]]></category>
+		<category><![CDATA[proxmox]]></category>
+		<category><![CDATA[VM]]></category>
+		<guid isPermaLink="false">https://thetechcorner.org/?p=1564</guid>
+
+					<description><![CDATA[Begging of your Homelab life As a first step on your homelab journey, you should [&#8230;]]]></description>
+										<content:encoded><![CDATA[
+<h3>Begging of your Homelab life</h3>
+
+
+
+<p>As a first step on your homelab journey, you should set up an environment where you can easily deploy, manage and backup your virtual machines (VMs). Running your services in virtual machines rather than on bare metal hardware is much more efficient, cheaper and overall less difficult. </p>
+
+
+
+<h3>Hypervisor</h3>
+
+
+
+<p>Hypervisor is just a fancy-sounding word for the software/firmware/hardware that actually creates and manages virtual machines.</p>
+
+
+
+<p>There are two primary types: bare metal and hosted.</p>
+
+
+
+<p>Type 1 or bare metal hypervisors are installed directly onto the host system&#8217;s hardware. You can think of a bare metal hypervisor being like an operating system that is just dedicated to creating and managing virtual machines.</p>
+
+
+
+<p>Type 2 or hosted hypervisors are like those you&#8217;ve already mentioned. VirtualBox, VMWare Workstation, etc., are hypervisors installed on an existing operating system that lets you run virtual machines on that system. They are not directly managing the hardware of your system, but rely on the underlying OS for that.</p>
+
+
+
+<p>It also helps to think of these things in layers. In a type 1 architecture, the layering goes: hardware &gt; hypervisor &gt; guest operating system(s).</p>
+
+
+
+<p>In a type 2 architecture, the layering goes: hardware &gt; host operating system &gt; hypervisor &gt; guest operating system(s)</p>
+
+
+
+<p></p>
+
+
+
+<p><strong>My choice of a hypervisor is <a href="https://www.proxmox.com/en/">Proxmox</a>.</strong></p>
+
+
+
+<div class="is-layout-constrained wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">Proxmox is complete open-source platform for enterprise virtualization. With the built-in web interface you can easily manage VMs and containers, software-defined storage and networking, high-availability clustering, and multiple out-of-the-box tools on a single solution.</pre>
+</div></div>
+
+
+
+<p>It&#8217;s very light way compared to other hypervisor with very nice GUI and great community. It&#8217;s running od debian so you can use pretty much anything to host your proxmox.</p>
+
+
+
+<p>In my case, I&#8217;m going to use an old laptop (Asus X550vb) which has been sitting on my shelf eating dust for a few years now.</p>
+
+
+
+<p></p>
+
+
+
+<h3>Preparation before install </h3>
+
+
+
+<p><strong>What will you need:</strong></p>
+
+
+
+<ul>
+<li>Something to host on Proxmox (old laptop, desktop..)</li>
+
+
+
+<li>SSD disk for operating system, proxmox and VMs (at least 256GB)</li>
+
+
+
+<li>USB disk for installation of an OS</li>
+</ul>
+
+
+
+<p></p>
+
+
+
+<h3>Installation guide</h3>
+
+
+
+<p>I&#8217;m gonna keep it simple, because there are already plenty of blogs and videos on how to do this</p>
+
+
+
+<p></p>
+
+
+
+<ol>
+<li><strong>Download Proxmox</strong></li>
+</ol>
+
+
+
+<p>You can download ISO from their official site</p>
+
+
+
+<p><a href="https://www.proxmox.com/en/downloads/category/iso-images-pve">https://www.proxmox.com/en/downloads/category/iso-images-pve</a></p>
+
+
+<div class="wp-block-image">
+<figure class="aligncenter size-full"><img decoding="async" width="640" height="519" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image.png?resize=640%2C519&#038;ssl=1" alt="" class="wp-image-1568" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image.png?w=1002&amp;ssl=1 1002w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image.png?resize=300%2C243&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image.png?resize=768%2C623&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image.png?resize=24%2C19&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image.png?resize=36%2C29&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image.png?resize=48%2C39&amp;ssl=1 48w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+<p><strong>2. Flash ISO onto USB </strong></p>
+
+
+
+<p>There are multiple ways on how to flash ISO onto USB, but my favorite is using a utility called <a href="https://rufus.ie/en/">Rufus</a>. I&#8217;ve explained the step-by-step process <a href="https://thetechcorner.org/?p=136">on this blog as well</a>.</p>
+
+
+<div class="wp-block-image">
+<figure class="aligncenter size-full"><img decoding="async" loading="lazy" width="468" height="534" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-1.png?resize=468%2C534&#038;ssl=1" alt="" class="wp-image-1569" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-1.png?w=468&amp;ssl=1 468w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-1.png?resize=263%2C300&amp;ssl=1 263w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-1.png?resize=21%2C24&amp;ssl=1 21w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-1.png?resize=32%2C36&amp;ssl=1 32w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-1.png?resize=42%2C48&amp;ssl=1 42w" sizes="(max-width: 468px) 100vw, 468px" data-recalc-dims="1" /></figure></div>
+
+
+<p></p>
+
+
+
+<p><strong>3. Stick USB into laptop and change BIOS boot options</strong></p>
+
+
+
+<p>As all the others OS installation, you need to change boot process priority from things like SSD, HDD.. to prioritizes USB input first.</p>
+
+
+
+<p> Again, there are countless guides for this, so I&#8217;m just gonna put one here and it&#8217;s up to you to find one which suits needs for your specific hardware.</p>
+
+
+
+<p><a href="https://softwarekeep.com/help-center/how-to-change-your-computers-boot-order">https://softwarekeep.com/help-center/how-to-change-your-computers-boot-order</a></p>
+
+
+
+<p></p>
+
+
+
+<p><strong>4.</strong> <strong>Complete installation setup</strong></p>
+
+
+
+<p>Start your laptop/desktop with the USB stick inside and boot priority set for an USB.</p>
+
+
+
+<p>You&#8217;ll be greeted by this screen. Select install proxmox VE</p>
+
+
+<div class="wp-block-image">
+<figure class="aligncenter size-large is-resized"><img decoding="async" loading="lazy" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-2.png?resize=640%2C464&#038;ssl=1" alt="" class="wp-image-1571" width="640" height="464" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-2.png?resize=1024%2C743&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-2.png?resize=300%2C218&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-2.png?resize=768%2C557&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-2.png?resize=24%2C17&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-2.png?resize=36%2C26&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-2.png?resize=48%2C35&amp;ssl=1 48w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-2.png?w=1217&amp;ssl=1 1217w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+<p></p>
+
+
+
+<p>Accept the EULA</p>
+
+
+<div class="wp-block-image">
+<figure class="aligncenter size-large is-resized"><img decoding="async" loading="lazy" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-3.png?resize=640%2C401&#038;ssl=1" alt="" class="wp-image-1572" width="640" height="401" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-3.png?resize=1024%2C640&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-3.png?resize=300%2C188&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-3.png?resize=768%2C480&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-3.png?resize=24%2C15&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-3.png?resize=36%2C23&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-3.png?resize=48%2C30&amp;ssl=1 48w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-3.png?w=1511&amp;ssl=1 1511w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-3.png?w=1280&amp;ssl=1 1280w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+<p></p>
+
+
+
+<p>Choose your SSD as target hard disk </p>
+
+
+<div class="wp-block-image">
+<figure class="aligncenter size-large is-resized"><img decoding="async" loading="lazy" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-4.png?resize=640%2C398&#038;ssl=1" alt="" class="wp-image-1573" width="640" height="398" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-4.png?resize=1024%2C638&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-4.png?resize=300%2C187&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-4.png?resize=768%2C478&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-4.png?resize=24%2C15&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-4.png?resize=36%2C22&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-4.png?resize=48%2C30&amp;ssl=1 48w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-4.png?w=1514&amp;ssl=1 1514w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-4.png?w=1280&amp;ssl=1 1280w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+<p>Select country and timezone of your choice</p>
+
+
+<div class="wp-block-image">
+<figure class="aligncenter size-large is-resized"><img decoding="async" loading="lazy" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-5.png?resize=640%2C403&#038;ssl=1" alt="" class="wp-image-1574" width="640" height="403" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-5.png?resize=1024%2C646&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-5.png?resize=300%2C189&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-5.png?resize=768%2C484&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-5.png?resize=24%2C15&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-5.png?resize=36%2C23&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-5.png?resize=48%2C30&amp;ssl=1 48w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-5.png?w=1503&amp;ssl=1 1503w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-5.png?w=1280&amp;ssl=1 1280w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+<p>Choose your root password and mail for notifications</p>
+
+
+<div class="wp-block-image">
+<figure class="aligncenter size-large is-resized"><img decoding="async" loading="lazy" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-6.png?resize=640%2C404&#038;ssl=1" alt="" class="wp-image-1575" width="640" height="404" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-6.png?resize=1024%2C646&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-6.png?resize=300%2C189&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-6.png?resize=768%2C484&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-6.png?resize=24%2C15&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-6.png?resize=36%2C23&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-6.png?resize=48%2C30&amp;ssl=1 48w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-6.png?w=1500&amp;ssl=1 1500w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-6.png?w=1280&amp;ssl=1 1280w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+<p>Now type out  hostname in FQDN (fully qualified domain name) which basically means with the domain you want to use. Mine is thetechcorner.sk so hostname will look like this. If you don&#8217;t own any, you can just use &#8220;.home.arpa&#8221; which is used for homelab stuff.</p>
+
+
+
+<p>Also choose some static IP address in your range of network.</p>
+
+
+<div class="wp-block-image">
+<figure class="aligncenter size-large is-resized"><img decoding="async" loading="lazy" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-7.png?resize=640%2C398&#038;ssl=1" alt="" class="wp-image-1576" width="640" height="398" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-7.png?resize=1024%2C637&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-7.png?resize=300%2C186&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-7.png?resize=768%2C477&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-7.png?resize=24%2C15&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-7.png?resize=36%2C22&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-7.png?resize=48%2C30&amp;ssl=1 48w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-7.png?w=1517&amp;ssl=1 1517w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-7.png?w=1280&amp;ssl=1 1280w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+<p>Everything should be set and you can begin the installation.</p>
+
+
+<div class="wp-block-image">
+<figure class="aligncenter size-large is-resized"><img decoding="async" loading="lazy" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-8.png?resize=640%2C400&#038;ssl=1" alt="" class="wp-image-1577" width="640" height="400" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-8.png?resize=1024%2C641&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-8.png?resize=300%2C188&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-8.png?resize=768%2C480&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-8.png?resize=24%2C15&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-8.png?resize=36%2C23&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-8.png?resize=48%2C30&amp;ssl=1 48w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-8.png?w=1509&amp;ssl=1 1509w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-8.png?w=1280&amp;ssl=1 1280w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+<p>When it&#8217;s done, you should see something like this on your screen</p>
+
+
+<div class="wp-block-image">
+<figure class="aligncenter size-large is-resized"><img decoding="async" loading="lazy" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-9.png?resize=640%2C166&#038;ssl=1" alt="" class="wp-image-1579" width="640" height="166" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-9.png?resize=1024%2C267&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-9.png?resize=300%2C78&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-9.png?resize=768%2C200&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-9.png?resize=24%2C6&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-9.png?resize=36%2C9&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-9.png?resize=48%2C13&amp;ssl=1 48w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-9.png?w=1155&amp;ssl=1 1155w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+<p>Now open up browser in your local network and enter the URL.</p>
+
+
+<div class="wp-block-image">
+<figure class="aligncenter size-large is-resized"><img decoding="async" loading="lazy" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-10.png?resize=640%2C300&#038;ssl=1" alt="" class="wp-image-1580" width="640" height="300" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-10.png?resize=1024%2C483&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-10.png?resize=300%2C141&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-10.png?resize=768%2C362&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-10.png?resize=1536%2C724&amp;ssl=1 1536w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-10.png?resize=2048%2C965&amp;ssl=1 2048w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-10.png?resize=24%2C11&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-10.png?resize=36%2C17&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-10.png?resize=48%2C23&amp;ssl=1 48w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-10.png?w=1280&amp;ssl=1 1280w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/12/image-10.png?w=1920&amp;ssl=1 1920w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+<p>Congratulation, everything is now set and you can begin your homelab journey.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://thetechcorner.org/?feed=rss2&#038;p=1564</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">1564</post-id>	</item>
+		<item>
+		<title>SPF, DKIM and DMARC explained</title>
+		<link>https://thetechcorner.org/?p=1494&#038;utm_source=rss&#038;utm_medium=rss&#038;utm_campaign=spf-dkim-and-dmarc-explained</link>
+					<comments>https://thetechcorner.org/?p=1494#respond</comments>
+		
+		<dc:creator><![CDATA[Filip Zverec]]></dc:creator>
+		<pubDate>Sun, 27 Nov 2022 11:59:21 +0000</pubDate>
+				<category><![CDATA[Networking Basics]]></category>
+		<category><![CDATA[dmarc]]></category>
+		<guid isPermaLink="false">https://thetechcorner.org/?p=1494</guid>
+
+					<description><![CDATA[What even is SPF, DKIM and DMARC? SPF, DKIM and DMARC are simply a set [&#8230;]]]></description>
+										<content:encoded><![CDATA[
+<p></p>
+
+
+
+<h3>What even is SPF, DKIM and DMARC?</h3>
+
+
+
+<p>SPF, DKIM and DMARC are simply a set of email authentication protocols, that prove to ISPs and mail services that senders are truly authorized to send email from a particular domain. These tools provide proof that an email message is genuine and that it’s coming from who it claims to be from.</p>
+
+
+
+<p></p>
+
+
+
+<h3>SPF</h3>
+
+
+
+<p><strong>SPF (Sender Policy Framework)&nbsp;</strong>is a DNS record containing information about&nbsp;<strong>servers allowed to send emails</strong>&nbsp;from a specific domain (for example,&nbsp;thetechcorner.org). To do that, the domain owner can add a file or record on the server which tells the receiving server what domains are actually allowed to send emails.</p>
+
+
+
+<p>SPF is both useful for protecting against MailFrom spoofing of your domain towards your users, but also to external destinations where it could harm your brand. Ie, Microsoft&#8217;s SPF record stops MailFrom spoofing from @microsoft.com not just to @microsoft.com but also to you which helps stop some fake Microsoft phishing emails.</p>
+
+
+
+<p><strong>How does it look like</strong></p>
+
+
+
+<div class="is-layout-constrained wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-code"><code>v=spf1 include:5123454.thetechcorner.org ~all</code></pre>
+</div></div>
+
+
+<div class="wp-block-image">
+<figure class="aligncenter size-large is-resized"><img decoding="async" loading="lazy" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-1.png?resize=640%2C360&#038;ssl=1" alt="" class="wp-image-1496" width="640" height="360" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-1.png?resize=1024%2C576&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-1.png?resize=300%2C169&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-1.png?resize=768%2C432&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-1.png?resize=1536%2C864&amp;ssl=1 1536w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-1.png?resize=2048%2C1152&amp;ssl=1 2048w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-1.png?resize=24%2C14&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-1.png?resize=36%2C20&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-1.png?resize=48%2C27&amp;ssl=1 48w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-1.png?w=1280&amp;ssl=1 1280w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-1.png?w=1920&amp;ssl=1 1920w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+<p></p>
+
+
+
+<h3>DKIM</h3>
+
+
+
+<p>DKIM or (<strong>DomainKeys Identified Mail</strong>) is an authentication similar to SPF. DKIM is a key-pair signing mechanism for the header of mail messages. . When you send mail you attach a signature to the message using a private key which is compared to a public key published in DNS for your domain. DKIM adds authenticity to a message and guards against tampering with the header by down-stream mail servers. One of the benefits to working on the header is it survives SMTP relaying and auto-forwarding.</p>
+
+
+
+<p>DKIM is added as a TXT record by adding it into your domain panel. </p>
+
+
+
+<p><strong>DKIM does not directly prevent abusive / malicious behavior.</strong>&nbsp;DKIM is just a signature&#8230; If I hand you a letter with my signature on it there&#8217;s added authenticity; However, if I hand you a letter without my signature if there&#8217;s no requirement for the letter to be signed there&#8217;s no reason to be suspicious. It&#8217;s like SSL, just because a website doesn&#8217;t have SSL doesn&#8217;t mean it&#8217;s fake, but it&#8217;s preferred when SSL is used.</p>
+
+
+
+<p><strong>How does it look like</strong></p>
+
+
+
+<div class="is-layout-constrained wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-code"><code>k=rsa; p=MIGfMA0GCksjlkdixcieJDDSFIELDSKfdsfsdfsdfsfksflsfldfsfjhsdfsdfhuisdhfuiehfhNyyHs77EoDFDDEEFFEKJKLJHLKifLN51IIvwIDAQABQp6nIyi5oioyZh+1jDXoCDDFDSFEEDSFSEFE85N7b76aTtHmy2wTgR2LFS</code></pre>
+</div></div>
+
+
+<div class="wp-block-image">
+<figure class="aligncenter size-large is-resized"><img decoding="async" loading="lazy" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-2.png?resize=640%2C359&#038;ssl=1" alt="" class="wp-image-1497" width="640" height="359" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-2.png?resize=1024%2C576&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-2.png?resize=300%2C169&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-2.png?resize=768%2C432&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-2.png?resize=1536%2C864&amp;ssl=1 1536w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-2.png?resize=2048%2C1152&amp;ssl=1 2048w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-2.png?resize=24%2C14&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-2.png?resize=36%2C20&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-2.png?resize=48%2C27&amp;ssl=1 48w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-2.png?w=1280&amp;ssl=1 1280w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-2.png?w=1920&amp;ssl=1 1920w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+<p></p>
+
+
+
+<h3>DMARC</h3>
+
+
+
+<p><strong>DMARC (Domain-based Message Authentication, Reporting &amp; Conformance)&nbsp;</strong>defines how the recipient’s mail server should process incoming emails if they don’t pass the authentication check (either SPF, DKIM, or both).</p>
+
+
+
+<p>If the message fails authentication, it’s processed according to the selected DMARC policy:&nbsp;<strong>none, reject,&nbsp;</strong>or&nbsp;<strong>quarantine.</strong></p>
+
+
+
+<ul>
+<li>Under the&nbsp;<strong>“none”</strong>&nbsp;policy, the receiving server doesn’t take any action if your emails fail authentication. It doesn’t impact your deliverability. But it also doesn’t protect you from scammers, so we don’t recommend setting it. Only by introducing stricter policies can you block them in the very beginning and let the world know you care about your customers and brand.&nbsp;</li>
+
+
+
+<li>Here, messages that come from your domain but don’t pass the DMARC check go to&nbsp;<strong>“quarantine.”</strong>&nbsp;In such a case, the provider is advised to send your email to the spam folder.&nbsp;</li>
+
+
+
+<li>Under the&nbsp;<strong>“reject”&nbsp;</strong>policy, the receiving server rejects all messages that don’t pass email authentication. This means such emails won’t reach an addressee and will result in a bounce.</li>
+</ul>
+
+
+
+<p></p>
+
+
+
+<p>The R in DMARC is for the Reporting component of the protocol. These reports allow the domain owner to see where all email using their domain in the From address is being sent from.</p>
+
+
+
+<p></p>
+
+
+
+<p><strong>The DMARC record of the domain in the header from address is used if it exists.</strong>&nbsp;Like the above records, it exists as a TXT record in DNS.</p>
+
+
+
+<p>DMARC&#8217;s conformance check is called &#8220;alignment&#8221; and it checks that the header from is &#8220;aligned&#8221; with other authenticated domains on the message, either via DKIM or SPF. If&nbsp;<strong>either</strong>&nbsp;DKIM or SPF alignment passes, DMARC evaluates as a &#8220;PASS.&#8221;</p>
+
+
+
+<p><strong>SPF Alignment:</strong>&nbsp;The domain in the header from and envelope from must be the same (or sub-domains of the same parent domain if &#8220;relaxed&#8221;) and must pass SPF.</p>
+
+
+
+<p><strong>DKIM Alignment:</strong>&nbsp;DMARC requires a valid signature where the domain specified in the&nbsp;<code>d=</code>&nbsp;tag aligns with the sender&#8217;s domain from the header from field.</p>
+
+
+
+<p><strong>How does it look like</strong></p>
+
+
+
+<div class="is-layout-constrained wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-code"><code>&nbsp;_dmarc.thetechcorner.org. IN TXT "v=DMARC1\; p=none\; rua=mailto:dmarc-aggregate@thetechcorner.org\; ruf=mailto:dmarc-afrf@thetechcorner.org\; pct=100"</code></pre>
+</div></div>
+
+
+<div class="wp-block-image">
+<figure class="aligncenter size-large is-resized"><img decoding="async" loading="lazy" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-3.png?resize=640%2C358&#038;ssl=1" alt="" class="wp-image-1498" width="640" height="358" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-3.png?resize=1024%2C574&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-3.png?resize=300%2C168&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-3.png?resize=2048%2C1149&amp;ssl=1 2048w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-3.png?resize=24%2C13&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-3.png?resize=36%2C20&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-3.png?resize=48%2C27&amp;ssl=1 48w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-3.png?w=1280&amp;ssl=1 1280w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/11/image-3.png?w=1920&amp;ssl=1 1920w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+<p></p>
+
+
+
+<h3>TLDR:</h3>
+
+
+
+<ul>
+<li>Envelope from spoofing: SPF</li>
+
+
+
+<li>Header from spoofing: SPF + DMARC, DKIM + DMARC, or SPF + DKIM + DMARC. No one mechanism alone will be sufficient.</li>
+
+
+
+<li>Display name spoofing: Advanced threat filters, transport rules, and user training. None of the mechanisms care about the display name.</li>
+
+
+
+<li>Compromised mailboxes or &#8220;legitimate&#8221; senders: Advanced threat filters, transport rules, and user training.</li>
+</ul>
+
+
+
+<p></p>
+
+
+
+<h3>Useful tools:</h3>
+
+
+
+<p><a href="https://mxtoolbox.com/">https://mxtoolbox.com/</a>                                             &#8230;. Multiple mail tools like SPF lookup, blacklist DMARC&#8230;.</p>
+
+
+
+<p><a href="https://www.learndmarc.com/#">https://www.learndmarc.com/#</a>                            &#8230; SPF, DKIM DMARC training tool</p>
+
+
+
+<p><a href="https://kitterman.com/spf/validate.html">https://kitterman.com/spf/validate.html</a>             &#8230; Validate your SPF record</p>
+
+
+
+<p><a href="https://www.mailgenius.com/">https://www.mailgenius.com/</a>                                 &#8230;.Check your mail server/domain score</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://thetechcorner.org/?feed=rss2&#038;p=1494</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">1494</post-id>	</item>
+		<item>
+		<title>Customizing Linux Terminal</title>
+		<link>https://thetechcorner.org/?p=1479&#038;utm_source=rss&#038;utm_medium=rss&#038;utm_campaign=customizing-linux-terminal</link>
+		
+		<dc:creator><![CDATA[Filip Zverec]]></dc:creator>
+		<pubDate>Mon, 24 Oct 2022 18:53:58 +0000</pubDate>
+				<category><![CDATA[Linux essentials]]></category>
+		<category><![CDATA[terminator]]></category>
+		<guid isPermaLink="false">https://thetechcorner.org/?p=1479</guid>
+
+					<description><![CDATA[I just wanted to show you what kind of terminal I&#8217;m using and it&#8217;s advantages [&#8230;]]]></description>
+										<content:encoded><![CDATA[
+<p>I just wanted to show you what kind of terminal I&#8217;m using and it&#8217;s advantages in real world use.</p>
+
+
+
+<p></p>
+
+
+
+<h3>Installing Terminator</h3>
+
+
+
+<p>The first step would be installing in what&#8217;s my opinion the best terminal emulator. It uses appearance settings, hotkeys, text search, arrange terminals. IT has many interesting and good-looking themes, which is also very important because you&#8217;ll be looking at the thing for many many hours.</p>
+
+
+
+<p></p>
+
+
+
+<p>Depending on the distro use</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-code"><code>sudo apt-get install terminator -y</code></pre>
+</div></div>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-code"><code>sudo dnf install terminator -y</code></pre>
+</div></div>
+
+
+<div class="wp-block-image is-style-default">
+<figure class="aligncenter size-full"><img decoding="async" loading="lazy" width="640" height="777" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/10/image.png?resize=640%2C777&#038;ssl=1" alt="" class="wp-image-1480" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/10/image.png?w=656&amp;ssl=1 656w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/10/image.png?resize=247%2C300&amp;ssl=1 247w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/10/image.png?resize=20%2C24&amp;ssl=1 20w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/10/image.png?resize=30%2C36&amp;ssl=1 30w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/10/image.png?resize=40%2C48&amp;ssl=1 40w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+<h3>Installing Zsh</h3>
+
+
+
+<p>As a default, you are probably using bash which is is a rewrite of the old Bourne shell (<em>sh</em>) that shipped in UNIX. </p>
+
+
+
+<p>Zsh&nbsp;is intended to be friendlier than bash, through better interaction. Some of its useful features are:</p>
+
+
+
+<ul><li>Programmable command line completion</li><li>Shared command history between running shell sessions</li><li>Spelling correction</li><li>Loadable modules</li><li>Interactive selection of files and folders</li></ul>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">sudo dnf install zsh -y</pre>
+</div></div>
+
+
+
+<p>To start using it type &#8220;zsh&#8221; into the terminal and you should see similar output to this</p>
+
+
+
+<figure class="wp-block-image size-full is-style-default"><img decoding="async" loading="lazy" width="640" height="470" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/10/image-1.png?resize=640%2C470&#038;ssl=1" alt="" class="wp-image-1481" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/10/image-1.png?w=663&amp;ssl=1 663w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/10/image-1.png?resize=300%2C220&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/10/image-1.png?resize=24%2C18&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/10/image-1.png?resize=36%2C26&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/10/image-1.png?resize=48%2C35&amp;ssl=1 48w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>Let&#8217;s leave everything  in default for now, so simply type 0.</p>
+
+
+
+<p></p>
+
+
+
+<h3>Set Zsh as the default shell</h3>
+
+
+
+<p>To do that type</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-code"><code>chsh -s $(which zsh)</code></pre>
+</div></div>
+
+
+
+<p></p>
+
+
+
+<p>And if you had any custom ~/.bashrc settings or aliaes dont forget to move them to ~/.zshrc</p>
+
+
+
+<p></p>
+
+
+
+<h3>Installing Oh my Zsh</h3>
+
+
+
+<p> Oh my zsh is an open source, community-driven framework for managing your Zsh configuration. It comes bundled with thousands of helpful functions, helpers, plugins, themes etc.</p>
+
+
+
+<p>To install it we use simple script provided by their github</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"</pre>
+</div></div>
+
+
+
+<figure class="wp-block-image size-full is-style-default"><img decoding="async" loading="lazy" width="640" height="247" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/10/image-2.png?resize=640%2C247&#038;ssl=1" alt="" class="wp-image-1483" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/10/image-2.png?w=993&amp;ssl=1 993w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/10/image-2.png?resize=300%2C116&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/10/image-2.png?resize=768%2C296&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/10/image-2.png?resize=24%2C9&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/10/image-2.png?resize=36%2C14&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/10/image-2.png?resize=48%2C19&amp;ssl=1 48w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>Type yes and you are good to go.</p>
+
+
+
+<figure class="wp-block-image size-full is-style-default"><img decoding="async" loading="lazy" width="640" height="200" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/10/image-3.png?resize=640%2C200&#038;ssl=1" alt="" class="wp-image-1484" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/10/image-3.png?w=988&amp;ssl=1 988w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/10/image-3.png?resize=300%2C94&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/10/image-3.png?resize=768%2C239&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/10/image-3.png?resize=24%2C7&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/10/image-3.png?resize=36%2C11&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/10/image-3.png?resize=48%2C15&amp;ssl=1 48w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<h3>Changing a theme, background, fonts etc.</h3>
+
+
+
+<p>Right click on the terminator and choose &#8220;Preferences&#8221;. Now to into the Colors>Foreground and Background and go into the drop down menu. My theme of choice is &#8220;Solarized dark&#8221; and again &#8220;Solarized&#8221; for the Palette.</p>
+
+
+
+<figure class="wp-block-image size-large is-style-default"><img decoding="async" loading="lazy" width="640" height="456" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/10/image-4.png?resize=640%2C456&#038;ssl=1" alt="" class="wp-image-1485" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/10/image-4.png?resize=1024%2C730&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/10/image-4.png?resize=300%2C214&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/10/image-4.png?resize=768%2C548&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/10/image-4.png?resize=24%2C17&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/10/image-4.png?resize=36%2C26&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/10/image-4.png?resize=48%2C34&amp;ssl=1 48w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/10/image-4.png?w=1084&amp;ssl=1 1084w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>For the fonts we are going to use a package called &#8220;Powerline-fonts&#8221;</p>
+
+
+
+<p>Simple use package manager to download it, but from my experience with this package, different distros have different package names, so watch out.</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">sudo dnf install powerline powerline-fonts -y</pre>
+</div></div>
+
+
+
+<p></p>
+
+
+
+<h5 id="change-theme-to-agnoster">Change theme to Agnoster</h5>
+
+
+
+<p>You need to change <code>ZSH_THEME="robbyrussell"</code> to <code>ZSH_THEME="agnoster"</code> in your .zshrc</p>
+
+
+
+<figure class="wp-block-image size-full is-style-default"><img decoding="async" loading="lazy" width="640" height="252" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/10/image-6.png?resize=640%2C252&#038;ssl=1" alt="" class="wp-image-1488" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/10/image-6.png?w=657&amp;ssl=1 657w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/10/image-6.png?resize=300%2C118&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/10/image-6.png?resize=24%2C9&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/10/image-6.png?resize=36%2C14&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/10/image-6.png?resize=48%2C19&amp;ssl=1 48w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p>Restart your terminal.</p>
+
+
+
+<p></p>
+
+
+
+<h3>Plugins</h3>
+
+
+
+<p>The great feature of ZFS is that you can add many more features in form of plugins. I&#8217;m gonna show you a few of my favorite ones</p>
+
+
+
+<h5 id="autosuggestions">Autosuggestions</h5>
+
+
+
+<p>Autosuggestion work using your zsh history. This greatly increases your typing speed. https://github.com/zsh-users/zsh-autosuggestions</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-code"><code>git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions</code></pre>
+</div></div>
+
+
+
+<p>Add the plugin to the list of plugins for Oh My Zsh to load (inside ~/.zshrc): <code>plugins=(zsh-autosuggestions)</code></p>
+
+
+
+<p></p>
+
+
+
+<h5 id="syntax-highlighting">Syntax highlighting</h5>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-code"><code>git clone https://github.com/zsh-users/zsh-syntax-highlighting.git</code></pre>
+</div></div>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-code"><code>echo "source ${(q-)PWD}/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" >> ${ZDOTDIR:-$HOME}/.zshrc<a href="https://maxim-danilov.github.io/make-linux-terminal-great-again/#syntax-highlighting"></a></code></pre>
+</div></div>
+
+
+
+<p></p>
+
+
+
+<h5 id="remove-hostname">Remove hostname</h5>
+
+
+
+<p>This is not really a plugin, but I like the clean look of it, therefore we’ll remove this. Add this line to end of your ~/.zshrc</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-code"><code>prompt_context() {} </code></pre>
+</div></div>
+
+
+
+<p><a href="https://maxim-danilov.github.io/make-linux-terminal-great-again/#syntax-highlighting"></a></p>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">1479</post-id>	</item>
+		<item>
+		<title>RHCSA 8 GITHUB CheatSheet</title>
+		<link>https://thetechcorner.org/?p=1474&#038;utm_source=rss&#038;utm_medium=rss&#038;utm_campaign=rhcsa-8-github-cheatsheet</link>
+		
+		<dc:creator><![CDATA[Filip Zverec]]></dc:creator>
+		<pubDate>Mon, 28 Mar 2022 09:53:01 +0000</pubDate>
+				<category><![CDATA[RHCSA]]></category>
+		<category><![CDATA[cheat]]></category>
+		<category><![CDATA[cheatsheet]]></category>
+		<category><![CDATA[rhcsa]]></category>
+		<category><![CDATA[sheet]]></category>
+		<guid isPermaLink="false">https://thetechcorner.org/?p=1474</guid>
+
+					<description><![CDATA[Our RHCSA 8 series has finally come to an end. Well, at least for the [&#8230;]]]></description>
+										<content:encoded><![CDATA[
+<p>Our RHCSA 8 series has finally come to an end. Well, at least for the main study part, I&#8217;m still planning on creating some practice exams exercises and some useful links to help you (and me) with the exam.</p>
+
+
+
+<p></p>
+
+
+
+<p>As the first and main step, you should memorize the most of the commands and what they do. You don&#8217;t have to learn specific flags for the most of them (even tho it will come handy) because you can just use the man pages. But the man pages won&#8217;t help you a thing if you don&#8217;t even know the name of the command or the necessary steps for completing the task. </p>
+
+
+
+<p>To not have to go through the commands over and over in my posts, I&#8217;ve created simple cheat sheet notes that you can just &#8220;ctrl+f&#8221; your way through. It&#8217;s on my GitHub which I&#8217;ll be adding more tips and commands as I go through it, enjoy!</p>
+
+
+
+<p></p>
+
+
+
+<p><a href="https://github.com/Ard3ny/RHCSA8_CheatSheet/blob/main/RHCSA8-Cheat-Sheet.txt">https://github.com/Ard3ny/RHCSA8_CheatSheet/blob/main/RHCSA8-Cheat-Sheet.txt</a></p>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">1474</post-id>	</item>
+		<item>
+		<title>Running Unify Controller on the Raspberry Pi</title>
+		<link>https://thetechcorner.org/?p=1459&#038;utm_source=rss&#038;utm_medium=rss&#038;utm_campaign=running-unify-controller-on-the-raspberry-pi</link>
+		
+		<dc:creator><![CDATA[Filip Zverec]]></dc:creator>
+		<pubDate>Mon, 21 Mar 2022 21:20:43 +0000</pubDate>
+				<category><![CDATA[HomeLab]]></category>
+		<category><![CDATA[controller]]></category>
+		<category><![CDATA[pi]]></category>
+		<category><![CDATA[Raspberry]]></category>
+		<category><![CDATA[unify]]></category>
+		<guid isPermaLink="false">https://thetechcorner.org/?p=1459</guid>
+
+					<description><![CDATA[If you are like me, and you own some Ubiquiti AP, you&#8217;ve probably come across [&#8230;]]]></description>
+										<content:encoded><![CDATA[
+<p>If you are like me, and you own some Ubiquiti AP, you&#8217;ve probably come across Unify controller while installing/setting up your wireless router.</p>
+
+
+
+<p>Unify controller is &nbsp;<strong>a wireless network management software solution from Ubiquiti Networks<img src="https://s.w.org/images/core/emoji/14.0.0/72x72/2122.png" alt="™" class="wp-smiley" style="height: 1em; max-height: 1em;" /></strong>. It allows you to manage multiple wireless networks using a web browser. The Sample Network Diagram above illustrates an example of a single UniFi network.</p>
+
+
+
+<p></p>
+
+
+
+<p>It&#8217;s a very useful piece of software, but it needs an external device to be working. You could use your main PC as the host, but I don&#8217;t know about you, but I for sure am not running my main PC 24/7. To fix this we can use Raspberry Pi, which is maybe already running PI-hole or NFS and so it won&#8217;t make difference on your electric bill.</p>
+
+
+
+<p></p>
+
+
+
+<h2><strong>1.</strong>&nbsp;<strong>Set-up Raspberry PI</strong></h2>
+
+
+
+<p>I have already created a tutorial for this step, which you can check out&nbsp;<a href="https://thetechcorner.org/?p=136">here</a>. You can configure PI&nbsp;<strong>with or without a monitor</strong>.</p>
+
+
+
+<p>Next, you can check out some other guides on how to&nbsp;<a href="https://thetechcorner.org/?p=177">change your hostname and password</a>&nbsp;or&nbsp;<a href="https://thetechcorner.org/?p=177">how you can overclock your Raspberry PI</a>&nbsp;for better performance.</p>
+
+
+
+<p><strong>If you have already set-up your Raspberry, you only need to update your Raspbian</strong>&nbsp;<strong>packages and version using</strong>&nbsp;<strong>these commands</strong></p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">sudo apt update
+sudo apt upgrade</pre>
+</div></div>
+
+
+
+<p></p>
+
+
+
+<h2><strong>2. Install necessary packages</strong></h2>
+
+
+
+<p>As our next step, we need to install a few things to be to run Unify controller.</p>
+
+
+
+<p>The first one is Java runtime environment 8, we cannot go with any newer version yet, because the UniFi controller doesn&#8217;t support it.</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">sudo apt install openjdk-8-jre-headless</pre>
+</div></div>
+
+
+
+<p></p>
+
+
+
+<p>To improve UniFi controller startup speed, we can install rng-tools which is a set of utilities related to random number generation in kernel. The main program is rngd,&nbsp;<strong>a daemon developed to check and feed random data from hardware device to kernel entropy pool</strong>. This is mainly useful to increase the quantity of entropy in kernel to make /dev/random faster</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">sudo apt install rng-tools</pre>
+</div></div>
+
+
+
+<p>But it won&#8217;t work just yet, first we need to uncomment the <em>HRNGDEVICE=/dev/hwrng</em> line to define input source for random data.</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">sudo vi /etc/default/rng-tools-debian</pre>
+</div></div>
+
+
+
+<p><strong>And find #<em>HRNGDEVICE=/dev/hwrng</em> and remove the hastag.</strong></p>
+
+
+
+<p>Save the file and restart the rng-tools service</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">sudo systemctl restart rng-tools</pre>
+</div></div>
+
+
+
+<h2><strong>3. Fixing the mangodb dependency issue</strong></h2>
+
+
+
+<p>As the last thing of our preparation to install the UniFi Controller, we need to fix <em>mangodb </em>dependency issue, which you would get when trying to install it.</p>
+
+
+
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-full"><img decoding="async" loading="lazy" width="640" height="288" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-62.png?resize=640%2C288&#038;ssl=1" alt="" class="wp-image-1462" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-62.png?w=677&amp;ssl=1 677w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-62.png?resize=300%2C135&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-62.png?resize=24%2C11&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-62.png?resize=36%2C16&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-62.png?resize=48%2C22&amp;ssl=1 48w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p>To fix this, we will create a workaround where we will change the package manager preference. We can do that in <em>/etc/apt/preferences.d</em> directory by adding a few lines into the <em>mangodb</em> file</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">sudo vi /etc/apt/preferences.d/99stretch-mongodb.pref</pre>
+</div></div>
+
+
+
+<p>Now add these lines to the file</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<blockquote class="wp-block-quote"><p>#Never Prefer packages from Stretch</p><p>Package: * </p><p>Pin: release n=stretch </p><p>Pin-Priority: 1</p></blockquote>
+</div></div>
+
+
+
+<p>Save the file, and now it&#8217;s time to add our repository to <em>/etc/apt/sources.list</em></p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">echo "deb http://archive.raspbian.org/raspbian stretch main" | sudo tee /etc/apt/sources.list.d/stretch_mongodb.list</pre>
+</div></div>
+
+
+
+<p>When this is done, let&#8217;s move the the last step of installation.</p>
+
+
+
+<p></p>
+
+
+
+<h2><strong>4. Install the UniFi Controller</strong></h2>
+
+
+
+<p>We have a few options now, we can just manually download the UniFi controller and install it or we could automate the whole process with package manager and in that way, every time you run apt update, the UniFi controller updates as well.</p>
+
+
+
+<p><strong>To do that type</strong></p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">echo 'deb [signed-by=/usr/share/keyrings/ubiquiti-archive-keyring.gpg] https://www.ui.com/downloads/unifi/debian stable ubiquiti' | sudo tee /etc/apt/sources.list.d/100-ubnt-unifi.list</pre>
+</div></div>
+
+
+
+<p><strong>And add the GPG key </strong></p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">curl https://dl.ui.com/unifi/unifi-repo.gpg | sudo tee /usr/share/keyrings/ubiquiti-archive-keyring.gpg &gt;/dev/null</pre>
+</div></div>
+
+
+
+<p><strong>Finally, update the repositories and install UniFi controller</strong></p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">sudo apt update</pre>
+
+
+
+<pre class="wp-block-preformatted">sudo apt install unifi</pre>
+</div></div>
+
+
+
+<p></p>
+
+
+
+<p>This will automatically start and enable the unifi service. We can check that out by typing</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">systemctl status unifi</pre>
+</div></div>
+
+
+
+<figure class="wp-block-image size-large is-style-default"><img decoding="async" loading="lazy" width="640" height="159" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-63.png?resize=640%2C159&#038;ssl=1" alt="" class="wp-image-1464" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-63.png?resize=1024%2C254&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-63.png?resize=300%2C74&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-63.png?resize=768%2C190&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-63.png?resize=24%2C6&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-63.png?resize=36%2C9&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-63.png?resize=48%2C12&amp;ssl=1 48w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-63.png?w=1266&amp;ssl=1 1266w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p></p>
+
+
+
+<h2><strong>5. Setup the UniFi controller</strong></h2>
+
+
+
+<p><strong> </strong>We could now access the initial setup and the whole interface by typing the following line to our browser on the PI </p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">https://local.host:8443</pre>
+</div></div>
+
+
+
+<p></p>
+
+
+
+<p>But I would like to be able to access this interface from my own PC/phone. To do that, we need to check and set static IP address on the PI.</p>
+
+
+
+<p>To check your IP type</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">ip a</pre>
+</div></div>
+
+
+
+<figure class="wp-block-image size-full is-style-default"><img decoding="async" loading="lazy" width="640" height="191" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-64.png?resize=640%2C191&#038;ssl=1" alt="" class="wp-image-1466" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-64.png?w=803&amp;ssl=1 803w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-64.png?resize=300%2C90&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-64.png?resize=768%2C230&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-64.png?resize=24%2C7&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-64.png?resize=36%2C11&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-64.png?resize=48%2C14&amp;ssl=1 48w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>As you can see mine is 192.168.100.30. To do this properly, you should link this IP with your device in your main router, but if you can&#8217;t access it, the best you can do is to set the static IP into your PI.</p>
+
+
+
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-full"><img decoding="async" loading="lazy" width="330" height="371" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-65.png?resize=330%2C371&#038;ssl=1" alt="" class="wp-image-1467" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-65.png?w=330&amp;ssl=1 330w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-65.png?resize=267%2C300&amp;ssl=1 267w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-65.png?resize=21%2C24&amp;ssl=1 21w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-65.png?resize=32%2C36&amp;ssl=1 32w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-65.png?resize=43%2C48&amp;ssl=1 43w" sizes="(max-width: 330px) 100vw, 330px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p></p>
+
+
+
+<p>Everything should be now up and ready. All you have to do is type the following line into your browser on main PC.</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">https://YOUR_PI_IP:8443/</pre>
+</div></div>
+
+
+
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-large"><img decoding="async" loading="lazy" width="640" height="255" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-66.png?resize=640%2C255&#038;ssl=1" alt="" class="wp-image-1468" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-66.png?resize=1024%2C408&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-66.png?resize=300%2C119&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-66.png?resize=768%2C306&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-66.png?resize=24%2C10&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-66.png?resize=36%2C14&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-66.png?resize=48%2C19&amp;ssl=1 48w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-66.png?w=1356&amp;ssl=1 1356w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-66.png?w=1280&amp;ssl=1 1280w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">1459</post-id>	</item>
+		<item>
+		<title>Attach persistent storage to a container</title>
+		<link>https://thetechcorner.org/?p=1430&#038;utm_source=rss&#038;utm_medium=rss&#038;utm_campaign=attach-persistent-storage-to-a-container</link>
+		
+		<dc:creator><![CDATA[Filip Zverec]]></dc:creator>
+		<pubDate>Sat, 19 Mar 2022 16:49:00 +0000</pubDate>
+				<category><![CDATA[RHCSA]]></category>
+		<category><![CDATA[attach]]></category>
+		<category><![CDATA[persistent]]></category>
+		<category><![CDATA[rhcsa]]></category>
+		<category><![CDATA[storage]]></category>
+		<guid isPermaLink="false">https://thetechcorner.org/?p=1430</guid>
+
+					<description><![CDATA[As you may or may not know, whenever you stop the container, all the data [&#8230;]]]></description>
+										<content:encoded><![CDATA[
+<p>As you may or may not know, whenever you stop the container, all the data from the running session are going to be deleted. This would be very impractical with almost every use case of using containers, so to bypass this, we attach external storage outside the container.</p>
+
+
+
+<p>First let&#8217;s create a folder outside of the container which we will later attach to the container</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">mkdir httpd</pre>
+</div></div>
+
+
+
+<p>And now create a testfile which will tell us if the storage is attached and if it&#8217;s get erased after stopping the container</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">echo "<strong>Hello There</strong>. General Kenobi!" > httpd/test.txt</pre>
+</div></div>
+
+
+
+<p></p>
+
+
+
+<p>And the last step in this process is attaching this folder to the container with <em>podman run</em> command. We do this by adding a new flag -v</p>
+
+
+
+<blockquote class="wp-block-quote"><p>&#8211;<strong>v</strong>: or volume is a flag that creates a bind mount. If you specify <em>/HOST-DIR</em>:<em>/CONTAINER-DIR</em>, Podman bind mounts <em>host-dir</em> in the host to <em>CONTAINER-DIR</em> in the Podman container. Similarly, <em>SOURCE-VOLUME</em>:<em>/CONTAINER-DIR</em> will mount the volume in the host to the container. If no such named volume exists, Podman will create one.</p></blockquote>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">podman run --name httpd_server -dit -p 7002:8080 -v ~/httpd:/var/www/html:z registry.access.redhat.com/rhscl/httpd-24-rhel </pre>
+</div></div>
+
+
+
+<figure class="wp-block-image size-large is-style-default"><img decoding="async" loading="lazy" width="640" height="113" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-56.png?resize=640%2C113&#038;ssl=1" alt="" class="wp-image-1452" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-56.png?resize=1024%2C181&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-56.png?resize=300%2C53&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-56.png?resize=768%2C136&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-56.png?resize=24%2C4&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-56.png?resize=36%2C6&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-56.png?resize=48%2C8&amp;ssl=1 48w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-56.png?w=1150&amp;ssl=1 1150w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>And let&#8217;s check if the file is attached </p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">curl http://localhost:7002/test.txt</pre>
+</div></div>
+
+
+
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-full"><img decoding="async" loading="lazy" width="640" height="54" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-57.png?resize=640%2C54&#038;ssl=1" alt="" class="wp-image-1453" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-57.png?w=678&amp;ssl=1 678w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-57.png?resize=300%2C25&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-57.png?resize=24%2C2&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-57.png?resize=36%2C3&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-57.png?resize=48%2C4&amp;ssl=1 48w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-full"><img decoding="async" loading="lazy" width="640" height="157" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-58.png?resize=640%2C157&#038;ssl=1" alt="" class="wp-image-1454" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-58.png?w=695&amp;ssl=1 695w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-58.png?resize=300%2C73&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-58.png?resize=24%2C6&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-58.png?resize=36%2C9&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-58.png?resize=48%2C12&amp;ssl=1 48w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p></p>
+
+
+
+<blockquote class="wp-block-quote"><p>And finally we&#8217;ve come to the end of this series. Well, I would say, at least the main part of it. Even tho I&#8217;ve covered all the posts from RHCSA 8 series, I still plan on working some study materials and test labs, so tuned again!</p></blockquote>
+
+
+
+<p></p>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">1430</post-id>	</item>
+		<item>
+		<title>Configure a container to start automatically as a systemd service</title>
+		<link>https://thetechcorner.org/?p=1429&#038;utm_source=rss&#038;utm_medium=rss&#038;utm_campaign=configure-a-container-to-start-automatically-as-a-systemd-service</link>
+		
+		<dc:creator><![CDATA[Filip Zverec]]></dc:creator>
+		<pubDate>Fri, 18 Mar 2022 16:49:00 +0000</pubDate>
+				<category><![CDATA[RHCSA]]></category>
+		<category><![CDATA[automatically]]></category>
+		<category><![CDATA[configure]]></category>
+		<category><![CDATA[container]]></category>
+		<category><![CDATA[podman]]></category>
+		<category><![CDATA[rhcsa]]></category>
+		<category><![CDATA[run]]></category>
+		<category><![CDATA[systemd]]></category>
+		<guid isPermaLink="false">https://thetechcorner.org/?p=1429</guid>
+
+					<description><![CDATA[To start container automatically after the boot we need to make container into a service [&#8230;]]]></description>
+										<content:encoded><![CDATA[
+<p>To start container automatically after the boot we need to make container into a service which we will then enable, as we done many times before.</p>
+
+
+
+<p></p>
+
+
+
+<p>To create &#8220;link&#8221; from a specific container we again use <em>podman</em> utility. Podman includes a <code>podman generate systemd</code> command, which outputs a valid systemd configuration file (called a <em>unit</em>) for the container. To do that we need a name of a container.</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">podman ps </pre>
+</div></div>
+
+
+
+<figure class="wp-block-image size-large is-style-default"><img decoding="async" loading="lazy" width="640" height="58" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-50.png?resize=640%2C58&#038;ssl=1" alt="" class="wp-image-1443" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-50.png?resize=1024%2C92&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-50.png?resize=300%2C27&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-50.png?resize=768%2C69&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-50.png?resize=24%2C2&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-50.png?resize=36%2C3&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-50.png?resize=48%2C4&amp;ssl=1 48w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-50.png?w=1212&amp;ssl=1 1212w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>When we have a name we simply run</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">podman generate systemd httpd_server2</pre>
+</div></div>
+
+
+
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-large"><img decoding="async" loading="lazy" width="640" height="242" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-51.png?resize=640%2C242&#038;ssl=1" alt="" class="wp-image-1444" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-51.png?resize=1024%2C387&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-51.png?resize=300%2C113&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-51.png?resize=768%2C290&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-51.png?resize=24%2C9&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-51.png?resize=36%2C14&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-51.png?resize=48%2C18&amp;ssl=1 48w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-51.png?w=1215&amp;ssl=1 1215w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p>This only pipe text to our screen, but we need to pipe this into a system directory</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">podman generate systemd httpd_server2 > /etc/systemd/system/httpd.service</pre>
+</div></div>
+
+
+
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-full"><img decoding="async" loading="lazy" width="640" height="53" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-52.png?resize=640%2C53&#038;ssl=1" alt="" class="wp-image-1445" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-52.png?w=902&amp;ssl=1 902w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-52.png?resize=300%2C25&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-52.png?resize=768%2C64&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-52.png?resize=24%2C2&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-52.png?resize=36%2C3&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-52.png?resize=48%2C4&amp;ssl=1 48w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p>To check if the file exist we can use ls command or <em>systemctl list-unit-files</em></p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">systemctl list-unit-files | grep httpd</pre>
+</div></div>
+
+
+
+<figure class="wp-block-image size-large is-style-default"><img decoding="async" loading="lazy" width="640" height="33" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-53.png?resize=640%2C33&#038;ssl=1" alt="" class="wp-image-1446" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-53.png?resize=1024%2C52&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-53.png?resize=300%2C15&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-53.png?resize=768%2C39&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-53.png?resize=24%2C1&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-53.png?resize=36%2C2&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-53.png?resize=48%2C2&amp;ssl=1 48w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-53.png?w=1147&amp;ssl=1 1147w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>The final step is to enable and start this service</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">systemctl enable httpd.service --now</pre>
+</div></div>
+
+
+
+<figure class="wp-block-image size-large is-style-default"><img decoding="async" loading="lazy" width="640" height="171" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-54.png?resize=640%2C171&#038;ssl=1" alt="" class="wp-image-1447" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-54.png?resize=1024%2C273&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-54.png?resize=300%2C80&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-54.png?resize=768%2C205&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-54.png?resize=24%2C6&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-54.png?resize=36%2C10&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-54.png?resize=48%2C13&amp;ssl=1 48w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-54.png?w=1244&amp;ssl=1 1244w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>You can try to reboot the system now and list the running containers to see if it worked.</p>
+
+
+
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-large"><img decoding="async" loading="lazy" width="640" height="268" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-55.png?resize=640%2C268&#038;ssl=1" alt="" class="wp-image-1448" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-55.png?resize=1024%2C428&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-55.png?resize=300%2C125&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-55.png?resize=768%2C321&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-55.png?resize=24%2C10&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-55.png?resize=36%2C15&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-55.png?resize=48%2C20&amp;ssl=1 48w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-55.png?w=1150&amp;ssl=1 1150w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">1429</post-id>	</item>
+		<item>
+		<title>Run a service inside a container</title>
+		<link>https://thetechcorner.org/?p=1412&#038;utm_source=rss&#038;utm_medium=rss&#038;utm_campaign=run-a-service-inside-a-container</link>
+		
+		<dc:creator><![CDATA[Filip Zverec]]></dc:creator>
+		<pubDate>Thu, 17 Mar 2022 16:54:00 +0000</pubDate>
+				<category><![CDATA[RHCSA]]></category>
+		<category><![CDATA[apache]]></category>
+		<category><![CDATA[httpd]]></category>
+		<category><![CDATA[podman]]></category>
+		<category><![CDATA[rhcsa]]></category>
+		<category><![CDATA[run]]></category>
+		<category><![CDATA[service]]></category>
+		<guid isPermaLink="false">https://thetechcorner.org/?p=1412</guid>
+
+					<description><![CDATA[Running a service inside a container is the whole purpose of building and managing the [&#8230;]]]></description>
+										<content:encoded><![CDATA[
+<p>Running a service inside a container is the whole purpose of building and managing the container. Few reasons why running a service like this is beneficial </p>
+
+
+
+<ul><li><strong>Less overhead</strong><br>Containers require less system resources than traditional or hardware virtual machine environments because they don’t include operating system images.</li><li><strong>Increased portability</strong><br>Applications running in containers can be deployed easily to multiple different operating systems and hardware platforms.</li><li><strong>More consistent operation</strong><br>DevOps teams know applications in containers will run the same, regardless of where they are deployed.</li><li><strong>Greater efficiency</strong><br>Containers allow applications to be more rapidly deployed, patched, or scaled.</li><li><strong>Better application development</strong><br>Containers support agile and DevOps efforts to accelerate development, test, and production cycles.</li></ul>
+
+
+
+<p></p>
+
+
+
+<p>Let&#8217;s pick up where last post end up and demonstrate this by running a site with apache server. After we&#8217;ve successfully downloaded the apache image container by typing command bellow, it&#8217;s time to start up the container.</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">podman pull registry.access.redhat.com/rhscl/httpd-24-rhel7</pre>
+</div></div>
+
+
+
+<p></p>
+
+
+
+<p>We&#8217;ve already started a container in a previous post, but we need to adjust command a little.</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">podman run --name httpd_server -dit -p 7000:8080 registry.access.redhat.com/rhscl/httpd-24-rhel</pre>
+</div></div>
+
+
+
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-large"><img decoding="async" loading="lazy" width="640" height="71" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-41.png?resize=640%2C71&#038;ssl=1" alt="" class="wp-image-1431" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-41.png?resize=1024%2C113&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-41.png?resize=300%2C33&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-41.png?resize=768%2C85&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-41.png?resize=24%2C3&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-41.png?resize=36%2C4&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-41.png?resize=48%2C5&amp;ssl=1 48w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-41.png?w=1248&amp;ssl=1 1248w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p>What we&#8217;ve done is that we added a flag -dit and -p for:</p>
+
+
+
+<p><strong>-d</strong>: Because the container is being run in detached mode, represented by the <code>-d</code> in the <code>podman run</code> command, Podman will print the container ID after it has executed the command. </p>
+
+
+
+<p><code>-<strong>t</strong></code> also adds a pseudo-tty to run arbitrary commands in an interactive shell.</p>
+
+
+
+<p>&#8211;<strong>i</strong> which is short for <strong>interactive</strong>. When set to <strong>true</strong>, keep stdin open even if not attached. The default is <strong>false</strong>.</p>
+
+
+
+<p>&#8211;<strong>p </strong>or <strong>&#8211;publish</strong> which helps us define container’s port, or range of ports, to the host</p>
+
+
+
+<p></p>
+
+
+
+<h3><strong>Test the httpd container</strong></h3>
+
+
+
+<p><strong>We can test the httpd from our local host by console</strong></p>
+
+
+
+<pre class="wp-block-code"><code>curl http://localhost:7000
+</code></pre>
+
+
+
+<figure class="wp-block-image size-full is-style-default"><img decoding="async" loading="lazy" width="640" height="179" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-42.png?resize=640%2C179&#038;ssl=1" alt="" class="wp-image-1433" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-42.png?w=914&amp;ssl=1 914w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-42.png?resize=300%2C84&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-42.png?resize=768%2C215&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-42.png?resize=24%2C7&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-42.png?resize=36%2C10&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-42.png?resize=48%2C13&amp;ssl=1 48w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p><strong>Or by web browser</strong></p>
+
+
+
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-large"><img decoding="async" loading="lazy" width="640" height="344" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-43.png?resize=640%2C344&#038;ssl=1" alt="" class="wp-image-1434" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-43.png?resize=1024%2C551&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-43.png?resize=300%2C162&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-43.png?resize=768%2C413&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-43.png?resize=24%2C13&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-43.png?resize=36%2C19&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-43.png?resize=48%2C26&amp;ssl=1 48w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-43.png?w=1265&amp;ssl=1 1265w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p></p>
+
+
+
+<p><strong>or by using IP address</strong></p>
+
+
+
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-full"><img decoding="async" loading="lazy" width="640" height="350" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-45.png?resize=640%2C350&#038;ssl=1" alt="" class="wp-image-1437" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-45.png?w=946&amp;ssl=1 946w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-45.png?resize=300%2C164&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-45.png?resize=768%2C420&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-45.png?resize=24%2C13&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-45.png?resize=36%2C20&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-45.png?resize=48%2C26&amp;ssl=1 48w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p></p>
+
+
+
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-full"><img decoding="async" loading="lazy" width="640" height="230" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-46.png?resize=640%2C230&#038;ssl=1" alt="" class="wp-image-1438" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-46.png?w=970&amp;ssl=1 970w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-46.png?resize=300%2C108&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-46.png?resize=768%2C276&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-46.png?resize=24%2C9&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-46.png?resize=36%2C13&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-46.png?resize=48%2C17&amp;ssl=1 48w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p></p>
+
+
+
+<h3>Inspect a running container</h3>
+
+
+
+<p>You can “inspect” a running container for metadata and details about itself</p>
+
+
+
+<p>To inspect the latest container add the flag -l to the command</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">podman inspect -l </pre>
+</div></div>
+
+
+
+<p>To view a logs type</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">podman logs -l</pre>
+</div></div>
+
+
+
+<figure class="wp-block-image size-large is-style-default"><img decoding="async" loading="lazy" width="640" height="274" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-49.png?resize=640%2C274&#038;ssl=1" alt="" class="wp-image-1441" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-49.png?resize=1024%2C439&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-49.png?resize=300%2C129&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-49.png?resize=768%2C329&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-49.png?resize=24%2C10&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-49.png?resize=36%2C15&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-49.png?resize=48%2C21&amp;ssl=1 48w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-49.png?w=1214&amp;ssl=1 1214w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>There are many more possibilities on how to use the container but that&#8217;s not the scope of this post. It just serves the purpose of understanding how it works.</p>
+
+
+
+<p></p>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">1412</post-id>	</item>
+		<item>
+		<title>Perform basic container management such as running, starting, stopping, and listing running containers</title>
+		<link>https://thetechcorner.org/?p=1411&#038;utm_source=rss&#038;utm_medium=rss&#038;utm_campaign=perform-basic-container-management-such-as-running-starting-stopping-and-listing-running-containers</link>
+		
+		<dc:creator><![CDATA[Filip Zverec]]></dc:creator>
+		<pubDate>Wed, 16 Mar 2022 16:59:00 +0000</pubDate>
+				<category><![CDATA[Uncategorized]]></category>
+		<category><![CDATA[containers]]></category>
+		<category><![CDATA[management]]></category>
+		<category><![CDATA[rhcsa]]></category>
+		<category><![CDATA[start]]></category>
+		<category><![CDATA[stop]]></category>
+		<guid isPermaLink="false">https://thetechcorner.org/?p=1411</guid>
+
+					<description><![CDATA[We&#8217;ve successfully used podman and scopeo to find, pull and inspect the container. Now it&#8217;s [&#8230;]]]></description>
+										<content:encoded><![CDATA[
+<p>We&#8217;ve successfully used podman and scopeo to find, pull and inspect the container. Now it&#8217;s time to use this container for something practical. To do that you obviously need to know first few basic things like: starting, stopping and listing containers.</p>
+
+
+
+<p></p>
+
+
+
+<p>To demonstrate this management commands, let&#8217;s make an apache server and run a site.</p>
+
+
+
+<p>First, let&#8217;s find apache server container with podman help</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">podman search httpd | less</pre>
+</div></div>
+
+
+
+<figure class="wp-block-image size-large is-style-default"><img decoding="async" loading="lazy" width="640" height="56" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-35.png?resize=640%2C56&#038;ssl=1" alt="" class="wp-image-1422" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-35.png?resize=1024%2C89&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-35.png?resize=300%2C26&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-35.png?resize=768%2C67&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-35.png?resize=24%2C2&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-35.png?resize=36%2C3&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-35.png?resize=48%2C4&amp;ssl=1 48w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-35.png?w=1256&amp;ssl=1 1256w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>Now pick one and pull it as I showed you in the previous post. Just in the case you forgot, you have to type</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">podman pull registry.access.redhat.com/rhscl/httpd-24-rhel7</pre>
+</div></div>
+
+
+
+<figure class="wp-block-image size-full is-style-default"><img decoding="async" loading="lazy" width="640" height="152" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-36.png?resize=640%2C152&#038;ssl=1" alt="" class="wp-image-1423" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-36.png?w=1000&amp;ssl=1 1000w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-36.png?resize=300%2C71&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-36.png?resize=768%2C182&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-36.png?resize=24%2C6&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-36.png?resize=36%2C9&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-36.png?resize=48%2C11&amp;ssl=1 48w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<h3><strong>Run a container</strong></h3>
+
+
+
+<p>To run a container we will again use podman command with few new parameters that I&#8217;ll explain.</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">podman run -d --name httpd_test registry.access.redhat.com/rhscl/httpd-24-rhel</pre>
+</div></div>
+
+
+
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-full"><img decoding="async" loading="lazy" width="640" height="40" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-37.png?resize=640%2C40&#038;ssl=1" alt="" class="wp-image-1424" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-37.png?w=906&amp;ssl=1 906w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-37.png?resize=300%2C19&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-37.png?resize=768%2C47&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-37.png?resize=24%2C1&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-37.png?resize=36%2C2&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-37.png?resize=48%2C3&amp;ssl=1 48w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+
+<h3><strong>Stop a container</strong></h3>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">podman stop httpd_test</pre>
+</div></div>
+
+
+
+<p></p>
+
+
+
+<h3><strong>List running/non-running containers</strong></h3>
+
+
+
+<p>You can either list all container or just the containers that are running.</p>
+
+
+
+<p>To list just the running containers, we use <em>podman ps</em> command</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">podman ps</pre>
+</div></div>
+
+
+
+<figure class="wp-block-image size-large is-style-default"><img decoding="async" loading="lazy" width="640" height="61" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-39.png?resize=640%2C61&#038;ssl=1" alt="" class="wp-image-1426" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-39.png?resize=1024%2C98&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-39.png?resize=300%2C29&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-39.png?resize=768%2C73&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-39.png?resize=24%2C2&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-39.png?resize=36%2C3&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-39.png?resize=48%2C5&amp;ssl=1 48w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-39.png?w=1139&amp;ssl=1 1139w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p></p>
+
+
+
+<p>To list all the containers, you have to add -a flag to the command</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">podman ps -a</pre>
+</div></div>
+
+
+
+<figure class="wp-block-image size-large is-style-default"><img decoding="async" loading="lazy" width="640" height="85" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-38.png?resize=640%2C85&#038;ssl=1" alt="" class="wp-image-1425" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-38.png?resize=1024%2C136&amp;ssl=1 1024w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-38.png?resize=300%2C40&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-38.png?resize=768%2C102&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-38.png?resize=24%2C3&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-38.png?resize=36%2C5&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-38.png?resize=48%2C6&amp;ssl=1 48w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-38.png?w=1131&amp;ssl=1 1131w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<h3><strong>List images</strong></h3>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">podman images</pre>
+</div></div>
+
+
+
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-full"><img decoding="async" loading="lazy" width="640" height="69" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-40.png?resize=640%2C69&#038;ssl=1" alt="" class="wp-image-1427" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-40.png?w=886&amp;ssl=1 886w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-40.png?resize=300%2C32&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-40.png?resize=768%2C82&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-40.png?resize=24%2C3&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-40.png?resize=36%2C4&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-40.png?resize=48%2C5&amp;ssl=1 48w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p></p>
+
+
+
+<p>In the next post, I&#8217;ll explain to you how to run a service, which finally lead us to real life examples of container world.</p>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">1411</post-id>	</item>
+		<item>
+		<title>Perform container management using commands such as podman and skopeo</title>
+		<link>https://thetechcorner.org/?p=1409&#038;utm_source=rss&#038;utm_medium=rss&#038;utm_campaign=perform-container-management-using-commands-such-as-podman-and-skopeo</link>
+		
+		<dc:creator><![CDATA[Filip Zverec]]></dc:creator>
+		<pubDate>Tue, 15 Mar 2022 17:55:46 +0000</pubDate>
+				<category><![CDATA[RHCSA]]></category>
+		<category><![CDATA[container]]></category>
+		<category><![CDATA[management]]></category>
+		<category><![CDATA[rhcsa]]></category>
+		<category><![CDATA[skopeo]]></category>
+		<guid isPermaLink="false">https://thetechcorner.org/?p=1409</guid>
+
+					<description><![CDATA[We already used podman and skopeo in the previous posts, where we downloaded and inspected [&#8230;]]]></description>
+										<content:encoded><![CDATA[
+<p>We already used podman and skopeo in the previous posts, where we downloaded and inspected the container, but let&#8217;s practice again.</p>
+
+
+
+<p>To search for the specific container we use command </p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">podman search ubi | less</pre>
+</div></div>
+
+
+
+<figure class="wp-block-image size-full is-style-default"><img decoding="async" loading="lazy" width="640" height="187" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-31.png?resize=640%2C187&#038;ssl=1" alt="" class="wp-image-1415" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-31.png?w=858&amp;ssl=1 858w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-31.png?resize=300%2C88&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-31.png?resize=768%2C225&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-31.png?resize=24%2C7&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-31.png?resize=36%2C11&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-31.png?resize=48%2C14&amp;ssl=1 48w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>When we have this list of available container images we can choose one and again use podman to pull it to our VM.</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">podman pull &lt;registry&gt;[:&lt;port&gt;]/[&lt;namespace&gt;/]&lt;name&gt;:&lt;tag&gt;</pre>
+</div></div>
+
+
+
+<p>Or in our case</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">podman pull<em> registry-access.redhat.com/ubi8</em></pre>
+</div></div>
+
+
+
+<figure class="wp-block-image size-full is-style-default"><img decoding="async" loading="lazy" width="640" height="133" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-32.png?resize=640%2C133&#038;ssl=1" alt="" class="wp-image-1416" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-32.png?w=959&amp;ssl=1 959w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-32.png?resize=300%2C62&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-32.png?resize=768%2C159&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-32.png?resize=24%2C5&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-32.png?resize=36%2C7&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-32.png?resize=48%2C10&amp;ssl=1 48w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure>
+
+
+
+<p></p>
+
+
+
+<p>After we have successfully downloaded the image we can run the container by typing</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">podman run -d <em>registry-access.redhat.com/ubi8</em></pre>
+</div></div>
+
+
+
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-full"><img decoding="async" loading="lazy" width="484" height="41" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-33.png?resize=484%2C41&#038;ssl=1" alt="" class="wp-image-1417" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-33.png?w=484&amp;ssl=1 484w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-33.png?resize=300%2C25&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-33.png?resize=24%2C2&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-33.png?resize=36%2C3&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-33.png?resize=48%2C4&amp;ssl=1 48w" sizes="(max-width: 484px) 100vw, 484px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p>Now we can use skopeo to inspect the image with a command</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">skopeo inspect docker://image_name | less</pre>
+</div></div>
+
+
+
+<p>Or in our case</p>
+
+
+
+<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+<pre class="wp-block-preformatted">skopeo inspect docker://registry-access.redhat.com/ubi8 | less </pre>
+</div></div>
+
+
+
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-full"><img decoding="async" loading="lazy" width="640" height="258" src="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-34.png?resize=640%2C258&#038;ssl=1" alt="" class="wp-image-1418" srcset="https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-34.png?w=861&amp;ssl=1 861w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-34.png?resize=300%2C121&amp;ssl=1 300w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-34.png?resize=768%2C310&amp;ssl=1 768w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-34.png?resize=24%2C10&amp;ssl=1 24w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-34.png?resize=36%2C15&amp;ssl=1 36w, https://i0.wp.com/thetechcorner.org/wp-content/uploads/2022/03/image-34.png?resize=48%2C19&amp;ssl=1 48w" sizes="(max-width: 640px) 100vw, 640px" data-recalc-dims="1" /></figure></div>
+
+
+
+<p></p>
+
+
+
+<p>This was just a recapitulation of everything I&#8217;ve already showed you, but a little recapitulation is always good right?</p>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">1409</post-id>	</item>
+	</channel>
+</rss>
